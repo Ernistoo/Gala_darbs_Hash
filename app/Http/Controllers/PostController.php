@@ -12,8 +12,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all(); // vai pagaidām tukšu kolekciju
-    return view('posts.index', compact('posts'));
+        $posts = Post::latest()->get(); 
+        return view('posts.index', compact('posts'));
 
     }
 
@@ -51,10 +51,10 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        //
-    }
+    public function show(Post $post)
+{
+    return view('posts.show', compact('post'));
+}
 
     /**
      * Show the form for editing the specified resource.

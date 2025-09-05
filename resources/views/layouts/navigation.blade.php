@@ -1,11 +1,11 @@
 <nav class="flex flex-col flex-1">
     <!-- Logo -->
     <div class="flex items-center space-x-2 p-4">
-        <x-application-logo class="h-16 w-16 text-gray-800 dark:text-gray-200" />
+      <x-application-logo class="h-16 w-16 text-gray-800 dark:text-gray-200" />
         <span class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ config('app.name') }}</span>
     </div>
 
-    <!-- Links -->
+    
     <div class="flex-1 space-y-2 px-4">
         <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
             {{ __('Dashboard') }}
@@ -21,7 +21,7 @@
         </x-nav-link>
     </div>
 
-    <!-- Apakšā -->
+   
     <div class="border-t border-gray-200 dark:border-gray-700 p-4">
         <div class="text-gray-700 dark:text-gray-300 font-medium">
             {{ Auth::user()->name }}
