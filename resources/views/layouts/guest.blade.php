@@ -14,11 +14,15 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans bg-gray-100 dark:bg-gray-900 flex items-center justify-center min-h-screen">
-    <div class="w-full sm:max-w-sm mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
-    <div class="flex justify-center mb-6">
+    <body class="font-sans flex items-center justify-center min-h-screen 
+                 bg-gradient-to-br from-gray-100 to-yellow-50 
+                 dark:from-black dark:to-purple-900">
+        <div class="w-full sm:max-w-sm mt-6 px-6 py-4 
+                    bg-white/80 dark:bg-gray-800/80 
+                    backdrop-blur-md shadow-lg sm:rounded-lg">
+            <div class="flex justify-center mb-6">
                 <a href="/">
-                    <x-application-logo class="w-16 h-16 text-gray-500" />
+                    <x-application-logo class="w-16 h-16 text-gray-600 dark:text-gray-300" />
                 </a>
             </div>
 

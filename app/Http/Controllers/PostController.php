@@ -29,24 +29,28 @@ class PostController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'nullable',
-            'image' => 'nullable|image|max:2048',
-        ]);
-    
-        $data = $request->all();
-        $data['user_id'] = auth()->id();
-    
-        if($request->hasFile('image')){
-            $data['image'] = $request->file('image')->store('posts', 'public');
-        }
-    
-        Post::create($data);
-    
-        return redirect()->route('posts.index')->with('success', 'Post created successfully!');
-    }
+{
+    $request->validate([
+        'title' => 'required|max:255',
+        'content' => 'nullable',
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
+    // Upload the image
+    $imageName = time().'.'.$request->image->extension();
+    $request->image->move(public_path('images'), $imageName);
+
+    // Create the post in one step
+    Post::create([
+        'user_id' => auth()->id(), // assign the currently logged in user
+        'title' => $request->title,
+        'content' => $request->content,
+        'image' => 'images/'.$imageName,
+    ]);
+
+    return redirect()->route('posts.index')->with('success', 'Post created successfully!');
+}
+
 
     /**
      * Display the specified resource.
