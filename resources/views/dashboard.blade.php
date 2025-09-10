@@ -1,17 +1,30 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
+    <div class="flex items-center justify-center min-h-screen bg-transparent">
+        <div class="text-center animate-fade-in-up">
+            <h1 class="text-6xl font-extrabold text-purple-700 drop-shadow-lg animate-pulse transition-transform duration-300 hover:scale-105 group">
+                Hash
+            </h1>
+            <p class="mt-4 text-xl text-purple-500 ">
+                Share your love for a craft without limitations
+            </p>
         </div>
     </div>
+
+    <!-- Tailwind Custom Animation Classes -->
+    <style>
+        @keyframes fade-in-up {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fade-in-up 1s ease-out forwards;
+        }
+    </style>
 </x-app-layout>

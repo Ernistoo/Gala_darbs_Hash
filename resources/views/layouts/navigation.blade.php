@@ -1,5 +1,5 @@
 <nav class="flex flex-col flex-1 
-            bg-gradient-to-b from-gray-100 to-yellow-50 
+            bg-gradient-to-b from-gray-200 to-purple-100 
             dark:from-black dark:to-purple-900">
     <!-- Logo -->
     <div class="flex items-center space-x-2 p-4">
@@ -27,6 +27,13 @@
         class="block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
         {{ __('Collections') }}
     </x-nav-link>
+
+    @role('admin')
+    <x-nav-link :href="route('admin')" :active="request()->routeIs('admin')"
+        class="block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
+        {{ __('Admin') }}
+    </x-nav-link>
+@endrole
 </div>
 
 

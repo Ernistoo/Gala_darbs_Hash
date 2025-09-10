@@ -27,7 +27,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased 
-                 bg-gradient-to-br from-gray-100 to-yellow-50 
+                 bg-gradient-to-br from-gray-200 to-purple-100 
                  dark:from-black dark:to-purple-900">
         <div class="min-h-screen flex">
             <!-- Sidebar -->
