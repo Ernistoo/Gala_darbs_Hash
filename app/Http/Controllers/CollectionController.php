@@ -27,14 +27,17 @@ class CollectionController extends Controller
         return redirect()->route('collections.index')->with('success', 'Collection created!');
     }
 
-    public function addPost(Collection $collection, Post $post)
-    {
-        if ($collection->user_id !== auth()->id()) {
-            abort(403);
-        }
+    public function addPost(Request $request, $collectionId, Post $post)
+{
+    $collection = Collection::findOrFail($request->input('collection'));
 
-        $collection->posts()->syncWithoutDetaching([$post->id]);
-
-        return back()->with('success', 'Post added to collection!');
+    
+    if ($collection->user_id !== auth()->id()) {
+        abort(403);
     }
+
+    $collection->posts()->attach($post->id);
+
+    return back()->with('success', 'Post added to collection!');
+}
 }

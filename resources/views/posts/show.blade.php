@@ -1,14 +1,17 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ $post->title }}
-        </h2>
-    </x-slot>
+   
+
+    <div class="mb-4">
+                <a href="{{ route('posts.index') }}" class="inline-flex items-center justify-center w-12 h-12 bg-transparent rounded-full shadow hover:bg-purple-400 transition">
+                    <img src="{{ asset('images/back.svg') }}" alt="Create Post" class="w-6 h-6">
+                </a>
+    </div>
 
     <div class="py-6 max-w-4xl mx-auto">
         <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 space-y-4">
             @if($post->image)
-            <img src="{{ asset($post->image) }}" alt="{{ $post->title }}" class="w-48 h-48 object-cover rounded mx-auto">
+            <img src="{{ Storage::url($post->image) }}" alt="{{ $post->title }}" class="w-48 h-48 object-cover rounded mx-auto">
+            
             @endif
 
             <p class="text-gray-700 dark:text-gray-300">{{ $post->content }}</p>
@@ -54,12 +57,16 @@
     </div>
 
     @if(auth()->check())
-    <form action="{{ route('collections.addPost', ['collection' => auth()->user()->collections->first(), 'post' => $post]) }}" method="POST">
-        @csrf
-        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">
-            Save to First Collection
-        </button>
-    </form>
+    <form action="{{ route('collections.addPost', ['collection' => 0, 'post' => $post->id]) }}" method="POST">
+    @csrf
+    <label for="collection">Choose a collection:</label>
+    <select name="collection" id="collection" required>
+        @foreach(auth()->user()->collections as $userCollection)
+            <option value="{{ $userCollection->id }}">{{ $userCollection->name }}</option>
+        @endforeach
+    </select>
+    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded">Add to Collection</button>
+</form>
     @endif
 
     <!-- Comments -->

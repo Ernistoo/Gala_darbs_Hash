@@ -10,7 +10,6 @@
         </div>
     </div>
 
-    <!-- Tailwind Custom Animation Classes -->
     <style>
         @keyframes fade-in-up {
             0% {

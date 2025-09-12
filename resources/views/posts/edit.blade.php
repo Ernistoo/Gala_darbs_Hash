@@ -37,12 +37,24 @@
                     <input type="file" name="image" id="image"
                            class="border rounded-lg w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
                     @if($post->image)
-                        <img src="{{ asset('storage/' . $post->image) }}" alt="Current image" class="mt-2 w-32 h-auto rounded-md">
+                        <img src="{{ asset('storage/' . $post->image) }}" alt="Current image" class="w-48 h-48 object-cover rounded mx-auto">
                     @endif
                     @error('image')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <div class="mb-4">
+    <label class="block mb-1 font-semibold">Category</label>
+    <select name="category_id" class="border p-2 w-full rounded" required>
+        @foreach($categories as $category)
+            <option value="{{ $category->id }}" {{ $post->category_id == $category->id ? 'selected' : '' }}>
+                {{ $category->name }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
 
                 <div class="flex justify-end space-x-2">
                     <a href="{{ route('posts.index') }}"

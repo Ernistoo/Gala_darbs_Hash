@@ -17,7 +17,8 @@ class Post extends Model
         'user_id',
         'title',
         'content',
-        'image'
+        'image',
+        'category_id'
     ];
 
     public function user()
@@ -45,4 +46,9 @@ class Post extends Model
     {
         return $this->belongsToMany(Collection::class, 'collection_post');
     }
+
+    public function category()
+{
+    return $this->belongsTo(Category::class);
+}
 }

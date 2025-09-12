@@ -17,7 +17,6 @@
         @csrf
         @method('patch')
 
-        <!-- Name -->
         <div>
             <x-input-label for="name" :value="__('Name')" />
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full"
@@ -25,7 +24,6 @@
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
-        <!-- Email -->
         <div>
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full"
@@ -51,7 +49,6 @@
             @endif
         </div>
 
-        <!-- Username -->
         <div class="mt-4">
             <x-input-label for="username" :value="__('Username')" />
             <x-text-input id="username" name="username" type="text" class="mt-1 block w-full"
@@ -59,7 +56,6 @@
             <x-input-error class="mt-2" :messages="$errors->get('username')" />
         </div>
 
-        <!-- Bio -->
         <div class="mt-4">
             <x-input-label for="bio" :value="__('Bio')" />
             <textarea id="bio" name="bio" class="mt-1 block w-full border rounded-md"
@@ -67,7 +63,6 @@
             <x-input-error class="mt-2" :messages="$errors->get('bio')" />
         </div>
 
-        <!-- Profile Photo -->
         <div class="mt-4">
             <x-input-label for="profile_photo" :value="__('Profile Photo')" />
             <input id="profile_photo" name="profile_photo" type="file" class="mt-1 block w-full" />
@@ -90,7 +85,6 @@
         </div>
     </form>
 
-    <!-- Logout Button -->
     <div class="mt-6 border-t pt-4">
         <form method="POST" action="{{ route('logout') }}">
             @csrf

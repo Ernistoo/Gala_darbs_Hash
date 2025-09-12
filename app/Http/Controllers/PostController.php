@@ -4,55 +4,63 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\Category;
 
 class PostController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of posts, optionally filtered by category.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::latest()->get();
-        return view('posts.index', compact('posts'));
+        $categories = Category::all();
+
+        $query = Post::query()->latest();
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        $posts = $query->get();
+
+        return view('posts.index', compact('posts', 'categories'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new post.
      */
     public function create()
     {
-        return view('posts.create');
+        $categories = Category::all();
+        return view('posts.create', compact('categories'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created post in storage.
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'nullable',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        $data = $request->validate([
+            'title'       => 'required|string|max:255',
+            'content'     => 'nullable|string',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'category_id' => 'required|exists:categories,id',
         ]);
 
-        // Upload the image
-        $imageName = time() . '.' . $request->image->extension();
-        $request->image->move(public_path('images'), $imageName);
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('posts', 'public');
+        }
 
-        // Create the post in one step
-        Post::create([
-            'user_id' => auth()->id(), // assign the currently logged in user
-            'title' => $request->title,
-            'content' => $request->content,
-            'image' => 'images/' . $imageName,
-        ]);
+        $data['user_id'] = auth()->id();
+
+        Post::create($data);
 
         return redirect()->route('posts.index')->with('success', 'Post created successfully!');
     }
 
-
     /**
-     * Display the specified resource.
+     * Display the specified post.
      */
     public function show(Post $post)
     {
@@ -60,20 +68,21 @@ class PostController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified post.
      */
     public function edit(Post $post)
     {
-        // Only allow the post owner to edit
         if ($post->user_id !== auth()->id()) {
             abort(403, 'Unauthorized action.');
         }
 
-        return view('posts.edit', compact('post'));
+        $categories = Category::all();
+
+        return view('posts.edit', compact('post', 'categories'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified post in storage.
      */
     public function update(Request $request, Post $post)
     {
@@ -81,34 +90,28 @@ class PostController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'nullable',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        $data = $request->validate([
+            'title'       => 'required|string|max:255',
+            'content'     => 'nullable|string',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'category_id' => 'required|exists:categories,id',
         ]);
 
-        // Update image if uploaded
+        // Handle image replacement
         if ($request->hasFile('image')) {
-            // Delete old image
-            if ($post->image && file_exists(public_path($post->image))) {
-                unlink(public_path($post->image));
+            if ($post->image && file_exists(storage_path('app/public/' . $post->image))) {
+                unlink(storage_path('app/public/' . $post->image));
             }
-
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('images'), $imageName);
-            $post->image = 'images/' . $imageName;
+            $data['image'] = $request->file('image')->store('posts', 'public');
         }
 
-        $post->title = $request->title;
-        $post->content = $request->content;
-
-        $post->save();
+        $post->update($data);
 
         return redirect()->route('posts.show', $post)->with('success', 'Post updated successfully!');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete a post.
      */
     public function destroy(Post $post)
     {
@@ -116,9 +119,8 @@ class PostController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        // Delete image file
-        if ($post->image && file_exists(public_path($post->image))) {
-            unlink(public_path($post->image));
+        if ($post->image && file_exists(storage_path('app/public/' . $post->image))) {
+            unlink(storage_path('app/public/' . $post->image));
         }
 
         $post->delete();
@@ -126,14 +128,21 @@ class PostController extends Controller
         return redirect()->route('posts.index')->with('success', 'Post deleted successfully!');
     }
 
+    /**
+     * Like a post.
+     */
     public function like(Post $post)
     {
         if (!$post->likedBy(auth()->user())) {
             $post->likes()->create(['user_id' => auth()->id()]);
         }
+
         return back();
     }
 
+    /**
+     * Unlike a post.
+     */
     public function unlike(Post $post)
     {
         $post->likes()->where('user_id', auth()->id())->delete();
