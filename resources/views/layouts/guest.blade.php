@@ -28,9 +28,6 @@
             <!-- Placeholder image, replace URL later -->
         </div>
     </div>
-    <a href="{{ route('register') }}"
-               class="">
-                Register
-            </a>
+    
 </body>
 </html>
