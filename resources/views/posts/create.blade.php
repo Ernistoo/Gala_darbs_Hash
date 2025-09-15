@@ -19,6 +19,10 @@
                 <input type="file" name="image" id="image" class="w-full">
             </div>
 
+            @error('image')
+    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+@enderror
+
             <div class="mb-4">
     <label class="block mb-1 font-semibold">Category</label>
     <select name="category_id" class="border p-2 w-full rounded" required>

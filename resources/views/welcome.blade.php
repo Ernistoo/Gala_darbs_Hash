@@ -8,9 +8,17 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-    <div class="text-center space-y-6">
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-white">
+<body class="min-h-screen flex items-center justify-center
+             bg-gradient-to-b from-gray-100 to-purple-300 
+             dark:from-black dark:to-purple-900 relative overflow-hidden">
+
+    <!-- Background Image with opacity -->
+    <img src="{{ asset('images/chat.png') }}" 
+         class="absolute inset-0 w-full h-full object-cover opacity-20 -z-10">
+
+    <!-- Main Content -->
+    <div class="text-center space-y-6 z-10">
+        <h1 class="text-6xl font-bold text-gray-900 dark:text-white">
             {{ config('app.name', 'Hash') }}
         </h1>
 

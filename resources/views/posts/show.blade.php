@@ -11,13 +11,12 @@
         <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 space-y-4">
             @if($post->image)
             <img src="{{ Storage::url($post->image) }}" alt="{{ $post->title }}" class="w-48 h-48 object-cover rounded mx-auto">
-            
             @endif
-            <a href="{{ route('users.show', $post->user) }}" class="flex items-center gap-2">
-    <img src="{{ $post->user->profile_photo ? asset('storage/' . $post->user->profile_photo) : asset('default-avatar.png') }}"
-         class="w-8 h-8 rounded-full object-cover">
-    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-        {{ $post->user->name }}
+            <a href="{{ route('users.show', $post->user) }}" class="inline-flex items-center gap-2">
+            <img src="{{ $post->user->profile_photo ? asset('storage/' . $post->user->profile_photo) : asset('default-avatar.png') }}"
+                 class="w-8 h-8 rounded-full object-cover">
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {{ $post->user->name }}
     </span>
 </a>
             <p class="text-gray-700 dark:text-gray-300">{{ $post->content }}</p>
@@ -103,9 +102,5 @@
     </div>
 
 
-    <div class="mb-4 mt-6">
-        <a href="{{ route('posts.index') }}" class="inline-flex items-center justify-center w-12 h-12 bg-transparent rounded-full shadow hover:bg-purple-400 transition">
-            <img src="{{ asset('images/back.svg') }}" alt="Back" class="w-6 h-6">
-        </a>
-    </div>
+   
 </x-app-layout>

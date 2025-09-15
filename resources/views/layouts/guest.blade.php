@@ -14,19 +14,23 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans flex items-center justify-center min-h-screen 
-                 bg-gradient-to-br from-gray-100 to-yellow-50 
-                 dark:from-black dark:to-purple-900">
-        <div class="w-full sm:max-w-sm mt-6 px-6 py-4 
-                    bg-white/80 dark:bg-gray-800/80 
-                    backdrop-blur-md shadow-lg sm:rounded-lg">
-            <div class="flex justify-center mb-6">
-                <a href="/">
-                    <x-application-logo class="w-16 h-16 text-gray-600 dark:text-gray-300" />
-                </a>
+    <body class="antialiased bg-gray-100 dark:bg-gray-900">
+    <div class="min-h-screen flex">
+        <!-- Left side: Form -->
+        <div class="w-full md:w-1/2 flex items-center justify-center p-8">
+            <div class="w-full max-w-md">
+                {{ $slot }}
             </div>
-
-            {{ $slot }}
         </div>
-    </body>
+
+        <!-- Right side: Image -->
+        <div class="hidden md:block w-1/2 bg-cover bg-center" style="background-image: url('https://www.verywellmind.com/thmb/QGS470MKXc4IEqpbQl3qm1bUsuQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1057500046-f7e673d3a91546b0bd419c5d8336b2e0.jpg')">
+            <!-- Placeholder image, replace URL later -->
+        </div>
+    </div>
+    <a href="{{ route('register') }}"
+               class="">
+                Register
+            </a>
+</body>
 </html>

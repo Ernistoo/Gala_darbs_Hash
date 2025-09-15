@@ -29,12 +29,12 @@
 
             <!-- Posts Grid -->
 @if($posts->count())
-<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+<div class="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-4 space-y-4">
     @foreach($posts as $post)
-    <a href="{{ route('posts.show', $post) }}" class="block bg-white dark:bg-gray-800 rounded-xl shadow hover:shadow-lg overflow-hidden transition transform hover:-translate-y-1">
+    <a href="{{ route('posts.show', $post) }}" 
+       class="break-inside-avoid block bg-white dark:bg-gray-800 rounded-xl shadow hover:shadow-lg overflow-hidden transition transform hover:-translate-y-1 mb-4">
         @if($post->image)
         <img src="{{ Storage::url($post->image) }}" alt="{{ $post->title }}" class="w-full object-cover">
-
         @endif
 
         <div class="p-4">
@@ -45,6 +45,7 @@
     </a>
     @endforeach
 </div>
+
 @else
 <p class="text-gray-500">No posts available.</p>
 @endif

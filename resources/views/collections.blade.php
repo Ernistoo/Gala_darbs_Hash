@@ -20,7 +20,7 @@
             <div class="grid grid-cols-3 gap-2 mt-2">
                 @foreach($collection->posts as $post)
                 <a href="{{ route('posts.show', $post) }}">
-                    <img src="{{ asset($post->image) }}" class="w-full h-32 object-cover rounded">
+                    <img src="{{ Storage::url($post->image) }}" class="w-full h-32 object-cover rounded">
                 </a>
                 @endforeach
             </div>
