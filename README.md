@@ -14,6 +14,6 @@ php artisan storage:link
 
 php artisan serve
 
-+ terminals
+'+' terminals
   
 npm run dev
