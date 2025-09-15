@@ -17,3 +17,5 @@ php artisan serve
 '+' terminals
   
 npm run dev
+
+php artisan db:seed
