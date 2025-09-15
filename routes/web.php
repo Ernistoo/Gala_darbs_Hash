@@ -6,6 +6,7 @@ use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ChallengeController;
 use App\Http\Controllers\SubmissionController;
+use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -96,5 +97,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/challenges/{challenge}/submissions', [SubmissionController::class, 'index'])
         ->name('submissions.index');
 });
+
+Route::get('/users/{user}', [UserProfileController::class, 'show'])->name('users.show');
 
 require __DIR__ . '/auth.php';

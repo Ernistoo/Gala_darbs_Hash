@@ -13,7 +13,13 @@
             <img src="{{ Storage::url($post->image) }}" alt="{{ $post->title }}" class="w-48 h-48 object-cover rounded mx-auto">
             
             @endif
-
+            <a href="{{ route('users.show', $post->user) }}" class="flex items-center gap-2">
+    <img src="{{ $post->user->profile_photo ? asset('storage/' . $post->user->profile_photo) : asset('default-avatar.png') }}"
+         class="w-8 h-8 rounded-full object-cover">
+    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+        {{ $post->user->name }}
+    </span>
+</a>
             <p class="text-gray-700 dark:text-gray-300">{{ $post->content }}</p>
             <small class="text-gray-500">Posted at {{ $post->created_at->format('d M Y H:i') }}</small>
         </div>
