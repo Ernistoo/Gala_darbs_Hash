@@ -44,6 +44,13 @@
                     @enderror
                 </div>
 
+                <div class="mt-4">
+                <x-input-label for="youtube_url" :value="__('YouTube URL')" />
+    <x-text-input id="youtube_url" class="block mt-1 w-full" type="url" name="youtube_url" :value="old('youtube_url', $post->youtube_url ?? '')" placeholder="https://www.youtube.com/watch?v=XXXX"  />
+    <x-input-error :messages="$errors->get('youtube_url')" class="mt-2" />
+
+</div>
+
                 <div class="mb-4">
     <label class="block mb-1 font-semibold">Category</label>
     <select name="category_id" class="border p-2 w-full rounded" required>

@@ -24,4 +24,15 @@ class Submission extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function votes()
+    {
+        return $this->hasMany(SubmissionVote::class);
+    }
+
+    
+    public function hasUpvoted(User $user)
+    {
+        return $this->votes()->where('user_id', $user->id)->exists();
+    }
 }

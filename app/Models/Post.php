@@ -18,6 +18,7 @@ class Post extends Model
         'title',
         'content',
         'image',
+        'youtube_url',
         'category_id'
     ];
 

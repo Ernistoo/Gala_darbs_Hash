@@ -7,6 +7,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ChallengeController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\SubmissionVoteController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -99,5 +100,9 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/users/{user}', [UserProfileController::class, 'show'])->name('users.show');
+
+Route::post('/submissions/{submission}/vote', [SubmissionVoteController::class, 'toggle'])
+    ->middleware('auth')
+    ->name('submissions.vote');
 
 require __DIR__ . '/auth.php';

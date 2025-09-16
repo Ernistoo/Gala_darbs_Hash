@@ -45,18 +45,21 @@ class PostController extends Controller
             'content'     => 'nullable|string',
             'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'category_id' => 'required|exists:categories,id',
+            'youtube_url' => 'nullable|url',
         ]);
-
+    
         // Handle image upload
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('posts', 'public');
         }
-
+    
         $data['user_id'] = auth()->id();
-
+        
         Post::create($data);
-
+    
         return redirect()->route('posts.index')->with('success', 'Post created successfully!');
+
+        
     }
 
     /**
@@ -89,14 +92,15 @@ class PostController extends Controller
         if ($post->user_id !== auth()->id()) {
             abort(403, 'Unauthorized action.');
         }
-
+    
         $data = $request->validate([
             'title'       => 'required|string|max:255',
             'content'     => 'nullable|string',
             'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'category_id' => 'required|exists:categories,id',
+            'youtube_url' => 'nullable|url',
         ]);
-
+    
         // Handle image replacement
         if ($request->hasFile('image')) {
             if ($post->image && file_exists(storage_path('app/public/' . $post->image))) {
@@ -104,9 +108,9 @@ class PostController extends Controller
             }
             $data['image'] = $request->file('image')->store('posts', 'public');
         }
-
+    
         $post->update($data);
-
+    
         return redirect()->route('posts.show', $post)->with('success', 'Post updated successfully!');
     }
 

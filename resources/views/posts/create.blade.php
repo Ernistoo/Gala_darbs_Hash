@@ -18,6 +18,12 @@
                 <label class="block mb-1 font-semibold">Image</label>
                 <input type="file" name="image" id="image" class="w-full">
             </div>
+            <div class="mt-4">
+    <x-input-label for="youtube_url" :value="__('YouTube URL')" />
+    <x-text-input id="youtube_url" class="block mt-1 w-full" type="url" name="youtube_url" :value="old('youtube_url', $post->youtube_url ?? '')" placeholder="https://www.youtube.com/watch?v=XXXX"  />
+    <x-input-error :messages="$errors->get('youtube_url')" class="mt-2" />
+</div>
+
 
             @error('image')
     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
