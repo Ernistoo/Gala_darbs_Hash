@@ -15,17 +15,17 @@
             {{ __('Dashboard') }}
         </x-nav-link>
 
-        <x-nav-link :href="route('posts.index')" :active="request()->routeIs('posts')"
+        <x-nav-link :href="route('posts.index')" :active="request()->routeIs('posts.index')"
             class="block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
             {{ __('Posts') }}
         </x-nav-link>
 
-        <x-nav-link :href="route('collections.index')" :active="request()->routeIs('collections')"
+        <x-nav-link :href="route('collections.index')" :active="request()->routeIs('collections.index')"
             class="block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
             {{ __('Collections') }}
         </x-nav-link>
 
-        <x-nav-link :href="route('challenges.index')" :active="request()->routeIs('challenges')"
+        <x-nav-link :href="route('challenges.index')" :active="request()->routeIs('challenges.index')"
             class="block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
             {{ __('Challenges') }}
         </x-nav-link>
@@ -55,7 +55,7 @@
         </svg>
     </button>
 
-    <!-- User Info at Bottom -->
+    
     <div class="mt-auto p-4 border-t border-gray-200 dark:border-gray-700">
         <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition">
             <img

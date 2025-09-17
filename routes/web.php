@@ -105,4 +105,8 @@ Route::post('/submissions/{submission}/vote', [SubmissionVoteController::class, 
     ->middleware('auth')
     ->name('submissions.vote');
 
+    Route::delete('/users/{user}', [UserProfileController::class, 'destroy'])
+    ->middleware(['auth'])
+    ->name('users.destroy');
+
 require __DIR__ . '/auth.php';

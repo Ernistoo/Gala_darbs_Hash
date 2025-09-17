@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Category;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class PostController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display a listing of posts, optionally filtered by category.
      */
@@ -119,16 +121,14 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        if ($post->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        $this->authorize('delete', $post); // Policy nosaka, vai admins vai owner
 
         if ($post->image && file_exists(storage_path('app/public/' . $post->image))) {
             unlink(storage_path('app/public/' . $post->image));
         }
-
+    
         $post->delete();
-
+    
         return redirect()->route('posts.index')->with('success', 'Post deleted successfully!');
     }
 

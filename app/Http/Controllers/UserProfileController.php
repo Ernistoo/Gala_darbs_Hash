@@ -12,4 +12,17 @@ class UserProfileController extends Controller
 
         return view('users.show', compact('user', 'posts'));
     }
+
+    public function destroy(User $user)
+{
+    $this->authorize('delete', $user);
+
+    
+    $user->posts()->delete();
+
+    
+    $user->delete();
+
+    return redirect()->route('dashboard')->with('success', 'Lietotājs veiksmīgi dzēsts.');
+}
 }

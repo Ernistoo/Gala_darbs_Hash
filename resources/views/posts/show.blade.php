@@ -11,21 +11,28 @@
         <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 space-y-4 relative">
 
             {{-- Dropdown 3-punktu menu --}}
-            @if(auth()->id() === $post->user_id)
-                <div x-data="{ open: false }" class="absolute top-4 right-4">
-                    <button @click="open = !open" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                        ⋮
-                    </button>
-                    <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-700 shadow rounded border dark:border-gray-600 z-10">
+            <div x-data="{ open: false }" class="absolute top-4 right-4">
+                <button @click="open = !open" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                    ⋮
+                </button>
+
+                <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-700 shadow rounded border dark:border-gray-600 z-10">
+                    
+                    {{-- Edit - tikai post īpašniekam --}}
+                    @if(auth()->id() === $post->user_id)
                         <a href="{{ route('posts.edit', $post) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">Edit</a>
-                        <form action="{{ route('posts.destroy', $post) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                    @endif
+
+                    {{-- Delete - izmanto policy (post īpašnieks vai admin) --}}
+                    @can('delete', $post)
+                        <form action="{{ route('posts.destroy', $post) }}" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">Delete</button>
+                            <button type="submit" class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">Dzēst</button>
                         </form>
-                    </div>
+                    @endcan
                 </div>
-            @endif
+            </div>
 
             {{-- User info --}}
             <a href="{{ route('users.show', $post->user) }}" class="inline-flex items-center gap-2 mb-4">
@@ -36,36 +43,34 @@
 
             {{-- Media carousel --}}
             @php
-    $mediaItems = [];
-    if ($post->image) $mediaItems[] = '<img src="'.Storage::url($post->image).'" class="w-full h-64 object-cover flex-shrink-0 rounded">';
-    if ($post->youtube_url && getYoutubeEmbedUrl($post->youtube_url)) $mediaItems[] = '<iframe src="'.getYoutubeEmbedUrl($post->youtube_url).'" class="w-full h-64 flex-shrink-0 rounded" frameborder="0" allowfullscreen></iframe>';
-@endphp
+                $mediaItems = [];
+                if ($post->image) $mediaItems[] = '<img src="'.Storage::url($post->image).'" class="w-full h-64 object-cover flex-shrink-0 rounded">';
+                if ($post->youtube_url && getYoutubeEmbedUrl($post->youtube_url)) $mediaItems[] = '<iframe src="'.getYoutubeEmbedUrl($post->youtube_url).'" class="w-full h-64 flex-shrink-0 rounded" frameborder="0" allowfullscreen></iframe>';
+            @endphp
 
-@if(count($mediaItems) > 1)
-    {{-- Carousel for multiple media --}}
-    <div x-data="{ index: 0 }" class="relative">
-        <div class="overflow-hidden w-full rounded">
-            <div class="flex transition-transform duration-300" :style="`transform: translateX(-${index * 100}%)`">
-                @foreach($mediaItems as $media)
-                    {!! $media !!}
-                @endforeach
-            </div>
-        </div>
-        <button @click="index = Math.max(index - 1, 0)"
-                class="absolute top-1/2 left-2 -translate-y-1/2 bg-gray-700 text-white px-2 py-1 rounded opacity-70 hover:opacity-100 transition">
-            ◀
-        </button>
-        <button @click="index = Math.min(index + 1, {{ count($mediaItems) - 1 }})"
-                class="absolute top-1/2 right-2 -translate-y-1/2 bg-gray-700 text-white px-2 py-1 rounded opacity-70 hover:opacity-100 transition">
-            ▶
-        </button>
-    </div>
-@elseif(count($mediaItems) === 1)
-    {{-- Single media --}}
-    <div class="w-full rounded">
-        {!! $mediaItems[0] !!}
-    </div>
-@endif
+            @if(count($mediaItems) > 1)
+                <div x-data="{ index: 0 }" class="relative">
+                    <div class="overflow-hidden w-full rounded">
+                        <div class="flex transition-transform duration-300" :style="`transform: translateX(-${index * 100}%)`">
+                            @foreach($mediaItems as $media)
+                                {!! $media !!}
+                            @endforeach
+                        </div>
+                    </div>
+                    <button @click="index = Math.max(index - 1, 0)"
+                            class="absolute top-1/2 left-2 -translate-y-1/2 bg-gray-700 text-white px-2 py-1 rounded opacity-70 hover:opacity-100 transition">
+                        ◀
+                    </button>
+                    <button @click="index = Math.min(index + 1, {{ count($mediaItems) - 1 }})"
+                            class="absolute top-1/2 right-2 -translate-y-1/2 bg-gray-700 text-white px-2 py-1 rounded opacity-70 hover:opacity-100 transition">
+                        ▶
+                    </button>
+                </div>
+            @elseif(count($mediaItems) === 1)
+                <div class="w-full rounded">
+                    {!! $mediaItems[0] !!}
+                </div>
+            @endif
 
             {{-- Post content --}}
             <p class="text-gray-700 dark:text-gray-300 mt-4">{{ $post->content }}</p>

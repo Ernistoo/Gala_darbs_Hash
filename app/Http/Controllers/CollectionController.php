@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Collection;
 use App\Models\Post;
+use App\Models\Badge;
 
 class CollectionController extends Controller
 {
@@ -15,17 +16,44 @@ class CollectionController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+    ]);
 
-        auth()->user()->collections()->create([
-            'name' => $request->name,
-        ]);
+    // Izveido kolekciju
+    $collection = $request->user()->collections()->create([
+        'name' => $request->name,
+    ]);
 
-        return redirect()->route('collections.index')->with('success', 'Collection created!');
+    // Pārbauda, vai tas ir pirmā kolekcija
+    if ($request->user()->collections()->count() === 1) {
+        // Izveido vai saņem badge
+        $badge = \App\Models\Badge::firstOrCreate(
+            ['name' => 'First Collection'],
+            [
+                'image' => 'default-avatar.png',
+                'description' => 'Created your first collection!'
+            ]
+        );
+
+        // Piešķir badge lietotājam, ja vēl nav
+        if (!$request->user()->badges->contains($badge->id)) {
+            $request->user()->badges()->attach($badge->id);
+            $badgeAwarded = true;
+        } else {
+            $badgeAwarded = false;
+        }
+
+        // Nosūta flag JS popup animācijai
+        session()->flash('badge_earned', $badgeAwarded);
+        session()->flash('badge_image', $badge->image);
+        session()->flash('badge_name', $badge->name);
     }
+
+    return redirect()->route('collections.index')->with('success', 'Collection created!');
+}
+
 
     public function addPost(Request $request, $collectionId, Post $post)
 {

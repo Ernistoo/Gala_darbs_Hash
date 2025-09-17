@@ -12,6 +12,32 @@
                     {{ '@' . $user->username }}
                 </p>
             </div>
+            <div class="relative inline-block">
+    @can('delete', $user)
+    <div x-data="{ open: false }" class="absolute bottom-2 left-2">
+        <button @click="open = !open" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+            ⋮
+        </button>
+        <div x-show="open" @click.away="open = false" 
+             class="absolute left-0 mt-2 w-32 bg-white dark:bg-gray-700 shadow rounded border dark:border-gray-600 z-10">
+            <form action="{{ route('users.destroy', $user) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+                    Dzēst lietotāju
+                </button>
+            </form>
+        </div>
+    </div>
+    @endcan
+</div>
+
+<div class="flex items-center gap-2 mt-2">
+    @foreach($user->badges as $badge)
+        <img src="{{ asset('images/' . $badge->image) }}" alt="{{ $badge->name }}" title="{{ $badge->description }}"
+             class="w-8 h-8 rounded-full border-2 border-gray-300 dark:border-gray-600">
+    @endforeach
+</div>
         </div>
 
         <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Posts</h3>
