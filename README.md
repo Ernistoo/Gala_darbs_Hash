@@ -20,7 +20,6 @@ php artisan serve
   
 npm run dev
 
-php artisan tinker
-
-$user = App\Models\User::where('email', 'tavs@epasts.com')->first();
-$user->assignRole('admin');
+admin: name:es
+       epasts: es@example.com  
+       password: 123123123
