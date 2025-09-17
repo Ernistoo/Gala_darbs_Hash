@@ -12,10 +12,14 @@ php artisan migrate
 
 php artisan storage:link
 
+php artisan db:seed
+
 php artisan serve
 
 '+' terminals
   
 npm run dev
 
-php artisan db:seed
+admin: name:es
+       epasts: es@example.com  
+       password: 123123123
