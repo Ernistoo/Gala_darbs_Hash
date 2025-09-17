@@ -20,6 +20,6 @@ php artisan serve
   
 npm run dev
 
-admin: name:es
+admin: name:es 
        epasts: es@example.com  
        password: 123123123
