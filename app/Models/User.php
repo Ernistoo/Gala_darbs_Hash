@@ -62,6 +62,6 @@ class User extends Authenticatable
 }
 public function badges()
 {
-    return $this->belongsToMany(Badge::class)->withTimestamps();
+    return $this->belongsToMany(\App\Models\Badge::class)->withTimestamps();
 }
 }

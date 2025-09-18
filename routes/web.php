@@ -75,11 +75,7 @@ Route::middleware('auth')->group(function () {
 | Collections routes
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->group(function () {
-    Route::get('/collections', [CollectionController::class, 'index'])->name('collections.index');
-    Route::post('/collections', [CollectionController::class, 'store'])->name('collections.store');
-    Route::post('/collections/{collection}/add-post/{post}', [CollectionController::class, 'addPost'])->name('collections.addPost');
-});
+
 
 /*
 |--------------------------------------------------------------------------
@@ -109,4 +105,22 @@ Route::post('/submissions/{submission}/vote', [SubmissionVoteController::class, 
     ->middleware(['auth'])
     ->name('users.destroy');
 
+    
+
+    Route::middleware('auth')->group(function () {
+        // Collections index + store
+        Route::get('/collections', [CollectionController::class, 'index'])->name('collections.index');
+        Route::post('/collections', [CollectionController::class, 'store'])->name('collections.store');
+    
+        // Show single collection
+        Route::get('/collections/{collection}', [CollectionController::class, 'show'])->name('collections.show');
+    
+        // Update & Delete
+        Route::put('/collections/{collection}', [CollectionController::class, 'update'])->name('collections.update');
+        Route::delete('/collections/{collection}', [CollectionController::class, 'destroy'])->name('collections.destroy');
+    
+        // Add/remove posts
+        Route::post('/collections/{collection}/add-post/{post}', [CollectionController::class, 'addPost'])->name('collections.addPost');
+        Route::post('/collections/{collection}/remove-post/{post}', [CollectionController::class, 'removePost'])->name('collections.removePost');
+    });
 require __DIR__ . '/auth.php';

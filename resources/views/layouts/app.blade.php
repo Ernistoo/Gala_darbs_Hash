@@ -28,31 +28,36 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased 
-                 bg-gradient-to-br from-gray-200 to-purple-100 
-                 dark:from-black dark:to-purple-900">
+    <body class="font-sans antialiased
+             bg-gradient-to-br from-gray-200 to-purple-100
+             dark:from-black dark:to-purple-900
+             transition-colors duration-500 ease-in-out">
         <div class="min-h-screen flex">
             <!-- Sidebar -->
-            <aside class="fixed top-0 left-0 w-64 
-              h-screen flex flex-col 
-              bg-white/80 dark:bg-gray-800/80 
-              backdrop-blur-md border-r border-gray-200 dark:border-gray-700">
+            <aside class="fixed top-0 left-0 w-64 h-screen flex flex-col
+             bg-white/80 dark:bg-gray-800/80
+             backdrop-blur-md border-r border-gray-200 dark:border-gray-700
+             transition-colors duration-500 ease-in-out">
     @include('layouts.navigation')
 </aside>
             <!-- Main content -->
-            <div class="flex-1 flex flex-col ml-64">
-                @isset($header)
-                    <header class=" ">
-                        <div class="px-6 py-4">
-                            {{ $header }}
-                        </div>
-                    </header>
-                @endisset
-
-                <main class="p-6">
-                    {{ $slot }}
-                </main>
+            <div class="flex-1 flex flex-col ml-64
+            transition-colors duration-500 ease-in-out
+            bg-gradient-to-br from-gray-200 to-purple-100
+            dark:from-black dark:to-purple-900">
+    
+    @isset($header)
+        <header class="transition-colors duration-500 ease-in-out">
+            <div class="px-6 py-4 transition-colors duration-500 ease-in-out text-gray-900 dark:text-gray-100">
+                {{ $header }}
             </div>
+        </header>
+    @endisset
+
+    <main class="p-6 transition-colors duration-500 ease-in-out text-gray-900 dark:text-gray-100">
+        {{ $slot }}
+    </main>
+</div>
         </div>
     </body>
 </html>

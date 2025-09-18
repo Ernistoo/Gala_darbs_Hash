@@ -1,6 +1,7 @@
-<nav class="flex flex-col flex-1 
-            bg-gradient-to-b from-gray-200 to-purple-100 
-            dark:from-black dark:to-purple-900">
+<nav class="flex flex-col flex-1
+            bg-gradient-to-b from-gray-200 to-purple-100
+            dark:from-black dark:to-purple-900
+            transition-colors duration-500 ease-in-out">
 
     <!-- Logo -->
     <div class="flex items-center space-x-2 p-4">

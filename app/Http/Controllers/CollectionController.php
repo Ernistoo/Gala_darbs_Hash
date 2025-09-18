@@ -9,63 +9,108 @@ use App\Models\Badge;
 
 class CollectionController extends Controller
 {
+    // Rāda visas lietotāja kolekcijas
     public function index()
     {
         $collections = auth()->user()->collections()->with('posts')->get();
-        return view('collections', compact('collections'));
+        return view('collections.index', compact('collections'));
     }
 
+    // Izveido jaunu kolekciju
     public function store(Request $request)
 {
     $request->validate([
         'name' => 'required|string|max:255',
+        'description' => 'nullable|string|max:500',
+        'image' => 'nullable|image|max:2048', // opcija ierobežo faila lielumu
     ]);
+
+    // Sagatavo dati
+    $data = [
+        'name' => $request->name,
+        'description' => $request->description,
+    ];
+
+    // Ja augšupielādēts attēls
+    if ($request->hasFile('image')) {
+        $path = $request->file('image')->store('collections', 'public');
+        $data['image'] = $path;
+    }
 
     // Izveido kolekciju
-    $collection = $request->user()->collections()->create([
-        'name' => $request->name,
-    ]);
+    $collection = $request->user()->collections()->create($data);
 
-    // Pārbauda, vai tas ir pirmā kolekcija
+    // Badge piešķiršana, ja tas ir pirmā kolekcija
     if ($request->user()->collections()->count() === 1) {
-        // Izveido vai saņem badge
-        $badge = \App\Models\Badge::firstOrCreate(
+        $badge = Badge::firstOrCreate(
             ['name' => 'First Collection'],
-            [
-                'image' => 'default-avatar.png',
-                'description' => 'Created your first collection!'
-            ]
+            ['image' => 'award.jpg', 'description' => 'Created your first collection!']
         );
 
-        // Piešķir badge lietotājam, ja vēl nav
         if (!$request->user()->badges->contains($badge->id)) {
             $request->user()->badges()->attach($badge->id);
-            $badgeAwarded = true;
-        } else {
-            $badgeAwarded = false;
+            session()->flash('badge_earned', true);
+            session()->flash('badge_image', $badge->image);
+            session()->flash('badge_name', $badge->name);
+            session()->flash('badge_description', $badge->description);
         }
-
-        // Nosūta flag JS popup animācijai
-        session()->flash('badge_earned', $badgeAwarded);
-        session()->flash('badge_image', $badge->image);
-        session()->flash('badge_name', $badge->name);
     }
 
     return redirect()->route('collections.index')->with('success', 'Collection created!');
 }
 
+    // Skatīt vienu kolekciju un tās postus
+    public function show(Collection $collection)
+    {
+        if ($collection->user_id !== auth()->id()) abort(403);
 
-    public function addPost(Request $request, $collectionId, Post $post)
-{
-    $collection = Collection::findOrFail($request->input('collection'));
-
-    
-    if ($collection->user_id !== auth()->id()) {
-        abort(403);
+        $collection->load('posts');
+        return view('collections.show', compact('collection'));
     }
 
-    $collection->posts()->attach($post->id);
+    // Update kolekciju (modal no index)
+    public function update(Request $request, Collection $collection)
+    {
+        if ($collection->user_id !== auth()->id()) abort(403);
 
-    return back()->with('success', 'Post added to collection!');
-}
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:500',
+        ]);
+
+        $collection->update([
+            'name' => $request->name,
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('collections.index')->with('success', 'Collection updated!');
+    }
+
+    // Dzēst kolekciju (modal no index)
+    public function destroy(Collection $collection)
+    {
+        if ($collection->user_id !== auth()->id()) abort(403);
+
+        $collection->delete();
+        return redirect()->route('collections.index')->with('success', 'Collection deleted!');
+    }
+
+    // Dzēst postu no kolekcijas
+    public function removePost(Collection $collection, Post $post)
+    {
+        if ($collection->user_id !== auth()->id()) abort(403);
+
+        $collection->posts()->detach($post->id);
+        return back()->with('success', 'Post removed from collection.');
+    }
+
+    // Pievienot postu kolekcijai
+    public function addPost(Request $request, $collectionId, Post $post)
+    {
+        $collection = Collection::findOrFail($collectionId);
+        if ($collection->user_id !== auth()->id()) abort(403);
+
+        $collection->posts()->attach($post->id);
+        return back()->with('success', 'Post added to collection!');
+    }
 }
