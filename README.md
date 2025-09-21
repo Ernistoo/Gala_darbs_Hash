@@ -22,4 +22,4 @@ npm run dev
 
 admin: name:es 
        epasts: es@example.com  
-       password: 123123123
+       password: Example1@
