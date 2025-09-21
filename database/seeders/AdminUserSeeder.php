@@ -13,12 +13,12 @@ class AdminUserSeeder extends Seeder
         if (!Role::where('name', 'admin')->exists()) {
             Role::create(['name' => 'admin']);
         }
-        
+
         $user = User::firstOrCreate(
             ['email' => 'es@example.com'],
             [
                 'name' => 'es',
-                'password' => bcrypt('123123123')
+                'password' => bcrypt('Example1@')
             ]
         );
 

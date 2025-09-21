@@ -18,46 +18,46 @@ class CollectionController extends Controller
 
     // Izveido jaunu kolekciju
     public function store(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string|max:500',
-        'image' => 'nullable|image|max:2048', // opcija ierobežo faila lielumu
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:500',
+            'image' => 'nullable|image|max:2048', // opcija ierobežo faila lielumu
+        ]);
 
-    // Sagatavo dati
-    $data = [
-        'name' => $request->name,
-        'description' => $request->description,
-    ];
+        // Sagatavo dati
+        $data = [
+            'name' => $request->name,
+            'description' => $request->description,
+        ];
 
-    // Ja augšupielādēts attēls
-    if ($request->hasFile('image')) {
-        $path = $request->file('image')->store('collections', 'public');
-        $data['image'] = $path;
-    }
-
-    // Izveido kolekciju
-    $collection = $request->user()->collections()->create($data);
-
-    // Badge piešķiršana, ja tas ir pirmā kolekcija
-    if ($request->user()->collections()->count() === 1) {
-        $badge = Badge::firstOrCreate(
-            ['name' => 'First Collection'],
-            ['image' => 'award.jpg', 'description' => 'Created your first collection!']
-        );
-
-        if (!$request->user()->badges->contains($badge->id)) {
-            $request->user()->badges()->attach($badge->id);
-            session()->flash('badge_earned', true);
-            session()->flash('badge_image', $badge->image);
-            session()->flash('badge_name', $badge->name);
-            session()->flash('badge_description', $badge->description);
+        // Ja augšupielādēts attēls
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('collections', 'public');
+            $data['image'] = $path;
         }
-    }
 
-    return redirect()->route('collections.index')->with('success', 'Collection created!');
-}
+        // Izveido kolekciju
+        $collection = $request->user()->collections()->create($data);
+
+        // Badge piešķiršana, ja tas ir pirmā kolekcija
+        if ($request->user()->collections()->count() === 1) {
+            $badge = Badge::firstOrCreate(
+                ['name' => 'First Collection'],
+                ['image' => 'award.jpg', 'description' => 'Created your first collection!']
+            );
+
+            if (!$request->user()->badges->contains($badge->id)) {
+                $request->user()->badges()->attach($badge->id);
+                session()->flash('badge_earned', true);
+                session()->flash('badge_image', $badge->image);
+                session()->flash('badge_name', $badge->name);
+                session()->flash('badge_description', $badge->description);
+            }
+        }
+
+        return redirect()->route('collections.index')->with('success', 'Collection created!');
+    }
 
     // Skatīt vienu kolekciju un tās postus
     public function show(Collection $collection)
@@ -105,12 +105,15 @@ class CollectionController extends Controller
     }
 
     // Pievienot postu kolekcijai
-    public function addPost(Request $request, $collectionId, Post $post)
+    public function addPost(Request $request, Post $post)
     {
-        $collection = Collection::findOrFail($collectionId);
-        if ($collection->user_id !== auth()->id()) abort(403);
+        $request->validate([
+            'collection' => 'required|exists:collections,id',
+        ]);
 
-        $collection->posts()->attach($post->id);
+        $collection = Collection::findOrFail($request->collection);
+        $collection->posts()->syncWithoutDetaching($post->id);
+
         return back()->with('success', 'Post added to collection!');
     }
 }
