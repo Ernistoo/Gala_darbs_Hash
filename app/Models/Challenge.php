@@ -10,6 +10,6 @@ class Challenge extends Model
 
     public function submissions()
     {
-        return $this->hasMany(Submission::class);
+        return $this->hasMany(\App\Models\Submission::class);
     }
 }
