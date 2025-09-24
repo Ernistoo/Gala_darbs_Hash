@@ -13,9 +13,7 @@ use App\Models\User;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
+
     public function edit(Request $request): View
     {
         return view('profile.edit', [
@@ -23,9 +21,7 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Update the user's profile information.
-     */
+
     public function update(Request $request)
     {
         /** @var \App\Models\User $user */
@@ -39,18 +35,16 @@ class ProfileController extends Controller
             'profile_photo' => 'nullable|image|max:2048', // max 2MB
         ]);
 
-        // Handle profile photo upload
+
         if ($request->hasFile('profile_photo')) {
-            // Delete old photo if exists
             if ($user->profile_photo) {
                 Storage::disk('public')->delete($user->profile_photo);
             }
-
             $path = $request->file('profile_photo')->store('profile_photos', 'public');
             $user->profile_photo = $path;
         }
 
-        // Update other fields
+        // update other fields
         $user->name = $request->name;
         $user->email = $request->email;
         $user->username = $request->username;
@@ -60,9 +54,7 @@ class ProfileController extends Controller
 
         return back()->with('status', 'profile-updated');
     }
-    /**
-     * Delete the user's account.
-     */
+
     public function destroy(Request $request): RedirectResponse
     {
         $request->validateWithBag('userDeletion', [

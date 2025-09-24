@@ -41,6 +41,10 @@ Route::get('/admin', function () {
     }
     return view('admin');
 })->middleware(['auth', 'verified'])->name('admin');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/admin/challenges/create', [ChallengeController::class, 'create'])->name('challenges.create');
+    Route::post('/admin/challenges', [ChallengeController::class, 'store'])->name('challenges.store');
+});
 
 /*
 |--------------------------------------------------------------------------

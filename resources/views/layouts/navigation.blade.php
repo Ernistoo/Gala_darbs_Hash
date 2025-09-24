@@ -3,13 +3,13 @@
             dark:from-black dark:to-purple-900
             transition-colors duration-500 ease-in-out">
 
-    <!-- Logo -->
+
     <div class="flex items-center space-x-2 p-4">
         <x-application-logo class="h-16 w-16 text-gray-800 dark:text-gray-200" />
         <span class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ config('app.name') }}</span>
     </div>
 
-    <!-- Navigation Links -->
+
     <div class="flex-1 flex flex-col gap-3 px-4 mt-4">
         <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
             class="block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
@@ -39,7 +39,7 @@
         @endrole
     </div>
 
-    <!-- Theme toggle button -->
+    <!--Theme button-->
     <div class="p-4">
         <button id="theme-toggle" type="button"
             class="flex items-center justify-center text-gray-500 dark:text-gray-400
@@ -59,7 +59,7 @@
         </button>
     </div>
 
-    <!-- User Profile -->
+    <!--Profile -->
     <div class="mt-auto p-4 border-t border-gray-200 dark:border-gray-700">
         <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition">
             <img

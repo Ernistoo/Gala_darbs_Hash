@@ -1,97 +1,10 @@
 <x-app-layout>
-    <!DOCTYPE html>
-    <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <!--Style-->
 
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-
-        <title>{{ $post->title }} - {{ config('app.name', 'Hash') }}</title>
-
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script>
-            tailwind.config = {
-                darkMode: 'class',
-                theme: {
-                    extend: {
-                        colors: {
-                            purple: {
-                                50: '#faf5ff',
-                                100: '#f3e8ff',
-                                200: '#e9d5ff',
-                                300: '#d8b4fe',
-                                400: '#c084fc',
-                                500: '#a855f7',
-                                600: '#9333ea',
-                                700: '#7e22ce',
-                                800: '#6b21a8',
-                                900: '#581c87',
-                            },
-                        },
-                        fontFamily: {
-                            sans: ['Figtree', 'sans-serif'],
-                        },
-                    }
-                }
-            }
-        </script>
-        <style>
-            .fade-in {
-                animation: fadeIn 0.5s ease-in-out;
-            }
-
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(10px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .btn-transition {
-                transition: all 0.2s ease-in-out;
-            }
-
-            .carousel-transition {
-                transition: transform 0.3s ease-in-out;
-            }
-
-            /* Fix for dropdown z-index issue */
-            .dropdown-container {
-                position: relative;
-                z-index: 30;
-                /* Higher than comments section */
-            }
-
-            .dropdown-menu {
-                position: absolute;
-                z-index: 9999;
-                /* ensure it's always on top */
-            }
-
-            .comments-section {
-                position: relative;
-                /* keep layout */
-                z-index: auto;
-                /* don't compete with dropdown */
-            }
-        </style>
-    </head>
 
     <body class="font-sans antialiased bg-gradient-to-br from-gray-200 to-purple-100 dark:from-black dark:to-purple-900 transition-colors duration-500 ease-in-out min-h-screen">
         <div class="min-h-screen flex">
-            <!-- Sidebar would be here -->
 
-            <!-- Main content -->
             <div class="flex-1 flex flex-col ml-64 transition-colors duration-500 ease-in-out">
                 <header class="transition-colors duration-500 ease-in-out">
                     <div class="px-6 py-4 transition-colors duration-500 ease-in-out text-gray-900 dark:text-gray-100">
@@ -107,9 +20,9 @@
 
                 <main class="p-6 transition-colors duration-500 ease-in-out text-gray-900 dark:text-gray-100">
                     <div class="max-w-4xl mx-auto space-y-6 fade-in">
-                        <!-- Post Box -->
+                        <!--Post box-->
                         <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-xl shadow-lg p-6 space-y-4 relative border border-gray-200 dark:border-gray-700">
-                            <!-- Dropdown menu -->
+                            <!--Dropdown-->
                             <div x-data="{ open: false }" class="absolute top-6 right-6">
                                 <button @click="open = !open" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -118,7 +31,7 @@
                                 </button>
 
                                 <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-700 shadow-lg rounded-lg border dark:border-gray-600 z-50 overflow-hidden">
-                                    <!-- Edit - only for post owner -->
+                                    <!-- Edit for owner -->
                                     @if(auth()->id() === $post->user_id)
                                     <a href="{{ route('posts.edit', $post) }}" class="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 transition flex items-center gap-2">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -128,7 +41,7 @@
                                     </a>
                                     @endif
 
-                                    <!-- Delete - using policy (post owner or admin) -->
+
                                     @can('delete', $post)
                                     <form action="{{ route('posts.destroy', $post) }}" method="POST">
                                         @csrf
@@ -144,7 +57,7 @@
                                 </div>
                             </div>
 
-                            <!-- User info -->
+
                             <a href="{{ route('users.show', $post->user) }}" class="inline-flex items-center gap-3 mb-4 group">
                                 <img src="{{ $post->user->profile_photo ? asset('storage/' . $post->user->profile_photo) : asset('default-avatar.png') }}"
                                     class="w-10 h-10 rounded-full object-cover border-2 border-white dark:border-gray-700 group-hover:border-purple-400 transition">
@@ -154,7 +67,7 @@
                                 </div>
                             </a>
 
-                            <!-- Media carousel -->
+                            <!--scroll-->
                             @php
                             $mediaItems = [];
                             if ($post->image) $mediaItems[] = '<img src="'.Storage::url($post->image).'" class="w-full h-80 object-contain flex-shrink-0 rounded-lg">';
@@ -203,18 +116,18 @@
                             @endif
                             @endif
 
-                            <!-- Post content -->
+                            <!--content-->
                             <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">{{ $post->title }}</h2>
                             <p class="text-gray-700 dark:text-gray-300 mb-4 whitespace-pre-line">{{ $post->content }}</p>
 
-                            <!-- Category -->
+                            <!--category-->
                             @if($post->category)
                             <div class="inline-flex items-center px-3 py-1 bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-200 rounded-full text-sm mb-4">
                                 {{ $post->category->name }}
                             </div>
                             @endif
 
-                            <!-- Likes & Collections -->
+                            <!-- likes n collections -->
                             <div class="flex items-center gap-4 mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                                 <div class="flex items-center gap-2">
                                     @if($post->likedBy(auth()->user()))
@@ -278,7 +191,7 @@
                             </div>
                         </div>
 
-                        <!-- Comments Section -->
+                        <!-- comments section -->
                         <div class="comments-section bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-xl shadow-lg p-6 space-y-4 border border-gray-200 dark:border-gray-700">
                             <h3 class="font-semibold text-lg mb-2">Comments ({{ $post->comments->count() }})</h3>
 
@@ -324,22 +237,11 @@
                             @endforeach
                         </div>
                     </div>
-                </main>
+
             </div>
         </div>
 
         <script>
-            // Theme toggle logic
-            if (
-                localStorage.getItem('color-theme') === 'dark' ||
-                (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
-            ) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-
-            // Alpine.js for dropdowns and carousel
             document.addEventListener('alpine:init', () => {
                 Alpine.data('dropdown', () => ({
                     open: false,
@@ -360,7 +262,7 @@
             })
         </script>
         <script src="//unpkg.com/alpinejs" defer></script>
-    </body>
 
-    </html>
+
+
 </x-app-layout>

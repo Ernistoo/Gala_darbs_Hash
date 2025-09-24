@@ -37,7 +37,7 @@ class Post extends Model
         return $this->hasMany(Like::class);
     }
 
-    // Check if a given user liked this post
+
     public function likedBy(User $user)
     {
         return $this->likes()->where('user_id', $user->id)->exists();
@@ -49,7 +49,7 @@ class Post extends Model
     }
 
     public function category()
-{
-    return $this->belongsTo(Category::class);
-}
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

@@ -9,14 +9,14 @@ use App\Models\Badge;
 
 class CollectionController extends Controller
 {
-    // Rāda visas lietotāja kolekcijas
+    // rāda visas kolekcijas
     public function index()
     {
         $collections = auth()->user()->collections()->with('posts')->get();
         return view('collections.index', compact('collections'));
     }
 
-    // Izveido jaunu kolekciju
+    // izveido jaunu kolekciju
     public function store(Request $request)
     {
         $request->validate([
@@ -37,10 +37,10 @@ class CollectionController extends Controller
             $data['image'] = $path;
         }
 
-        // Izveido kolekciju
+        // izveido kolekciju
         $collection = $request->user()->collections()->create($data);
 
-        // Badge piešķiršana, ja tas ir pirmā kolekcija
+        // badge piešķiršana, ja taa pirmā kolekcija
         if ($request->user()->collections()->count() === 1) {
             $badge = Badge::firstOrCreate(
                 ['name' => 'First Collection'],
@@ -59,7 +59,7 @@ class CollectionController extends Controller
         return redirect()->route('collections.index')->with('success', 'Collection created!');
     }
 
-    // Skatīt vienu kolekciju un tās postus
+    // skatīt kolekciju 
     public function show(Collection $collection)
     {
         if ($collection->user_id !== auth()->id()) abort(403);
@@ -68,25 +68,38 @@ class CollectionController extends Controller
         return view('collections.show', compact('collection'));
     }
 
-    // Update kolekciju (modal no index)
+    // update kolekciju
     public function update(Request $request, Collection $collection)
     {
-        if ($collection->user_id !== auth()->id()) abort(403);
+        if ($collection->user_id !== auth()->id()) {
+            abort(403);
+        }
 
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:500',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
-        $collection->update([
-            'name' => $request->name,
-            'description' => $request->description,
-        ]);
+        // Ja lietotājs augšupielādē jaunu bildi
+        if ($request->hasFile('image')) {
+            // Izdzēš veco bildi no storage (ja bija)
+            if ($collection->image) {
+                \Storage::disk('public')->delete($collection->image);
+            }
+
+            // Saglabā jauno bildi
+            $validated['image'] = $request->file('image')->store('collections', 'public');
+        }
+
+        // Atjauno kolekciju
+        $collection->update($validated);
 
         return redirect()->route('collections.index')->with('success', 'Collection updated!');
     }
 
-    // Dzēst kolekciju (modal no index)
+
+    // dzēst kolekciju
     public function destroy(Collection $collection)
     {
         if ($collection->user_id !== auth()->id()) abort(403);
@@ -95,7 +108,7 @@ class CollectionController extends Controller
         return redirect()->route('collections.index')->with('success', 'Collection deleted!');
     }
 
-    // Dzēst postu no kolekcijas
+    // dzēst postu no kolekcijas
     public function removePost(Collection $collection, Post $post)
     {
         if ($collection->user_id !== auth()->id()) abort(403);
@@ -104,7 +117,7 @@ class CollectionController extends Controller
         return back()->with('success', 'Post removed from collection.');
     }
 
-    // Pievienot postu kolekcijai
+    // posts kolekcijaa
     public function addPost(Request $request, Post $post)
     {
         $request->validate([

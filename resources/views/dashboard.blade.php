@@ -5,7 +5,7 @@
                 Hash
             </h1>
             <p class="mt-4 text-xl text-purple-500 ">
-                Share your love for a craft without limitations
+                Share your love for a craft without limitations!
             </p>
         </div>
     </div>
@@ -16,6 +16,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             100% {
                 opacity: 1;
                 transform: translateY(0);

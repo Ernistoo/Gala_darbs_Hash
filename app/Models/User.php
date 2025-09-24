@@ -16,7 +16,7 @@ class User extends Authenticatable
     use HasRoles;
     /**
      * The attributes that are mass assignable.
-     *
+    
      * @var list<string>
      */
     protected $fillable = [
@@ -57,11 +57,11 @@ class User extends Authenticatable
     }
 
     public function posts()
-{
-    return $this->hasMany(\App\Models\Post::class);
-}
-public function badges()
-{
-    return $this->belongsToMany(\App\Models\Badge::class)->withTimestamps();
-}
+    {
+        return $this->hasMany(\App\Models\Post::class);
+    }
+    public function badges()
+    {
+        return $this->belongsToMany(\App\Models\Badge::class)->withTimestamps();
+    }
 }

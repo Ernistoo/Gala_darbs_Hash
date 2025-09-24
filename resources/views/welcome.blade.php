@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Hash') }}</title>
+    <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -115,7 +116,8 @@
         <div class="container mx-auto px-6">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg"></div>
+                    <img src="{{ asset('images/chat.png') }}"
+                        class="w-8 h-8 object-cover">
                     <span class="text-xl font-bold text-gray-900 dark:text-white">{{ config('app.name', 'Hash') }}</span>
                 </div>
 
@@ -160,32 +162,16 @@
                     </a>
                 </div>
 
-                <!-- Stats -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
-                    <div class="glass-effect rounded-lg p-4">
-                        <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">10K+</div>
-                        <div class="text-gray-600 dark:text-gray-400">Active Users</div>
-                    </div>
-                    <div class="glass-effect rounded-lg p-4">
-                        <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">50K+</div>
-                        <div class="text-gray-600 dark:text-gray-400">Posts Shared</div>
-                    </div>
-                    <div class="glass-effect rounded-lg p-4">
-                        <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">100+</div>
-                        <div class="text-gray-600 dark:text-gray-400">Communities</div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Scroll Indicator -->
-        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <a href="#features" class="text-gray-400 dark:text-gray-600 hover:text-purple-600 transition">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                </svg>
-            </a>
-        </div>
+
+                <!-- Scroll Indicator -->
+                <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+                    <a href="#features" class="text-gray-400 dark:text-gray-600 hover:text-purple-600 transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                        </svg>
+                    </a>
+                </div>
     </section>
 
     <!-- Features Section -->
@@ -244,7 +230,7 @@
                 </p>
                 <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
                     Our mission is to provide a safe, inclusive environment where everyone can express themselves freely,
-                    discover new perspectives, and grow together as a community.
+                    discover new perspectives, and grow together as a community about their interests.
                 </p>
             </div>
         </div>
