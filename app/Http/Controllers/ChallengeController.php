@@ -10,7 +10,7 @@ class ChallengeController extends Controller
 {
     public function index()
     {
-        $challenges = Challenge::where('deadline', '>', now()) // tikai aktīvie
+        $challenges = Challenge::where('deadline', '>', now()) 
             ->withCount(['submissions as participants_count' => function ($query) {
                 $query->select(DB::raw('COUNT(DISTINCT user_id)'));
             }])->get();
@@ -43,7 +43,7 @@ class ChallengeController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|max:2048', // validācija
+            'image' => 'nullable|image|max:2048', 
         ]);
 
         $path = null;
@@ -61,4 +61,20 @@ class ChallengeController extends Controller
 
         return redirect()->route('challenges.index')->with('success', 'Challenge created!');
     }
+
+    public function destroy(Challenge $challenge)
+{
+    if (!auth()->user()->hasRole('admin')) {
+        abort(403);
+    }
+
+    
+    if ($challenge->image && \Storage::disk('public')->exists($challenge->image)) {
+        \Storage::disk('public')->delete($challenge->image);
+    }
+
+    $challenge->delete();
+
+    return redirect()->route('challenges.index')->with('success', 'Challenge deleted successfully!');
+}
 }

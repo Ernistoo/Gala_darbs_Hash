@@ -8,25 +8,27 @@ use App\Models\SubmissionVote;
 
 class SubmissionVoteController extends Controller
 {
-    public function toggle(Request $request, Submission $submission)
+    public function toggle(Submission $submission)
     {
-        $user = $request->user();
-
-        if ($submission->votes()->where('user_id', $user->id)->exists()) {
-            // User already voted -> remove vote
-            $submission->votes()->where('user_id', $user->id)->delete();
-            $status = 'removed';
-        } else {
-            // Add vote
-            $submission->votes()->create(['user_id' => $user->id]);
-            $status = 'upvoted';
+        $userId = auth()->id();
+        $existing = $submission->votes()->where('user_id', $userId)->first();
+    
+        if ($existing) {
+            $existing->delete();
+            return response()->json([
+                'status' => 'removed',
+                'votes_count' => $submission->votes()->count(),
+            ]);
         }
-
+    
+        $submission->votes()->create(['user_id' => $userId]);
+    
         return response()->json([
-            'status' => $status,
+            'status' => 'upvoted',
             'votes_count' => $submission->votes()->count(),
         ]);
     }
+
     
 
     public function vote(Submission $submission)

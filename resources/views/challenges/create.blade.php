@@ -1,4 +1,5 @@
 <x-app-layout>
+
     <div class="max-w-3xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-xl shadow">
         <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">Create New Challenge</h2>
 

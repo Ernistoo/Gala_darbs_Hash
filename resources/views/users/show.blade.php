@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="max-w-4xl mx-auto p-6">
-        <!-- User info -->
+       
         <div class="inline-flex items-center gap-4 mb-6">
             <img src="{{ $user->profile_photo ? asset('storage/' . $user->profile_photo) : asset('default-avatar.png') }}"
                  class="w-20 h-20 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600" />

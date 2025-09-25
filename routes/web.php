@@ -44,6 +44,7 @@ Route::get('/admin', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/challenges/create', [ChallengeController::class, 'create'])->name('challenges.create');
     Route::post('/admin/challenges', [ChallengeController::class, 'store'])->name('challenges.store');
+    Route::delete('/admin/challenges/{challenge}', [ChallengeController::class, 'destroy'])->name('challenges.destroy');
 });
 
 /*

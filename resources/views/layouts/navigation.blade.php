@@ -39,7 +39,7 @@
         @endrole
     </div>
 
-    <!--Theme button-->
+    
     <div class="p-4">
         <button id="theme-toggle" type="button"
             class="flex items-center justify-center text-gray-500 dark:text-gray-400
@@ -59,7 +59,7 @@
         </button>
     </div>
 
-    <!--Profile -->
+    
     <div class="mt-auto p-4 border-t border-gray-200 dark:border-gray-700">
         <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition">
             <img
