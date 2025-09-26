@@ -1,4 +1,5 @@
 <x-app-layout>
+<x-slot name="header"></x-slot>
     <div class="min-h-screen flex">
         <div class="flex-1 flex flex-col ml-64 transition-colors duration-500 ease-in-out mr-40">
             <header class="transition-colors duration-500 ease-in-out">

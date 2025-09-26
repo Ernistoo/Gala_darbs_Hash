@@ -45,6 +45,11 @@ class SubmissionController extends Controller
             'image' => $path
         ]);
 
-        return redirect()->route('challenges.show', $challenge)->with('success', 'Iesniegts veiksmīgi!');
+        $user = auth()->user();
+    $user->increment('xp', 1);
+
+    return redirect()->route('challenges.show', $challenge)
+        ->with('success', 'Submission created! +1 XP');
+    
     }
 }

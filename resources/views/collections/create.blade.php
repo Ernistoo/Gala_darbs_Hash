@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-slot name="header"></x-slot>
     <form action="{{ route('challenges.store') }}" method="POST" class="space-y-4 max-w-lg mx-auto">
         @csrf
         <div>

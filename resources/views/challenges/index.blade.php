@@ -1,4 +1,5 @@
 <x-app-layout>
+<x-slot name="header"></x-slot>
     <body class="font-sans antialiased bg-gradient-to-br from-gray-200 to-purple-100 dark:from-black dark:to-purple-900 min-h-screen">
         <div class="min-h-screen flex">
             <div class="flex-1 flex flex-col ml-20">

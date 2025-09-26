@@ -1,4 +1,5 @@
 <x-app-layout>
+<x-slot name="header"></x-slot>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-6">
         <h2 class="text-2xl font-bold mb-6">Iesniegumi uzdevumam: {{ $challenge->title }}</h2>
 

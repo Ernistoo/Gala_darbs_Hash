@@ -31,6 +31,19 @@
             {{ __('Challenges') }}
         </x-nav-link>
 
+        <x-nav-link :href="route('leaderboard.index')" :active="request()->routeIs('leaderboard.index')"
+    class="block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
+    {{ __('Leaderboard') }}
+</x-nav-link>
+
+
+        <!-- <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')"
+            class="block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
+            {{ __('Chat') }}
+        </x-nav-link> -->
+
+
+
         @role('admin')
         <x-nav-link :href="route('admin')" :active="request()->routeIs('admin')"
             class="block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
