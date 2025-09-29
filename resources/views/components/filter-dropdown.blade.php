@@ -1,3 +1,4 @@
+@props(['challenge', 'sort' => null])
 <form method="GET" action="{{ route('submissions.index', $challenge) }}">
     <select name="sort" onchange="this.form.submit()"
         class="bg-transparent dark:bg-black border-2 border-purple-500

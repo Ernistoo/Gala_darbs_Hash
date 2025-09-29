@@ -34,7 +34,7 @@ class SubmissionController extends Controller
     public function store(Request $request, Challenge $challenge)
     {
         $request->validate([
-            'image' => 'required|image|max:2048'
+            'image' => 'required|image|max:5120'
         ]);
 
         $path = $request->file('image')->store('submissions', 'public');

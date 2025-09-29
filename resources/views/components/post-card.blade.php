@@ -2,7 +2,7 @@
 
 <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-xl shadow-lg p-6 space-y-4 relative border border-gray-200 dark:border-gray-700">
     <!-- Dropdown -->
-    @include('posts.partials.post-dropdown', ['post' => $post])
+    <x-post-dropdown :post="$post" />
 
     <!-- User -->
     <a href="{{ route('users.show', $post->user) }}" class="inline-flex items-center gap-3 mb-4 group">
@@ -15,8 +15,9 @@
     </a>
 
     <!-- Media -->
-    @include('posts.partials.media-gallery', ['post' => $post])
-
+    
+    <x-media-gallery :post="$post" />
+    
     <!-- Title & Content -->
     <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">{{ $post->title }}</h2>
     <p class="text-gray-700 dark:text-gray-300 whitespace-pre-line">{{ $post->content }}</p>
@@ -29,5 +30,6 @@
     @endif
 
     <!-- Likes & Save -->
-    @include('posts.partials.post-actions', ['post' => $post])
+    
+    <x-post-actions :post="$post" />
 </div>

@@ -10,7 +10,7 @@
             <h3 class="text-lg font-semibold">Comments ({{ $post->comments->count() }})</h3>
 
             @auth
-                @include('posts.partials.comment-form', ['post' => $post])
+            <x-comment-form :post="$post" />
             @endauth
 
             @foreach($post->comments as $comment)

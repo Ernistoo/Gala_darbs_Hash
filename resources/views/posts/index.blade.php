@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="mb-4 inline-block">
-        @include('posts.partials.category-filter', ['categories' => $categories])
+    <x-category-filter :categories="$categories" />
     </div>
 
     <div class="py-6">

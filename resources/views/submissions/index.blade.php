@@ -4,7 +4,8 @@
         <h2 class="text-2xl font-bold mb-6">Iesniegumi uzdevumam: {{ $challenge->title }}</h2>
 
         <div class="mb-6">
-            @include('submissions.partials.filter-dropdown')
+            
+        <x-filter-dropdown :challenge="$challenge" :sort="request('sort')" />
         </div>
 
        

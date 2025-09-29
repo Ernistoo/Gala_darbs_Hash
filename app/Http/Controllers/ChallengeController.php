@@ -43,7 +43,7 @@ class ChallengeController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|max:2048', 
+            'image' => 'nullable|image|max:5120', 
         ]);
 
         $path = null;
