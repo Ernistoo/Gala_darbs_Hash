@@ -5,14 +5,14 @@
 
         <div class="mb-6">
             
-        <x-filter-dropdown :challenge="$challenge" :sort="request('sort')" />
+        <x-submissions.filter-dropdown :challenge="$challenge" :sort="request('sort')" />
         </div>
 
        
         @if($submissions->count())
             <div class="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-4 space-y-4">
                 @foreach($submissions as $submission)
-                    <x-submission-card :submission="$submission" :challenge="$challenge" />
+                    <x-submissions.submission-card :submission="$submission" :challenge="$challenge" />
                 @endforeach
             </div>
         @else

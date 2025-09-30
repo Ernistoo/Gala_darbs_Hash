@@ -30,6 +30,34 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
+@if(session('badge_earned'))
+    <div 
+        x-data="{ show: true }" 
+        x-show="show" 
+        x-transition 
+        x-init="setTimeout(() => show = false, 5000)" 
+        class="fixed bottom-6 right-6 bg-white dark:bg-gray-800 border border-purple-500 rounded-lg shadow-lg p-4 flex items-center space-x-3 z-50"
+    >
+        <img src="{{ asset('images/' . session('badge_image')) }}" 
+             alt="{{ session('badge_name') }}" 
+             class="w-10 h-10 rounded-full border-2 border-purple-500">
+
+        <div>
+            <p class="text-sm font-bold text-gray-900 dark:text-gray-100">
+                🎉 {{ session('badge_name') }}
+            </p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">
+                {{ session('badge_description') }}
+            </p>
+        </div>
+
+        <button @click="show = false" 
+                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+            ✕
+        </button>
+    </div>
+@endif
+
 <body class="font-sans antialiased
              bg-gradient-to-br from-gray-200 to-purple-100
              dark:from-black dark:to-purple-900
@@ -54,14 +82,7 @@
                     {{ $header }}
                     
                 </div>
-                <div class="absolute top-4 right-6 flex items-center space-x-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md px-4 py-2 rounded-full shadow">
-    <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/>
-    </svg>
-    <span class="text-sm font-medium text-gray-900 dark:text-gray-100">
-        {{ auth()->user()->xp ?? 0 }} XP
-    </span>
-</div>
+                
             </header>
             @endisset
 

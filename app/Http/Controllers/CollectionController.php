@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\BadgeService;
 use Illuminate\Http\Request;
 use App\Models\Collection;
 use App\Models\Post;
@@ -9,7 +10,7 @@ use App\Models\Badge;
 
 class CollectionController extends Controller
 {
-    // rāda visas kolekcijas
+    
     public function index()
     {
         $collections = auth()->user()->collections()->with('posts')->get();
@@ -40,21 +41,8 @@ class CollectionController extends Controller
         
         $collection = $request->user()->collections()->create($data);
 
-        // badge par pirmo kolekciju
-        if ($request->user()->collections()->count() === 1) {
-            $badge = Badge::firstOrCreate(
-                ['name' => 'First Collection'],
-                ['image' => 'award.jpg', 'description' => 'Created your first collection!']
-            );
-
-            if (!$request->user()->badges->contains($badge->id)) {
-                $request->user()->badges()->attach($badge->id);
-                session()->flash('badge_earned', true);
-                session()->flash('badge_image', $badge->image);
-                session()->flash('badge_name', $badge->name);
-                session()->flash('badge_description', $badge->description);
-            }
-        }
+        
+        app(\App\Services\BadgeService::class)->checkAndAssign($request->user());
 
         return redirect()->route('collections.index')->with('success', 'Collection created!');
     }

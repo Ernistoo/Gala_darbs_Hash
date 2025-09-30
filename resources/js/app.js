@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 countEl.textContent = data.votes_count;
 
-                // animācija
+               
                 icon.classList.add('animate-upvote');
                 setTimeout(() => icon.classList.remove('animate-upvote'), 500);
             } catch (err) {

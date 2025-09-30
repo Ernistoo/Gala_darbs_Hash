@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Category;
+use App\Services\BadgeService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class PostController extends Controller
@@ -51,6 +52,8 @@ class PostController extends Controller
         $data['user_id'] = auth()->id();
 
         Post::create($data);
+
+        app(\App\Services\BadgeService::class)->checkAndAssign($request->user());
 
         return redirect()->route('posts.index')->with('success', 'Post created successfully!');
     }
@@ -104,7 +107,7 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        $this->authorize('delete', $post); // policy nosaka, vai admins vai owner
+        $this->authorize('delete', $post);
 
         if ($post->image && file_exists(storage_path('app/public/' . $post->image))) {
             unlink(storage_path('app/public/' . $post->image));
@@ -131,4 +134,11 @@ class PostController extends Controller
         $post->likes()->where('user_id', auth()->id())->delete();
         return back();
     }
+    public function byCategory($id)
+{
+    $category = \App\Models\Category::findOrFail($id);
+    $posts = $category->posts()->latest()->get();
+
+    return view('posts.category', compact('category', 'posts'));
+}
 }

@@ -35,7 +35,7 @@
 
             const data = await response.json();
 
-            // Pievienojam jaunu ziņu chat logam
+            
             const p = document.createElement('p');
             p.innerHTML = `<strong>${data.user}:</strong> ${data.message}`;
             messages.appendChild(p);

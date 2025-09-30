@@ -11,7 +11,7 @@ class MessageController extends Controller
     {
         return Message::with('user')
             ->latest()
-            ->take(20) // pēdējās 20 ziņas
+            ->take(20) 
             ->get()
             ->reverse()
             ->values();

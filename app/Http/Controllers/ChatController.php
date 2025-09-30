@@ -18,7 +18,7 @@ class ChatController extends Controller
             'message' => 'required|string|max:500',
         ]);
 
-        // Šeit pagaidām tikai atgriežam atpakaļ (vēlāk var likt DB vai events)
+        
         return response()->json([
             'user' => Auth::user()->name,
             'message' => $request->message,

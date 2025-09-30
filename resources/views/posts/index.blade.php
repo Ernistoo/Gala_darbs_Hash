@@ -1,31 +1,35 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Posts') }}
-        </h2>
-    </x-slot>
+    <x-header>        
+            {{ __('Categories') }}
+    </x-header>
 
-    <div class="mb-4 inline-block">
-    <x-category-filter :categories="$categories" />
-    </div>
+    
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="mb-4">
-                <a href="{{ route('posts.create') }}" class="inline-flex items-center justify-center w-12 h-12 bg-transparent rounded-full shadow hover:bg-purple-400 transition">
-                    <img src="{{ asset('images/add.svg') }}" alt="Create Post" class="w-6 h-6">
-                </a>
+            @if($categories->count())
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                @foreach($categories as $category)
+                    <a href="{{ route('posts.byCategory', $category->id) }}"
+                       class="block rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transition transform hover:-translate-y-1">
+                        @if($category->image)
+                            <img src="{{ asset('storage/' . $category->image) }}" 
+                                 alt="{{ $category->name }}" 
+                                 class="w-full h-60 object-cover"> {{-- augstāka kaste --}}
+                        @else
+                            <div class="w-full h-60 flex items-center justify-center bg-gray-200">
+                                <span class="text-gray-500">No Image</span>
+                            </div>
+                        @endif
+                        <div class="p-4 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 dark:from-gray-700 dark:via-gray-800 dark:to-gray-700"> {{-- gandrīz transparent --}}
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 text-center">
+                                {{ $category->name }}
+                            </h3>
+                        </div>
+                    </a>
+                @endforeach
             </div>
-
-            @if($posts->count())
-    <div class="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-4 space-y-4">
-        @foreach($posts as $post)
-            <x-post-card-preview :post="$post" />
-        @endforeach
-    </div>
-@else
-    <p class="text-gray-500">No posts available.</p>
-@endif
+            @else
+                <p class="text-gray-500">No categories available.</p>
+            @endif
         </div>
     </div>
 </x-app-layout>

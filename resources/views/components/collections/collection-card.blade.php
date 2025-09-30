@@ -2,11 +2,11 @@
     x-data="{ menuOpen: false, editModal: false, deleteModal: false }">
 
     <a href="{{ route('collections.show', $collection) }}" class="block">
-        <!-- Cover image -->
+        
         <img src="{{ $collection->image ? Storage::url($collection->image) : asset('default-avatar.png') }}"
             class="w-full h-48 object-cover">
 
-        <!-- Info box -->
+        
         <div class="p-4 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 dark:from-gray-700 dark:via-gray-800 dark:to-gray-700">
             <h3 class="font-bold text-lg text-gray-900 dark:text-gray-100 truncate">
                 {{ $collection->name }}
@@ -19,7 +19,7 @@
         </div>
     </a>
 
-    <!-- Menu button -->
+    
     <div class="absolute top-2 right-2">
         <button @click="menuOpen = !menuOpen" class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">⋮</button>
         <div x-show="menuOpen" @click.away="menuOpen = false"
@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    <!-- Edit Modal -->
+    
     <div x-show="editModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
         <div @click.away="editModal = false"
             class="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 p-6 rounded shadow w-96">
@@ -55,7 +55,7 @@
         </div>
     </div>
 
-    <!-- Delete Modal -->
+   
     <div x-show="deleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
         <div @click.away="deleteModal = false"
             class="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 p-6 rounded shadow w-96">

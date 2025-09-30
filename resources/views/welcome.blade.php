@@ -104,14 +104,14 @@
 
 <body class="min-h-screen font-sans antialiased bg-gradient-to-b from-gray-100 to-purple-300 dark:from-black dark:to-purple-900 relative overflow-x-hidden">
 
-    <!-- Background Image -->
+   
     <div class="fixed inset-0 -z-10">
         <img src="{{ asset('images/chat.png') }}"
             class="w-full h-full object-cover opacity-10 dark:opacity-5">
         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/30 dark:to-black/50"></div>
     </div>
 
-    <!-- Sticky Header -->
+   
     <header class="sticky-header fixed top-0 w-full z-50 py-4">
         <div class="container mx-auto px-6">
             <div class="flex items-center justify-between">
@@ -141,7 +141,6 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
     <section class="min-h-screen flex items-center justify-center relative pt-20">
         <div class="container mx-auto px-6 text-center">
             <div class="max-w-4xl mx-auto animate-fade-in">
@@ -163,8 +162,7 @@
                 </div>
 
 
-
-                <!-- Scroll Indicator -->
+ 
                 <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
                     <a href="#features" class="text-gray-400 dark:text-gray-600 hover:text-purple-600 transition">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -174,7 +172,7 @@
                 </div>
     </section>
 
-    <!-- Features Section -->
+   
     <section id="features" class="py-20 section-hidden">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16">
@@ -183,7 +181,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Feature 1 -->
+                
                 <div class="glass-effect rounded-xl p-6 hover:transform hover:-translate-y-2 transition duration-300">
                     <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-4">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -194,7 +192,7 @@
                     <p class="text-gray-600 dark:text-gray-400">Join meaningful conversations with like-minded individuals across various topics and interests.</p>
                 </div>
 
-                <!-- Feature 2 -->
+                
                 <div class="glass-effect rounded-xl p-6 hover:transform hover:-translate-y-2 transition duration-300">
                     <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-4">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -205,7 +203,7 @@
                     <p class="text-gray-600 dark:text-gray-400">Share your experiences through stunning images and videos that captivate your audience.</p>
                 </div>
 
-                <!-- Feature 3 -->
+                
                 <div class="glass-effect rounded-xl p-6 hover:transform hover:-translate-y-2 transition duration-300">
                     <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-4">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -219,7 +217,7 @@
         </div>
     </section>
 
-    <!-- About Section -->
+    
     <section id="about" class="py-20 bg-white/50 dark:bg-black/20 section-hidden">
         <div class="container mx-auto px-6">
             <div class="max-w-4xl mx-auto text-center">
@@ -236,7 +234,7 @@
         </div>
     </section>
 
-    <!-- Community Section -->
+   
     <section id="community" class="py-20 section-hidden">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16">
@@ -261,7 +259,7 @@
         </div>
     </section>
 
-    <!-- Footer -->
+   
     <footer class="py-8 border-t border-gray-200 dark:border-gray-800">
         <div class="container mx-auto px-6 text-center">
             <p class="text-gray-600 dark:text-gray-400">
@@ -271,14 +269,14 @@
     </footer>
 
     <script>
-        // Theme toggle logic
+        
         if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
 
-        // Sticky header
+       
         window.addEventListener('scroll', function() {
             const header = document.querySelector('.sticky-header');
             if (window.scrollY > 50) {
@@ -288,7 +286,7 @@
             }
         });
 
-        // Scroll animations
+        
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -306,7 +304,7 @@
             observer.observe(section);
         });
 
-        // Smooth scrolling for anchor links
+       
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();

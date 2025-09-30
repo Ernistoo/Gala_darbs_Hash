@@ -1,6 +1,6 @@
 @props(['post'])
 <div class="flex items-center gap-4 mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-    <!-- Likes -->
+    
     <div>
         @if($post->likedBy(auth()->user()))
             <form action="{{ route('posts.unlike', $post) }}" method="POST">

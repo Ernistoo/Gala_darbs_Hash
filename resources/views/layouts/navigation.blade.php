@@ -18,7 +18,7 @@
 
         <x-nav-link :href="route('posts.index')" :active="request()->routeIs('posts.index')"
             class="block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
-            {{ __('Posts') }}
+            {{ __('Explore') }}
         </x-nav-link>
 
         <x-nav-link :href="route('collections.index')" :active="request()->routeIs('collections.index')"

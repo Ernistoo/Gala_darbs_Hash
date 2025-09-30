@@ -1,6 +1,8 @@
 <x-app-layout>
-<x-slot name="header"></x-slot>
+<x-header>        
+            {{ __('Create') }}
+    </x-header>
     <div class="flex justify-center py-6">
-    <x-form :action="route('posts.store')" :categories="$categories" /> 
+    <x-posts.form :action="route('posts.store')" :categories="$categories" />
     </div>
 </x-app-layout>

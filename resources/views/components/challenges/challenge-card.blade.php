@@ -1,5 +1,5 @@
 <div class="challenge-card border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden card-hover h-full">
-    <!-- Augstāka bilde -->
+    
     <div class="h-56 relative overflow-hidden">
         @if($challenge->image)
             <img src="{{ asset('storage/' . $challenge->image) }}"
@@ -14,16 +14,19 @@
         @endif
         <div class="absolute bottom-4 left-4">
             <span class="bg-white/90 dark:bg-gray-800/90 text-purple-600 dark:text-purple-400 text-xs font-bold px-2 py-1 rounded-md">
-                +{{ $challenge->xp_reward ?? 0 }} XP
+                +1 XP
             </span>
         </div>
     </div>
 
-    <!-- Mazāks tekstu bloks -->
-    <div class="p-4">
-        <h3 class="font-semibold text-base mb-1">{{ $challenge->title }}</h3>
-        <p class="text-gray-600 dark:text-gray-400 text-xs line-clamp-2">
-            {{ Str::limit($challenge->description, 80) }}
-        </p>
-    </div>
+   
+    <div class="p-4 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 dark:from-gray-700 dark:via-gray-800 dark:to-gray-700">
+    <h3 class="font-semibold text-base text-gray-900 dark:text-white mb-1">
+        {{ $challenge->title }}
+    </h3>
+    <p class="text-gray-700 dark:text-gray-300 text-xs line-clamp-2">
+        {{ Str::limit($challenge->description, 80) }}
+    </p>
+</div>
+
 </div>

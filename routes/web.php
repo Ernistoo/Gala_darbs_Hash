@@ -9,6 +9,7 @@ use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\SubmissionVoteController;
 use App\Http\Controllers\LeaderboardController;
+use App\Http\Controllers\CategoryController;
 
 use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Route;
@@ -50,17 +51,28 @@ Route::middleware('auth')->group(function () {
 });
 
 //Posts
+
 Route::middleware('auth')->group(function () {
     Route::resource('posts', PostController::class);
 
-    //Like/unlike
+    Route::get('/categories/{category}', [PostController::class, 'byCategory'])->name('posts.byCategory');
+
     Route::post('/posts/{post}/like', [PostController::class, 'like'])->name('posts.like');
     Route::delete('/posts/{post}/like', [PostController::class, 'unlike'])->name('posts.unlike');
 
-    //Comments
     Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 });
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/admin/categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('/admin/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+    Route::post('/admin/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::get('/admin/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+    Route::put('/admin/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/admin/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+});
+
 
 //Challenges
 Route::get('/challenges', [ChallengeController::class, 'index'])->name('challenges.index');

@@ -1,15 +1,24 @@
 <x-app-layout>
-<x-slot name="header"></x-slot>
-    <div class="flex items-center justify-center min-h-screen bg-transparent">
-        <div class="text-center animate-fade-in-up">
-            <h1 class="text-6xl font-extrabold text-purple-700 drop-shadow-lg animate-pulse transition-transform duration-300 hover:scale-105 group">
-                Kā admin tu vari veidot uzdevumus parejiem!
-            </h1>
+    <x-header>        
+        {{ __('Admin Table') }}
+    </x-header>
 
-            <div class="mt-8">
+    <div class="flex items-center justify-center bg-transparent">
+        <div class="text-center animate-fade-in-up">
+            <div class="mt-48 flex flex-col items-center gap-4">
                 <a href="{{ route('challenges.create') }}"
-                    class="px-6 py-3 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition">
-                    Create New Challenge
+                   class="px-6 py-3 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition mt-32">
+                   Create New Challenge
+                </a>
+
+                <a href="{{ route('categories.create') }}"
+                   class="px-6 py-3 bg-pink-600 text-white rounded-lg shadow hover:bg-pink-700 transition">
+                   Create New Category
+                </a>
+
+                <a href="{{ route('categories.index') }}"
+                   class="px-6 py-3 bg-gray-600 text-white rounded-lg shadow hover:bg-gray-700 transition">
+                   Manage Categories
                 </a>
             </div>
         </div>
