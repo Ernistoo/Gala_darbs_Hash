@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Badge;
 use App\Models\User;
+use App\Notifications\GenericNotification;
 
 class BadgeService
 {
@@ -12,7 +13,6 @@ class BadgeService
         $this->firstCollection($user);
         $this->fiveCollections($user);
         $this->firstPost($user);
-        $this->tenLikes($user);
     }
 
     private function firstCollection(User $user): void
@@ -50,6 +50,8 @@ class BadgeService
             session()->flash('badge_image', $badge->image);
             session()->flash('badge_name', $badge->name);
             session()->flash('badge_description', $badge->description);
+
+            $user->notify(new GenericNotification("You earned a new badge: {$badge->name}"));
         }
     }
 }

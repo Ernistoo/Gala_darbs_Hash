@@ -33,4 +33,19 @@ class CommentController extends Controller
 
         return back();
     }
+    public function pin(Comment $comment)
+{
+    $post = $comment->post;
+
+    if (auth()->id() !== $post->user_id) {
+        abort(403);
+    }
+
+    $post->comments()->update(['is_pinned' => false]);
+
+    $comment->is_pinned = true;
+    $comment->save();
+
+    return back()->with('success', 'Comment pinned!');
+}
 }

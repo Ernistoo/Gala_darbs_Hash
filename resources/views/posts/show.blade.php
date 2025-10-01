@@ -13,8 +13,8 @@
             <x-posts.comment-form :post="$post" />
             @endauth
 
-            @foreach($post->comments as $comment)
-                <x-posts.comment-card :comment="$comment" />
+            @foreach($post->comments->sortByDesc('is_pinned') as $comment)
+            <x-posts.comment-card :comment="$comment" />
             @endforeach
         </div>
 

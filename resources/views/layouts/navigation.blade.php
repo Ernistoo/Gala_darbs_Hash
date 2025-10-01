@@ -36,7 +36,22 @@
     {{ __('Leaderboard') }}
 </x-nav-link>
 
+<x-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.index')"
+        class="relative block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
+        {{ __('Notifications') }}
 
+        @if(auth()->user()->unreadNotifications->count() > 0)
+            <span class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                {{ auth()->user()->unreadNotifications->count() }}
+            </span>
+        @endif
+    </x-nav-link>
+
+    <x-nav-link :href="route('friends.index')" :active="request()->routeIs('friends.index')"
+    class="block bg-transparent rounded-lg p-3 shadow hover:shadow-md transition">
+    {{ __('Friends') }}
+</x-nav-link>
+    
         <!-- <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')"
             class="block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
             {{ __('Chat') }}

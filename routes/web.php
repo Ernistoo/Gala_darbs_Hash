@@ -10,6 +10,8 @@ use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\SubmissionVoteController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\FriendshipController;
+use App\Http\Controllers\NotificationController;
 
 use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Route;
@@ -135,3 +137,21 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
 require __DIR__ . '/auth.php';
+
+//Comment
+
+Route::post('/comments/{comment}/pin', [CommentController::class, 'pin'])->name('comments.pin');
+
+Route::middleware('auth')->group(function () {
+    Route::post('/friends/{user}/send', [FriendshipController::class, 'send'])->name('friends.send');
+    Route::post('/friends/{friendship}/accept', [FriendshipController::class, 'accept'])->name('friends.accept');
+    Route::get('/friends', [FriendshipController::class, 'index'])->name('friends.index');
+});
+
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+});
