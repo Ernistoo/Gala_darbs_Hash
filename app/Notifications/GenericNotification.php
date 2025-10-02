@@ -11,11 +11,13 @@ class GenericNotification extends Notification
 {
     use Queueable;
 
-    public string $message;
+    protected $message;
+    protected $sender;
 
-    public function __construct(string $message)
+    public function __construct($message, $sender = null)
     {
         $this->message = $message;
+        $this->sender = $sender;
     }
 
     public function via($notifiable)
@@ -26,9 +28,8 @@ class GenericNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'message' => $this->message,
+            'message'   => $this->message,
+            'sender_id' => $this->sender?->id,
         ];
     }
-
-    
 }
