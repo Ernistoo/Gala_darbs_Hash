@@ -1,5 +1,5 @@
 <x-app-layout>
-
+<x-back-button :route="route('posts.index')" />
     <div class="max-w-4xl mx-auto py-6 space-y-6">
 
         

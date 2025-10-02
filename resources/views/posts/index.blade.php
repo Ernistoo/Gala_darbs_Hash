@@ -13,13 +13,13 @@
                         @if($category->image)
                             <img src="{{ asset('storage/' . $category->image) }}" 
                                  alt="{{ $category->name }}" 
-                                 class="w-full h-60 object-cover"> {{-- augstāka kaste --}}
+                                 class="w-full h-60 object-cover">
                         @else
                             <div class="w-full h-60 flex items-center justify-center bg-gray-200">
                                 <span class="text-gray-500">No Image</span>
                             </div>
                         @endif
-                        <div class="p-4 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 dark:from-gray-700 dark:via-gray-800 dark:to-gray-700"> {{-- gandrīz transparent --}}
+                        <div class="p-4 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 dark:from-gray-700 dark:via-gray-800 dark:to-gray-700">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 text-center">
                                 {{ $category->name }}
                             </h3>

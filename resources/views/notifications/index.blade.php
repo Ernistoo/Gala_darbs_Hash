@@ -23,7 +23,7 @@
                 </div>
 
                 <div class="flex items-center gap-2">
-                    {{-- Ja friend request --}}
+                    
                     @if(Str::contains($notification->data['message'], 'sent you a friend request'))
                         @php
                             $sender = \App\Models\User::where('name', explode(' sent', $notification->data['message'])[0])->first();
@@ -43,7 +43,6 @@
                         @endif
                     @endif
 
-                    {{-- Dzēst atsevišķu notifikāciju --}}
                     <form action="{{ route('notifications.destroy', $notification->id) }}" method="POST">
                         @csrf
                         @method('DELETE')

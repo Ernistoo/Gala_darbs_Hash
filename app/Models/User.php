@@ -48,10 +48,6 @@ class User extends Authenticatable
         return $this->belongsToMany(Badge::class)->withTimestamps();
     }
 
-    // =======================
-    // FRIENDSHIP RELATIONSHIPS
-    // =======================
-
     public function friends()
     {
         return $this->belongsToMany(User::class, 'friendships', 'user_id', 'friend_id')

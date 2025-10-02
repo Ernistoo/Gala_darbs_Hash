@@ -2,17 +2,11 @@
 <x-header>        
     {{ $category->name }} - Posts
 </x-header>
-
+<x-back-button :route="route('posts.index')" />
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-            <div class="mb-4">
-                <a href="{{ route('posts.index') }}"
-                   class="inline-flex items-center text-purple-600 dark:text-purple-400 hover:underline">
-                    ← Back to Categories
-                </a>
-            </div>
-
+        
             
             <div class="mb-4">
                 <a href="{{ route('posts.create') }}"

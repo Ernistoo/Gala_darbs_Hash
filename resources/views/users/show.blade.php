@@ -25,7 +25,6 @@
                     </div>
                 </div>
 
-                {{-- Draudzības pogas --}}
                 @if(auth()->check() && auth()->id() !== $user->id)
                     @php
                         $alreadyFriend = auth()->user()->friends->contains($user->id);
@@ -61,7 +60,7 @@
                      class="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-700 shadow rounded border dark:border-gray-600 z-10">
                     <button type="button" @click="deleteUserModal = true; open = false"
                             class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">
-                        Dzēst lietotāju
+                        Delete User
                     </button>
                 </div>
 
@@ -69,20 +68,20 @@
                      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div @click.away="deleteUserModal = false"
                         class="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 p-6 rounded shadow w-96">
-                        <h2 class="text-xl font-bold mb-4 text-red-600">Dzēst lietotāju</h2>
+                        <h2 class="text-xl font-bold mb-4 text-red-600">Delete User</h2>
                         <p class="mb-4 text-gray-800 dark:text-gray-200">
-                            Vai tiešām vēlies neatgriezeniski dzēst lietotāju <b>{{ $user->name }}</b>?
+                            Are you sure you want to permanently delete the user <b>{{ $user->name }}</b>?
                         </p>
                         <div class="flex justify-end gap-2">
                             <button type="button" @click="deleteUserModal = false"
                                 class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded">
-                                Atcelt
+                                Cancel 
                             </button>
                             <form action="{{ route('users.destroy', $user) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded">
-                                    Dzēst
+                                    Delete
                                 </button>
                             </form>
                         </div>
@@ -92,7 +91,6 @@
             @endcan
         </div>
 
-        {{-- Draugu saraksts --}}
         <h3 class="text-lg font-semibold mb-3 text-gray-800 dark:text-gray-200">Friends</h3>
         <div class="flex gap-3 mb-6">
             @forelse($user->friends as $friend)
@@ -127,7 +125,7 @@
             @endforeach
         </div>
         @else
-            <p class="text-gray-500 dark:text-gray-400">Šim lietotājam vēl nav postu.</p>
+            <p class="text-gray-500 dark:text-gray-400">This user has no posts yet.</p>
         @endif
     </div>
 </x-app-layout>

@@ -2,7 +2,7 @@
     <x-slot name="header">
         <h2 class="text-xl font-semibold">{{ $collection->name }}</h2>
     </x-slot>
-
+    <x-back-button :route="route('collections.index')" />
     <div class="max-w-4xl mx-auto py-6 space-y-6">
 
         @if($collection->description)
