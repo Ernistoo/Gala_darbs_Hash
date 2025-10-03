@@ -9,25 +9,29 @@ use Illuminate\Support\Facades\DB;
 class ChallengeController extends Controller
 {
     public function index()
-    {
-        $challenges = Challenge::where('deadline', '>', now()) 
-            ->withCount(['submissions as participants_count' => function ($query) {
-                $query->select(DB::raw('COUNT(DISTINCT user_id)'));
-            }])->get();
+{
+    $challenges = Challenge::where('deadline', '>', now()) 
+        ->withCount([
+            'submissions as participants_count' => fn($q) => $q->select(DB::raw('COUNT(DISTINCT user_id)'))
+        ])
+        ->get();
 
-        return view('challenges.index', compact('challenges'));
+    return view('challenges.index', compact('challenges'));
+}
+
+public function show(Challenge $challenge)
+{
+    if ($challenge->deadline && $challenge->deadline->isPast()) {
+        return redirect()->route('challenges.index')
+            ->with('error', 'This challenge has ended.');
     }
 
-    public function show(Challenge $challenge)
-    {
-        $challenge->loadCount([
-            'submissions as participants_count' => function ($query) {
-                $query->select(DB::raw('COUNT(DISTINCT user_id)'));
-            }
-        ]);
+    $challenge->loadCount([
+        'submissions as participants_count' => fn($q) => $q->select(DB::raw('COUNT(DISTINCT user_id)'))
+    ])->load(['winnerSubmission.user']);
 
-        return view('challenges.show', compact('challenge'));
-    }
+    return view('challenges.show', compact('challenge'));
+}
 
     public function create()
     {
@@ -56,7 +60,7 @@ class ChallengeController extends Controller
             'description' => $request->description,
             'image' => $path,
             'start_date' => now(),
-            'deadline' => now()->addWeek(),
+            'deadline' => now()->addMinute(),
         ]);
 
         return redirect()->route('challenges.index')->with('success', 'Challenge created!');

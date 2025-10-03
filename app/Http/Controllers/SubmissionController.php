@@ -32,24 +32,23 @@ class SubmissionController extends Controller
     }
 
     public function store(Request $request, Challenge $challenge)
-    {
-        $request->validate([
-            'image' => 'required|image|max:5120'
-        ]);
+{
+    if ($challenge->deadline && $challenge->deadline->isPast()) {
+        return back()->withErrors(['image' => 'Challenge deadline has passed.']);
+    }
 
-        $path = $request->file('image')->store('submissions', 'public');
+    $request->validate(['image' => 'required|image|max:5120']);
+    $path = $request->file('image')->store('submissions', 'public');
 
-        Submission::create([
-            'challenge_id' => $challenge->id,
-            'user_id' => auth()->id(),
-            'image' => $path
-        ]);
+    \App\Models\Submission::create([
+        'challenge_id' => $challenge->id,
+        'user_id' => auth()->id(),
+        'image' => $path
+    ]);
 
-        $user = auth()->user();
-    $user->increment('xp', 1);
+    auth()->user()->increment('xp', 1);
 
     return redirect()->route('challenges.show', $challenge)
         ->with('success', 'Submission created! +1 XP');
-    
-    }
+}
 }

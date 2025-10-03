@@ -23,4 +23,8 @@ class Challenge extends Model
     {
         return $this->hasMany(\App\Models\Submission::class);
     }
+
+    public function winnerSubmission() {
+        return $this->belongsTo(\App\Models\Submission::class, 'winner_submission_id');
+    }
 }
