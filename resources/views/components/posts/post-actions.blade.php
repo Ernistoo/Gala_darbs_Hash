@@ -2,31 +2,23 @@
 <div class="flex items-center gap-4 mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
     
     <div>
-        @if($post->likedBy(auth()->user()))
-            <form action="{{ route('posts.unlike', $post) }}" method="POST">
-                @csrf @method('DELETE')
-                <button class="text-red-600 hover:text-red-700 transition flex items-center gap-1">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
-                    </svg>
-                    <span>{{ $post->likes()->count() }}</span>
-                </button>
-            </form>
-        @else
-            <form action="{{ route('posts.like', $post) }}" method="POST">
-                @csrf
-                <button class="text-gray-600 dark:text-gray-400 hover:text-red-600 transition flex items-center gap-1">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                    </svg>
-                    <span>{{ $post->likes()->count() }}</span>
-                </button>
-            </form>
-        @endif
+        <button class="like-btn transition flex items-center gap-1 hover:text-red-600 {{ $post->likedBy(auth()->user()) ? 'text-red-600' : 'text-gray-600 dark:text-gray-400' }}"
+                data-post-id="{{ $post->id }}"
+                data-liked="{{ $post->likedBy(auth()->user()) ? 'true' : 'false' }}">
+            @if($post->likedBy(auth()->user()))
+                <svg class="like-icon w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z"/>
+                </svg>
+            @else
+                <svg class="like-icon w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+            @endif
+            <span class="like-count">{{ $post->likes()->count() }}</span>
+        </button>
     </div>
 
-   
     @auth
         <div x-data="{ open: false }" class="relative">
             <button @click="open = !open"

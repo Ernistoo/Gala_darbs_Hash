@@ -13,6 +13,7 @@ class BadgeService
         $this->firstCollection($user);
         $this->fiveCollections($user);
         $this->firstPost($user);
+        $this->fifthPost($user);
     }
 
     private function firstCollection(User $user): void
@@ -33,6 +34,13 @@ class BadgeService
     {
         if ($user->posts()->count() === 1) {
             $this->awardBadge($user, 'First Post', 'first_post.png', 'Published your first post!');
+        }
+    }
+
+    private function fifthPost(User $user): void
+    {
+        if ($user->posts()->count() === 5) {
+            $this->awardBadge($user, 'Influencer Lv.1', 'fifth_post.png', 'Published 5 posts!');
         }
     }
 

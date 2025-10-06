@@ -1,6 +1,6 @@
 <x-app-layout>
 <x-header>        
-    {{ $category->name }} - Posts
+    {{ __('Posts') }}
 </x-header>
 <x-back-button :route="route('posts.index')" />
     <div class="py-6">

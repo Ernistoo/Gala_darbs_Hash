@@ -3,7 +3,7 @@
     {{ __('Edit') }}
 </x-header>
     <div class="flex justify-center py-6">
-    <x-form :action="route('posts.update', $post)" :post="$post" :update="true" :categories="$categories" />
+    <x-posts.form :action="route('posts.update', $post)" :post="$post" :update="true" :categories="$categories" />
 
     </div>
 </x-app-layout>

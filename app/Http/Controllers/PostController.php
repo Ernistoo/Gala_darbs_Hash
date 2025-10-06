@@ -120,20 +120,34 @@ class PostController extends Controller
 
 
     public function like(Post $post)
-    {
-        if (!$post->likedBy(auth()->user())) {
-            $post->likes()->create(['user_id' => auth()->id()]);
-        }
-
-        return back();
+{
+    if (!$post->likedBy(auth()->user())) {
+        $post->likes()->create(['user_id' => auth()->id()]);
     }
 
-
-    public function unlike(Post $post)
-    {
-        $post->likes()->where('user_id', auth()->id())->delete();
-        return back();
+    if (request()->wantsJson()) {
+        return response()->json([
+            'liked' => true,
+            'likes_count' => $post->likes()->count()
+        ]);
     }
+
+    return back();
+}
+
+public function unlike(Post $post)
+{
+    $post->likes()->where('user_id', auth()->id())->delete();
+    
+    if (request()->wantsJson()) {
+        return response()->json([
+            'liked' => false,
+            'likes_count' => $post->likes()->count()
+        ]);
+    }
+    
+    return back();
+}
     public function byCategory($id)
 {
     $category = \App\Models\Category::findOrFail($id);

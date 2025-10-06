@@ -1,4 +1,5 @@
 <x-app-layout>
+<x-header></x-header>
     <div class="max-w-2xl mx-auto py-6">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Notifications</h2>
@@ -30,12 +31,13 @@
                         }
                     @endphp
 
-                    <p class="text-gray-800 dark:text-gray-200">
-                        {{ $notification->data['message'] }}
-                        @if(!$sender)
-                            <span class="text-gray-500 italic">(User no longer exists)</span>
-                        @endif
-                    </p>
+                <p class="text-gray-800 dark:text-gray-200">
+                    {{ $notification->data['message'] }}
+
+                    @if(isset($notification->data['sender_id']) && !$sender)
+                        <span class="text-gray-500 italic">(User no longer exists)</span>
+                    @endif
+                </p>
                 </div>
 
                 <div class="flex items-center gap-2">

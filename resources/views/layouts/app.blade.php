@@ -25,7 +25,6 @@
         }
     </script>
 
-
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -58,35 +57,52 @@
     </div>
 @endif
 
-<body class="font-sans antialiased
-             bg-gradient-to-br from-gray-200 to-purple-100
-             dark:from-black dark:to-purple-900
-             transition-colors duration-500 ease-in-out">
+<body class="font-sans antialiased bg-gradient-to-br from-gray-200 to-purple-100 dark:from-black dark:to-purple-900 transition-colors duration-500 ease-in-out" x-data="{ sidebarOpen: false }">
     <div class="min-h-screen flex">
 
-        <aside class="fixed top-0 left-0 w-64 h-screen flex flex-col
-             bg-white/80 dark:bg-gray-800/80
-             backdrop-blur-md border-r border-gray-200 dark:border-gray-700
-             transition-colors duration-500 ease-in-out">
+        <!-- Mobile Header with Hamburger -->
+        <div class="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <x-application-logo class="h-10 w-10 text-gray-800 dark:text-gray-200" />
+                <span class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ config('app.name') }}</span>
+            </div>
+            <button @click="sidebarOpen = !sidebarOpen" class="text-gray-600 dark:text-gray-300 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path x-show="!sidebarOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    <path x-show="sidebarOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Overlay for mobile -->
+        <div x-show="sidebarOpen" 
+             @click="sidebarOpen = false"
+             x-transition:enter="transition-opacity ease-linear duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-linear duration-300"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
+
+        <!-- Sidebar -->
+        <aside class="fixed top-0 left-0 w-64 h-screen flex flex-col bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out z-50"
+               :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
             @include('layouts.navigation')
         </aside>
 
-        <div class="flex-1 flex flex-col ml-64
-            transition-colors duration-500 ease-in-out
-            bg-gradient-to-br from-gray-200 to-purple-100
-            dark:from-black dark:to-purple-900">
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col lg:ml-64 pt-16 lg:pt-0 transition-colors duration-500 ease-in-out bg-gradient-to-br from-gray-200 to-purple-100 dark:from-black dark:to-purple-900">
 
             @isset($header)
             <header class="transition-colors duration-500 ease-in-out">
-                <div class="px-6 py-4 transition-colors duration-500 ease-in-out text-gray-900 dark:text-gray-100">
+                <div class="px-4 lg:px-6 py-4 transition-colors duration-500 ease-in-out text-gray-900 dark:text-gray-100">
                     {{ $header }}
-                    
                 </div>
-                
             </header>
             @endisset
 
-            <main class="p-6 transition-colors duration-500 ease-in-out text-gray-900 dark:text-gray-100">
+            <main class="p-4 lg:p-6 transition-colors duration-500 ease-in-out text-gray-900 dark:text-gray-100">
                 {{ $slot }}
             </main>
         </div>

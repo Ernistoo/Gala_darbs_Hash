@@ -14,7 +14,7 @@
         @endif
         <div class="absolute bottom-4 left-4">
             <span class="bg-white/90 dark:bg-gray-800/90 text-purple-600 dark:text-purple-400 text-xs font-bold px-2 py-1 rounded-md">
-                +1 XP
+                +50 XP
             </span>
         </div>
     </div>
