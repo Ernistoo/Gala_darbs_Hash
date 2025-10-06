@@ -20,6 +20,10 @@ php artisan serve
   
 npm run dev
 
+'+' terminals
+
+php artisan schedule:work
+
 admin: name:es 
        epasts: es@example.com  
        password: Example1@
