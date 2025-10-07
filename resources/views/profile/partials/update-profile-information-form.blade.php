@@ -16,7 +16,6 @@
     @csrf
     @method('patch')
 
-    <!-- Name Field -->
     <div>
         <label for="name" class="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2">
             {{ __('Name') }}
@@ -29,7 +28,6 @@
         @enderror
     </div>
 
-    <!-- Email Field -->
     <div>
         <label for="email" class="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2">
             {{ __('Email') }}
@@ -60,7 +58,6 @@
         @endif
     </div>
 
-    <!-- Username Field -->
     <div>
         <label for="username" class="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2">
             {{ __('Username') }}
@@ -73,7 +70,6 @@
         @enderror
     </div>
 
-    <!-- Bio Field -->
     <div>
         <label for="bio" class="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2">
             {{ __('Bio') }}
@@ -86,45 +82,48 @@
         @enderror
     </div>
 
-    <!-- Profile Photo Field -->
     <div>
-        <label for="profile_photo" class="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2">
-            {{ __('Profile Photo') }}
-        </label>
+    <label for="profile_photo" class="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-2">
+        {{ __('Profile Photo') }}
+    </label>
 
-        <div class="flex items-center gap-4">
-            @if ($user->profile_photo)
-            <img src="{{ asset('storage/' . $user->profile_photo) }}" class="w-20 h-20 rounded-full object-cover border-2 border-white dark:border-gray-700 shadow-md" />
-            @else
-            <div class="w-20 h-20 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center border-2 border-white dark:border-gray-700">
-                <svg class="w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-6.627 0-12 5.373-12 12h24c0-6.627-5.373-12-12-12z" />
-                </svg>
-            </div>
-            @endif
-
-            <div class="flex-1">
-                <div class="flex items-center justify-center w-full">
-                    <label for="profile_photo" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-purple-500 dark:hover:border-purple-400 transition bg-white dark:bg-gray-700">
-                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                            <svg class="w-8 h-8 mb-3 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                            <p class="mb-1 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span></p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG, GIF (MAX. 5MB)</p>
-                        </div>
-                        <input id="profile_photo" name="profile_photo" type="file" class="hidden" />
-                    </label>
-                </div>
-            </div>
+    <div class="flex items-center gap-4">
+        <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600">
+            <img id="profile-photo-preview" 
+                 src="{{ $user->profile_photo ? asset('storage/' . $user->profile_photo) : asset('default-avatar.png') }}" 
+                 class="w-full h-full object-cover" />
         </div>
 
-        @error('profile_photo')
-        <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-        @enderror
-    </div>
+        <input type="file" id="profile_photo" name="profile_photo" accept="image/*" class="hidden">
 
-    <!-- Save Button -->
+        <button type="button" id="select-photo-btn"
+                class="px-3 py-2 bg-gray-200 dark:bg-gray-600 rounded-lg text-sm">
+            Upload & Crop
+        </button>
+
+        <input type="hidden" name="profile_photo_cropped" id="profile_photo_cropped">
+    </div>
+</div>
+
+<div id="cropper-modal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center">
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg max-w-lg w-full">
+        <div class="flex justify-between items-center mb-2">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Crop your photo</h3>
+            <button id="close-cropper" class="text-gray-500 hover:text-gray-700">✕</button>
+        </div>
+        <div class="w-full">
+            <img id="cropper-image" class="max-h-96 w-full object-contain">
+        </div>
+        <div class="mt-4 flex justify-end gap-2">
+            <button id="crop-image-btn" 
+                    class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg">
+                Crop & Save
+            </button>
+        </div>
+    </div>
+</div>
+
+
     <div class="flex items-center gap-4 pt-4">
         <button type="submit"
             class="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition">
@@ -144,7 +143,6 @@
     </div>
 </form>
 
-<!-- Log Out Button -->
 <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
     <form method="POST" action="{{ route('logout') }}">
         @csrf
@@ -172,7 +170,6 @@
 </style>
 
 <script>
-    // Update file upload label when a file is selected
     document.getElementById('profile_photo').addEventListener('change', function(e) {
         const fileName = e.target.files[0]?.name;
         const label = document.querySelector('label[for="profile_photo"]');

@@ -1,9 +1,10 @@
 import './bootstrap';
 import Alpine from 'alpinejs';
 
+import 'cropperjs/dist/cropper.css';  
+import Cropper from 'cropperjs';       
 window.Alpine = Alpine;
 Alpine.start();
-
 
 document.addEventListener("DOMContentLoaded", () => {
     const themeToggleBtn = document.getElementById("theme-toggle");
@@ -160,7 +161,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
-// Like/Unlike functionality
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('.like-btn').forEach(btn => {
         btn.addEventListener('click', async function (e) {
@@ -172,7 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const countEl = this.querySelector('.like-count');
             const token = document.querySelector('meta[name="csrf-token"]').content;
 
-            // Disable button during request
             this.disabled = true;
 
             try {
@@ -227,4 +226,146 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("profile_photo");
+    const preview = document.getElementById("profile-photo-preview");
+    const hiddenInput = document.getElementById("profile_photo_cropped");
+    const modal = document.getElementById("cropper-modal");
+    const cropperImage = document.getElementById("cropper-image");
+    const selectBtn = document.getElementById("select-photo-btn");
+    const closeBtn = document.getElementById("close-cropper");
+    const cropBtn = document.getElementById("crop-image-btn");
+
+    let cropper;
+
+    selectBtn?.addEventListener("click", () => input.click());
+
+    input?.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            cropperImage.src = ev.target.result;
+            modal.classList.remove("hidden");
+
+            if (cropper) cropper.destroy();
+
+            cropper = new Cropper(cropperImage, {
+                aspectRatio: 1,
+                viewMode: 1,
+                dragMode: 'move',
+                background: false,
+                guides: false,
+                autoCropArea: 1,
+                responsive: true,
+                zoomable: true,
+                scalable: true,
+                rotatable: false,
+                movable: true
+            });
+        };
+        reader.readAsDataURL(file);
+    });
+
+    closeBtn?.addEventListener("click", () => {
+        modal.classList.add("hidden");
+        if (cropper) cropper.destroy();
+    });
+
+    cropBtn?.addEventListener("click", () => {
+        if (!cropper) return;
+        const canvas = cropper.getCroppedCanvas({
+            width: 400,
+            height: 400,
+            imageSmoothingQuality: "high"
+        });
+
+        preview.src = canvas.toDataURL("image/png");
+
+        hiddenInput.value = canvas.toDataURL("image/png");
+
+        modal.classList.add("hidden");
+        cropper.destroy();
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const textarea = document.getElementById("comment-textarea");
+    const dropdown = document.getElementById("mention-dropdown");
+    let mentionQuery = "";
+    let caretPos = 0;
+
+    textarea.addEventListener("keyup", async (e) => {
+        const text = textarea.value;
+        const cursor = textarea.selectionStart;
+
+        const uptoCursor = text.substring(0, cursor);
+        const match = uptoCursor.match(/@(\w*)$/);
+
+        if (match) {
+            mentionQuery = match[1];
+            if (mentionQuery.length >= 1) {
+                try {
+                    const res = await fetch(`/mentions/search?q=${mentionQuery}`);
+                    const users = await res.json();
+
+                    if (users.length > 0) {
+                        dropdown.innerHTML = "";
+                        users.forEach(user => {
+                            const div = document.createElement("div");
+                            div.className = "px-3 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 flex items-center gap-2";
+                            div.innerHTML = `
+                                <img src="${user.profile_photo ? '/storage/' + user.profile_photo : '/default-avatar.png'}" 
+                                     class="w-6 h-6 rounded-full"> 
+                                <span class="font-medium">@${user.username}</span>
+                            `;
+                            div.addEventListener("click", () => {
+                                const before = text.substring(0, cursor).replace(/@\w*$/, `@${user.username} `);
+                                const after = text.substring(cursor);
+                                textarea.value = before + after;
+                                dropdown.classList.add("hidden");
+                                textarea.focus();
+                            });
+                            dropdown.appendChild(div);
+                        });
+                        dropdown.classList.remove("hidden");
+                    } else {
+                        dropdown.classList.add("hidden");
+                    }
+                } catch (err) {
+                    console.error("Mention search error:", err);
+                }
+            } else {
+                dropdown.classList.add("hidden");
+            }
+        } else {
+            dropdown.classList.add("hidden");
+        }
+    });
+});
+document.addEventListener("DOMContentLoaded", () => {
+    const textarea = document.getElementById("comment-textarea");
+    const dropdown = document.getElementById("mention-dropdown");
+
+    if (textarea && dropdown) {
+        dropdown.addEventListener("click", (e) => {
+            const target = e.target.closest(".mention-item");
+            if (target) {
+                const username = target.dataset.username;
+
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const text = textarea.value;
+
+                textarea.value = text.substring(0, start) + '@' + username + ' ' + text.substring(end);
+
+                dropdown.classList.add("hidden");
+
+                textarea.focus();
+            }
+        });
+    }
 });

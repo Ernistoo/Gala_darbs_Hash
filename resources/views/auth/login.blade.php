@@ -47,5 +47,10 @@
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+        <a href="{{ route('google.redirect') }}"
+   class="w-full flex items-center justify-center gap-2 px-4 py-2 border rounded-lg bg-white hover:bg-gray-100">
+    <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="w-5 h-5">
+    Continue with Google
+</a>
     </form>
 </x-guest-layout>

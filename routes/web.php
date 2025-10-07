@@ -12,6 +12,7 @@ use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FriendshipController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\GoogleController;
 
 use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Route;
@@ -155,3 +156,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
 });
+
+
+Route::get('auth/google', [GoogleController::class, 'redirect'])->name('google.redirect');
+Route::get('auth/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
+
+Route::get('/mentions/search', [App\Http\Controllers\MentionController::class, 'search'])
+    ->middleware('auth')
+    ->name('mentions.search');
