@@ -2,9 +2,6 @@
     <x-header>        
             {{ __('Categories') }}
     </x-header>
-
-    
-
             @if($categories->count())
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 @foreach($categories as $category)

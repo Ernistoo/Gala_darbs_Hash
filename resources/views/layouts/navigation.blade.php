@@ -1,10 +1,25 @@
 <nav class="flex flex-col flex-1 bg-gradient-to-b from-gray-200 to-purple-100 dark:from-black dark:to-purple-900 transition-colors duration-500 ease-in-out">
 
- 
     <div class="hidden lg:flex items-center space-x-2 p-4">
-        <x-application-logo class="h-16 w-16 text-gray-800 dark:text-gray-200" />
-        <span class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ config('app.name') }}</span>
+        <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 group cursor-pointer">
+            <img src="{{ asset('images/chat.png') }}" 
+                 alt="{{ config('app.name') }} logo" 
+                 class="h-16 w-16 object-contain transition-transform duration-300 group-hover:scale-110" />
+            
+            <span class="text-lg font-bold text-gray-800 dark:text-gray-200 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition">
+                {{ config('app.name') }}
+            </span>
+        </a>
     </div>
+
+    <div class="flex lg:hidden items-center justify-center p-3 border-b border-gray-300 dark:border-gray-700">
+        <a href="{{ route('dashboard') }}" class="flex items-center justify-center space-x-2 cursor-pointer group">
+            <img src="{{ asset('images/chat.png') }}" 
+                 alt="{{ config('app.name') }} logo" 
+                 class="h-12 w-12 object-contain transition-transform duration-300 group-hover:scale-110" />
+        </a>
+    </div>
+
 
  
     <div class="flex-1 flex flex-col gap-3 px-4 mt-4 lg:mt-4">
@@ -16,6 +31,11 @@
         <x-nav-link :href="route('posts.index')" :active="request()->routeIs('posts.index')"
             class="block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
             {{ __('Explore') }}
+        </x-nav-link>
+
+        <x-nav-link :href="route('search.index')" :active="request()->routeIs('search.index')"
+            class="block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
+            {{ __('Search') }}
         </x-nav-link>
 
         <x-nav-link :href="route('collections.index')" :active="request()->routeIs('collections.index')"
@@ -71,8 +91,8 @@
     </div>
 
     <div class="mt-auto p-4 border-t border-gray-200 dark:border-gray-700">
-        <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition">
-            <img src="{{ auth()->user()->profile_photo ? asset('storage/' . auth()->user()->profile_photo) : asset('default-avatar.png') }}"
+    <a href="{{ route('users.show', auth()->user()) }}" class="flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition">
+    <img src="{{ auth()->user()->profile_photo ? asset('storage/' . auth()->user()->profile_photo) : asset('default-avatar.png') }}"
                 alt="{{ auth()->user()->name }}"
                 class="w-12 h-12 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600" />
             <div>

@@ -78,4 +78,50 @@ class User extends Authenticatable
         return $this->hasMany(Friendship::class, 'user_id')
             ->where('status', 'pending');
     }
+
+  
+
+    public function getLevelAttribute()
+    {
+        $xp = $this->xp ?? 0;
+        $level = 0;
+        $threshold = 50;
+    
+        while ($xp >= $threshold) {
+            $xp -= $threshold;
+            $level++;
+            $threshold *= 2;
+        }
+    
+        return $level;
+    }
+    
+    public function getXpProgressAttribute()
+    {
+        $xp = $this->xp ?? 0;
+        $level = 0;
+        $threshold = 50;
+        $remaining = $xp;
+        $totalNeeded = 50; 
+    
+        while ($remaining >= $threshold) {
+            $remaining -= $threshold;
+            $level++;
+            $threshold *= 2;
+            $totalNeeded += $threshold; 
+        }
+    
+        $progress = ($xp / $totalNeeded) * 100;
+    
+        $remainingToNext = $totalNeeded - $xp;
+    
+        return [
+            'level' => $level,
+            'current_xp' => $xp,
+            'needed_xp' => $totalNeeded,
+            'progress_percent' => round(min($progress, 100), 1),
+            'remaining_xp' => max($remainingToNext, 0),
+        ];
+    }
+    
 }

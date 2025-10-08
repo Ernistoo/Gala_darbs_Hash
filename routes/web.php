@@ -13,6 +13,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FriendshipController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\SearchController;
 
 use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Route;
@@ -164,3 +165,6 @@ Route::get('auth/google/callback', [GoogleController::class, 'callback'])->name(
 Route::get('/mentions/search', [App\Http\Controllers\MentionController::class, 'search'])
     ->middleware('auth')
     ->name('mentions.search');
+
+    Route::get('/search', [SearchController::class, 'index'])->name('search.index');
+    Route::get('/api/search', [SearchController::class, 'ajax'])->name('search.ajax');
