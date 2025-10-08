@@ -4,7 +4,9 @@ npm i
 
 composer i
 
-composer require spatie/laravel-permission
+composer require laravel/socialite
+
+npm install cropperjs
 
 php artisan key:generate
 
