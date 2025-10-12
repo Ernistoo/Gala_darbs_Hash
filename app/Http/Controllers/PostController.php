@@ -61,7 +61,13 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-        return view('posts.show', compact('post'));
+        $comments = $post->comments()
+            ->whereNull('parent_id')
+            ->with(['user', 'replies.user'])
+            ->latest()
+            ->get();
+
+        return view('posts.show', compact('post', 'comments'));
     }
 
 
@@ -120,39 +126,39 @@ class PostController extends Controller
 
 
     public function like(Post $post)
-{
-    if (!$post->likedBy(auth()->user())) {
-        $post->likes()->create(['user_id' => auth()->id()]);
+    {
+        if (!$post->likedBy(auth()->user())) {
+            $post->likes()->create(['user_id' => auth()->id()]);
+        }
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'liked' => true,
+                'likes_count' => $post->likes()->count()
+            ]);
+        }
+
+        return back();
     }
 
-    if (request()->wantsJson()) {
-        return response()->json([
-            'liked' => true,
-            'likes_count' => $post->likes()->count()
-        ]);
-    }
+    public function unlike(Post $post)
+    {
+        $post->likes()->where('user_id', auth()->id())->delete();
 
-    return back();
-}
+        if (request()->wantsJson()) {
+            return response()->json([
+                'liked' => false,
+                'likes_count' => $post->likes()->count()
+            ]);
+        }
 
-public function unlike(Post $post)
-{
-    $post->likes()->where('user_id', auth()->id())->delete();
-    
-    if (request()->wantsJson()) {
-        return response()->json([
-            'liked' => false,
-            'likes_count' => $post->likes()->count()
-        ]);
+        return back();
     }
-    
-    return back();
-}
     public function byCategory($id)
-{
-    $category = \App\Models\Category::findOrFail($id);
-    $posts = $category->posts()->latest()->get();
+    {
+        $category = \App\Models\Category::findOrFail($id);
+        $posts = $category->posts()->latest()->get();
 
-    return view('posts.category', compact('category', 'posts'));
-}
+        return view('posts.category', compact('category', 'posts'));
+    }
 }

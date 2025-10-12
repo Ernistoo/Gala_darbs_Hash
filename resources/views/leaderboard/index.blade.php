@@ -15,23 +15,23 @@
                 </thead>
                 <tbody>
                     @foreach($users as $index => $user)
-                        <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-purple-50 dark:hover:bg-gray-700 transition">
-                            <td class="px-6 py-3 font-semibold text-purple-600 dark:text-purple-400">
-                                #{{ $index + 1 }}
-                            </td>
-                            <td class="px-6 py-3 flex items-center gap-3">
-                                <img src="{{ $user->profile_photo ? asset('storage/'.$user->profile_photo) : asset('default-avatar.png') }}"
-                                    alt="{{ $user->name }}"
-                                    class="w-10 h-10 rounded-full border-2 border-purple-400 object-cover">
-                                <div>
-                                    <p class="font-semibold">{{ $user->name }}</p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ '@'.$user->username }}</p>
-                                </div>
-                            </td>
-                            <td class="px-6 py-3 font-bold text-gray-800 dark:text-gray-100">
-                                {{ $user->xp }} XP
-                            </td>
-                        </tr>
+                    <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-purple-50 dark:hover:bg-gray-700 transition">
+                        <td class="px-6 py-3 font-semibold text-purple-600 dark:text-purple-400">
+                            #{{ $index + 1 }}
+                        </td>
+                        <td class="px-6 py-3 flex items-center gap-3">
+                            <img src="{{ userAvatar($user->profile_photo) }}"
+                                alt="{{ $user->name }}"
+                                class="w-10 h-10 rounded-full border-2 border-purple-400 object-cover">
+                            <div>
+                                <p class="font-semibold">{{ $user->name }}</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ '@'.$user->username }}</p>
+                            </div>
+                        </td>
+                        <td class="px-6 py-3 font-bold text-gray-800 dark:text-gray-100">
+                            {{ $user->xp }} XP
+                        </td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>

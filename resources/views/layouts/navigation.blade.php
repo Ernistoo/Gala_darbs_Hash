@@ -2,10 +2,10 @@
 
     <div class="hidden lg:flex items-center space-x-2 p-4">
         <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 group cursor-pointer">
-            <img src="{{ asset('images/chat.png') }}" 
-                 alt="{{ config('app.name') }} logo" 
-                 class="h-16 w-16 object-contain transition-transform duration-300 group-hover:scale-110" />
-            
+            <img src="{{ asset('images/chat.png') }}"
+                alt="{{ config('app.name') }} logo"
+                class="h-16 w-16 object-contain transition-transform duration-300 group-hover:scale-110" />
+
             <span class="text-lg font-bold text-gray-800 dark:text-gray-200 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition">
                 {{ config('app.name') }}
             </span>
@@ -14,14 +14,14 @@
 
     <div class="flex lg:hidden items-center justify-center p-3 border-b border-gray-300 dark:border-gray-700">
         <a href="{{ route('dashboard') }}" class="flex items-center justify-center space-x-2 cursor-pointer group">
-            <img src="{{ asset('images/chat.png') }}" 
-                 alt="{{ config('app.name') }} logo" 
-                 class="h-12 w-12 object-contain transition-transform duration-300 group-hover:scale-110" />
+            <img src="{{ asset('images/chat.png') }}"
+                alt="{{ config('app.name') }} logo"
+                class="h-12 w-12 object-contain transition-transform duration-300 group-hover:scale-110" />
         </a>
     </div>
 
 
- 
+
     <div class="flex-1 flex flex-col gap-3 px-4 mt-4 lg:mt-4">
         <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
             class="block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
@@ -58,9 +58,9 @@
             {{ __('Notifications') }}
 
             @if(auth()->user()->unreadNotifications->count() > 0)
-                <span class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                    {{ auth()->user()->unreadNotifications->count() }}
-                </span>
+            <span class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                {{ auth()->user()->unreadNotifications->count() }}
+            </span>
             @endif
         </x-nav-link>
 
@@ -90,11 +90,22 @@
         </button>
     </div>
 
+    @php use Illuminate\Support\Str; @endphp
+
     <div class="mt-auto p-4 border-t border-gray-200 dark:border-gray-700">
-    <a href="{{ route('users.show', auth()->user()) }}" class="flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition">
-    <img src="{{ auth()->user()->profile_photo ? asset('storage/' . auth()->user()->profile_photo) : asset('default-avatar.png') }}"
+        <a href="{{ route('users.show', auth()->user()) }}"
+            class="flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition">
+
+            <img src="{{ 
+            auth()->user()->profile_photo
+                ? (Str::startsWith(auth()->user()->profile_photo, 'http')
+                    ? auth()->user()->profile_photo
+                    : asset('storage/' . auth()->user()->profile_photo))
+                : asset('default-avatar.png')
+        }}"
                 alt="{{ auth()->user()->name }}"
                 class="w-12 h-12 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600" />
+
             <div>
                 <p class="font-semibold text-gray-800 dark:text-gray-200">{{ auth()->user()->name }}</p>
                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ auth()->user()->username }}</p>

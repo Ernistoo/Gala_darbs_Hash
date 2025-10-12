@@ -11,32 +11,49 @@ use App\Notifications\MentionNotification;
 
 class CommentController extends Controller
 {
+    /**
+     * Saglabā jaunu komentāru pie ieraksta
+     */
     public function store(Request $request, Post $post)
-{
-    $request->validate([
-        'content' => 'required|string|max:500',
-    ]);
+    {
+        $request->validate([
+            'content' => 'required|string|max:500',
+        ]);
 
-    $comment = $post->comments()->create([
-        'user_id' => Auth::id(),
-        'content' => $request->content,
-    ]);
 
-   
-    preg_match_all('/@([\w._-]+)/', $request->content, $matches);
-    $usernames = $matches[1] ?? [];
+        $comment = Comment::create([
+            'user_id'   => Auth::id(),
+            'post_id'   => $post->id,
+            'content'   => $request->content,
+            'parent_id' => null,
+        ]);
 
-    if (!empty($usernames)) {
-        $mentionedUsers = User::whereIn('username', $usernames)->get();
-        foreach ($mentionedUsers as $mentioned) {
-            if ($mentioned->id !== Auth::id()) { 
-                $mentioned->notify(new MentionNotification($comment, Auth::user()));
-            }
-        }
+        $this->notifyMentions($comment, $request->content);
+
+        return back()->with('success', 'Comment added!');
     }
 
-    return back();
-}
+
+    public function reply(Request $request, Post $post, Comment $comment)
+    {
+        if ($comment->post_id !== $post->id) {
+            abort(404);
+        }
+
+        $request->validate([
+            'content' => 'required|string|max:1000',
+        ]);
+
+        Comment::create([
+            'user_id'   => Auth::id(),
+            'post_id'   => $post->id,
+            'parent_id' => $comment->id,
+            'content'   => $request->content,
+        ]);
+
+        return back()->with('success', 'Reply added!');
+    }
+
 
     public function destroy(Comment $comment)
     {
@@ -45,7 +62,8 @@ class CommentController extends Controller
         }
 
         $comment->delete();
-        return back();
+
+        return back()->with('success', 'Comment deleted.');
     }
 
     public function pin(Comment $comment)
@@ -62,5 +80,21 @@ class CommentController extends Controller
         $comment->save();
 
         return back()->with('success', 'Comment pinned!');
+    }
+
+    private function notifyMentions(Comment $comment, $content)
+    {
+        preg_match_all('/@([\w._-]+)/', $content, $matches);
+        $usernames = $matches[1] ?? [];
+
+        if (!empty($usernames)) {
+            $mentionedUsers = User::whereIn('username', $usernames)->get();
+
+            foreach ($mentionedUsers as $mentioned) {
+                if ($mentioned->id !== Auth::id()) {
+                    $mentioned->notify(new MentionNotification($comment, Auth::user()));
+                }
+            }
+        }
     }
 }

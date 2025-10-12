@@ -9,29 +9,29 @@ use Illuminate\Support\Facades\DB;
 class ChallengeController extends Controller
 {
     public function index()
-{
-    $challenges = Challenge::where('deadline', '>', now()) 
-        ->withCount([
-            'submissions as participants_count' => fn($q) => $q->select(DB::raw('COUNT(DISTINCT user_id)'))
-        ])
-        ->get();
+    {
+        $challenges = Challenge::where('deadline', '>', now())
+            ->withCount([
+                'submissions as participants_count' => fn($q) => $q->select(DB::raw('COUNT(DISTINCT user_id)'))
+            ])
+            ->get();
 
-    return view('challenges.index', compact('challenges'));
-}
-
-public function show(Challenge $challenge)
-{
-    if ($challenge->deadline && $challenge->deadline->isPast()) {
-        return redirect()->route('challenges.index')
-            ->with('error', 'This challenge has ended.');
+        return view('challenges.index', compact('challenges'));
     }
 
-    $challenge->loadCount([
-        'submissions as participants_count' => fn($q) => $q->select(DB::raw('COUNT(DISTINCT user_id)'))
-    ])->load(['winnerSubmission.user']);
+    public function show(Challenge $challenge)
+    {
+        if ($challenge->deadline && $challenge->deadline->isPast()) {
+            return redirect()->route('challenges.index')
+                ->with('error', 'This challenge has ended.');
+        }
 
-    return view('challenges.show', compact('challenge'));
-}
+        $challenge->loadCount([
+            'submissions as participants_count' => fn($q) => $q->select(DB::raw('COUNT(DISTINCT user_id)'))
+        ])->load(['winnerSubmission.user']);
+
+        return view('challenges.show', compact('challenge'));
+    }
 
     public function create()
     {
@@ -47,7 +47,7 @@ public function show(Challenge $challenge)
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|max:5120', 
+            'image' => 'nullable|image|max:5120',
         ]);
 
         $path = null;
@@ -67,18 +67,18 @@ public function show(Challenge $challenge)
     }
 
     public function destroy(Challenge $challenge)
-{
-    if (!auth()->user()->hasRole('admin')) {
-        abort(403);
+    {
+        if (!auth()->user()->hasRole('admin')) {
+            abort(403);
+        }
+
+
+        if ($challenge->image && \Storage::disk('public')->exists($challenge->image)) {
+            \Storage::disk('public')->delete($challenge->image);
+        }
+
+        $challenge->delete();
+
+        return redirect()->route('challenges.index')->with('success', 'Challenge deleted successfully!');
     }
-
-    
-    if ($challenge->image && \Storage::disk('public')->exists($challenge->image)) {
-        \Storage::disk('public')->delete($challenge->image);
-    }
-
-    $challenge->delete();
-
-    return redirect()->route('challenges.index')->with('success', 'Challenge deleted successfully!');
-}
 }

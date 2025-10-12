@@ -1,5 +1,22 @@
 <?php
 
+use Illuminate\Support\Str;
+
+if (!function_exists('userAvatar')) {
+    function userAvatar($path)
+    {
+        if (!$path) {
+            return asset('default-avatar.png');
+        }
+
+        if (Str::startsWith($path, ['http://', 'https://'])) {
+            return $path;
+        }
+
+        return asset('storage/' . $path);
+    }
+}
+
 if (!function_exists('getYoutubeEmbedUrl')) {
     function getYoutubeEmbedUrl($url)
     {

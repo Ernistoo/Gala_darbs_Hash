@@ -18,15 +18,20 @@
 }
 
 @keyframes upvote {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-6px) scale(1.2); }
-    100% { transform: translateY(0); }
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-6px) scale(1.2);
+    }
+    100% {
+        transform: translateY(0);
+    }
 }
 
 .animate-upvote {
     animation: upvote 0.5s ease-in-out;
 }
-
 
 .card-hover {
     transition: all 0.3s ease;
@@ -36,11 +41,9 @@
     transform: translateY(-5px);
 }
 
-
 .comments-section {
     transition: background-color 0.3s ease;
 }
-
 
 .carousel-transition {
     transition: transform 0.4s ease;
@@ -52,4 +55,3 @@
 .dark .input-focus:focus {
     box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.4);
 }
-

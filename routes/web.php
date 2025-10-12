@@ -19,11 +19,7 @@ use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-/*
-|--------------------------------------------------------------------------
-| Public routes
-|--------------------------------------------------------------------------
-*/
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -62,7 +58,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/categories/{category}', [PostController::class, 'byCategory'])->name('posts.byCategory');
 
     Route::post('posts/{post}/like', [PostController::class, 'like'])->name('posts.like')->middleware('auth');
-Route::delete('posts/{post}/unlike', [PostController::class, 'unlike'])->name('posts.unlike')->middleware('auth');
+    Route::delete('posts/{post}/unlike', [PostController::class, 'unlike'])->name('posts.unlike')->middleware('auth');
 
     Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
@@ -166,5 +162,8 @@ Route::get('/mentions/search', [App\Http\Controllers\MentionController::class, '
     ->middleware('auth')
     ->name('mentions.search');
 
-    Route::get('/search', [SearchController::class, 'index'])->name('search.index');
-    Route::get('/api/search', [SearchController::class, 'ajax'])->name('search.ajax');
+Route::get('/search', [SearchController::class, 'index'])->name('search.index');
+Route::get('/api/search', [SearchController::class, 'ajax'])->name('search.ajax');
+
+Route::post('/posts/{post}/comments/{comment}/reply', [CommentController::class, 'reply'])
+    ->name('comments.reply');

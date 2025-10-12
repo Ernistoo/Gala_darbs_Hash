@@ -37,10 +37,10 @@ class RegisteredUserController extends Controller
                 'required',
                 'confirmed',
                 Password::min(8)
-                    ->letters()     // vajag burtus
-                    ->mixedCase()   // vajag gan lielos, gan mazos
-                    ->numbers()     // vajag ciparus
-                    ->symbols(),    // vajag simbolus
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols(),
             ],
         ]);
 

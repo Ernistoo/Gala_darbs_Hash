@@ -7,13 +7,13 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
-
 class GoogleController extends Controller
 {
     public function redirect()
     {
         return Socialite::driver('google')
             ->scopes(['openid', 'profile', 'email'])
+            ->with(['prompt' => 'select_account'])
             ->redirect();
     }
 
@@ -23,14 +23,14 @@ class GoogleController extends Controller
 
         $name = $googleUser->getName();
         $email = $googleUser->getEmail();
-        $avatar = $googleUser->user['picture'] ?? null;
+        $avatar = $googleUser->getAvatar();
 
         $user = User::updateOrCreate(
             ['email' => $email],
             [
                 'name' => $name,
                 'profile_photo' => $avatar,
-                'password' => bcrypt(str()->random(16))
+                'password' => bcrypt(Str::random(16)),
             ]
         );
 

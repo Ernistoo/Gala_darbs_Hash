@@ -31,12 +31,10 @@ class ProfileController extends Controller
             'profile_photo_cropped' => 'nullable|string', // base64
         ]);
 
-        // ja iepriekšēja bilde eksistē -> izdzēs
         if ($user->profile_photo && ($request->hasFile('profile_photo') || $request->filled('profile_photo_cropped'))) {
             Storage::disk('public')->delete($user->profile_photo);
         }
 
-        // 1. ja ir croppotā bilde
         if ($request->filled('profile_photo_cropped')) {
             $imageData = $request->input('profile_photo_cropped');
             $image = str_replace('data:image/png;base64,', '', $imageData);
@@ -46,14 +44,11 @@ class ProfileController extends Controller
             Storage::disk('public')->put($fileName, base64_decode($image));
 
             $user->profile_photo = $fileName;
-        }
-        // 2. citādi, ja ir parasts fails
-        elseif ($request->hasFile('profile_photo')) {
+        } elseif ($request->hasFile('profile_photo')) {
             $path = $request->file('profile_photo')->store('profile_photos', 'public');
             $user->profile_photo = $path;
         }
 
-        // pārējie lauki
         $user->name = $request->name;
         $user->email = $request->email;
         $user->username = $request->username;
@@ -74,7 +69,6 @@ class ProfileController extends Controller
 
         Auth::logout();
 
-        // izdzēs arī profila bildi no storage
         if ($user->profile_photo) {
             Storage::disk('public')->delete($user->profile_photo);
         }
