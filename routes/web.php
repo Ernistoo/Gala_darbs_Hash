@@ -167,3 +167,7 @@ Route::get('/api/search', [SearchController::class, 'ajax'])->name('search.ajax'
 
 Route::post('/posts/{post}/comments/{comment}/reply', [CommentController::class, 'reply'])
     ->name('comments.reply');
+
+Route::delete('/friends/{user}/remove', [FriendshipController::class, 'remove'])
+    ->middleware('auth')
+    ->name('friends.remove');

@@ -10,28 +10,28 @@ use App\Notifications\GenericNotification;
 class FriendshipController extends Controller
 {
     public function index()
-{
-    $friends = auth()->user()->allFriends();
-    return view('friends.index', compact('friends'));
-}
-
-public function send(User $user)
-{
-    if (auth()->id() === $user->id) {
-        return back()->with('error', 'You cannot add yourself as a friend.');
+    {
+        $friends = auth()->user()->allFriends();
+        return view('friends.index', compact('friends'));
     }
 
-    Friendship::firstOrCreate([
-        'user_id'   => auth()->id(),
-        'friend_id' => $user->id,
-    ]);
+    public function send(User $user)
+    {
+        if (auth()->id() === $user->id) {
+            return back()->with('error', 'You cannot add yourself as a friend.');
+        }
 
-    $user->notify(
-        new GenericNotification(auth()->user()->name . " sent you a friend request", auth()->user())
-    );
+        Friendship::firstOrCreate([
+            'user_id'   => auth()->id(),
+            'friend_id' => $user->id,
+        ]);
 
-    return back()->with('success', 'Friend request sent!');
-}
+        $user->notify(
+            new GenericNotification(auth()->user()->name . " sent you a friend request", auth()->user())
+        );
+
+        return back()->with('success', 'Friend request sent!');
+    }
 
     public function accept(Friendship $friendship)
     {
@@ -46,5 +46,21 @@ public function send(User $user)
         );
 
         return back()->with('success', 'Friend request accepted!');
+    }
+    public function remove(User $user)
+    {
+        $authId = auth()->id();
+
+        $deleted = \App\Models\Friendship::where(function ($q) use ($authId, $user) {
+            $q->where('user_id', $authId)->where('friend_id', $user->id);
+        })->orWhere(function ($q) use ($authId, $user) {
+            $q->where('user_id', $user->id)->where('friend_id', $authId);
+        })->delete();
+
+        if ($deleted) {
+            return back()->with('success', 'Friend removed.');
+        }
+
+        return back()->with('error', 'Friendship not found.');
     }
 }
