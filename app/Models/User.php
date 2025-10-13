@@ -123,5 +123,10 @@ class User extends Authenticatable
             'remaining_xp' => max($remainingToNext, 0),
         ];
     }
+
+    public function submissions()
+{
+    return $this->hasMany(\App\Models\Submission::class);
+}
     
 }

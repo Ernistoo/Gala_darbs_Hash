@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Challenge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Submission;
+use App\Services\BadgeService;
+
 
 class ChallengeController extends Controller
 {
@@ -60,7 +63,7 @@ class ChallengeController extends Controller
             'description' => $request->description,
             'image' => $path,
             'start_date' => now(),
-            'deadline' => now()->addWeek(),
+            'deadline' => now()->addMinute(),
         ]);
 
         return redirect()->route('challenges.index')->with('success', 'Challenge created!');
@@ -81,4 +84,27 @@ class ChallengeController extends Controller
 
         return redirect()->route('challenges.index')->with('success', 'Challenge deleted successfully!');
     }
+
+    public function close(Challenge $challenge)
+{
+    if (!auth()->user()->hasRole('admin')) {
+        abort(403);
+    }
+
+    $winner = $challenge->submissions()
+        ->withCount('votes')
+        ->orderByDesc('votes_count')
+        ->first();
+
+    if ($winner) {
+        $winner->update(['is_winner' => true]);
+
+        app(BadgeService::class)->checkAndAssign($winner->user);
+    }
+
+    $challenge->update(['deadline' => now()]);
+
+    return redirect()->route('challenges.index')
+        ->with('success', 'Challenge closed and winner assigned!');
+}
 }

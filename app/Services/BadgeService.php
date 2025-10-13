@@ -16,9 +16,7 @@ class BadgeService
         $this->firstPost($user);
         $this->fifthPost($user);
         $this->storyteller($user);
-        $this->firstFriend($user);
         $this->popular($user);
-        $this->winner($user);
         $this->level1Unlocked($user);
         $this->level5Elite($user);
     }
@@ -60,12 +58,7 @@ class BadgeService
         }
     }
 
-    private function firstFriend(User $user): void
-    {
-        if ($user->friends()->count() >= 1 && !$this->hasBadge($user, 'First Friend')) {
-            $this->awardBadge($user, 'First Friend', 'first_friend.png', 'Made your first friend!', 50);
-        }
-    }
+
 
     private function popular(User $user): void
     {
@@ -74,17 +67,11 @@ class BadgeService
         }
     }
 
-    private function winner(User $user): void
-    {
-        if (method_exists($user, 'submissions') && $user->submissions()->where('is_winner', true)->exists() && !$this->hasBadge($user, 'Winner')) {
-            $this->awardBadge($user, 'Winner', 'winner.png', 'Won a challenge!', 250);
-        }
-    }
 
     private function level1Unlocked(User $user): void
     {
-        if ($user->xp >= 100 && !$this->hasBadge($user, 'Level 1 Unlocked')) {
-            $this->awardBadge($user, 'Level 1 Unlocked', 'level1.png', 'Reached Level 1 (100 XP)!', 0);
+        if ($user->xp >= 100 && !$this->hasBadge($user, 'Level 2 Unlocked')) {
+            $this->awardBadge($user, 'Level 2 Unlocked', 'level1.png', 'Reached Level 2 (100 XP)!', 0);
         }
     }
 

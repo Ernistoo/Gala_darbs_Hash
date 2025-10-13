@@ -5,13 +5,14 @@
     <div class="p-4">
         <div class="flex items-center justify-between mb-2">
 
-            <a href="{{ userAvatar($user->profile_photo) }}" class="flex items-center gap-2">
-                <img src="{{ $submission->user->profile_photo ? asset('storage/' . $submission->user->profile_photo) : asset('default-avatar.png') }}"
-                    class="w-8 h-8 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600">
-                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {{ $submission->user->name }}
-                </span>
-            </a>
+        <a href="{{ route('users.show', $submission->user) }}" class="flex items-center gap-2">
+    <img src="{{ userAvatar($submission->user->profile_photo) }}"
+         alt="{{ $submission->user->name }}"
+         class="w-8 h-8 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600">
+    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+        {{ $submission->user->name }}
+    </span>
+</a>
 
 
             <div class="flex items-center gap-1">

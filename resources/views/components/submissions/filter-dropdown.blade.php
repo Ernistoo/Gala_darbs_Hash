@@ -7,8 +7,8 @@
                transition-colors duration-300 ease-in-out">
 
         <option value="">Default</option>
-        <option value="most_voted" {{ request('sort') == 'most_voted' ? 'selected' : '' }}>Visvairāk balsu</option>
-        <option value="least_voted" {{ request('sort') == 'least_voted' ? 'selected' : '' }}>Vismazāk balsu</option>
-        <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Jaunākie</option>
+        <option value="most_voted" {{ request('sort') == 'most_voted' ? 'selected' : '' }}>Most votes</option>
+        <option value="least_voted" {{ request('sort') == 'least_voted' ? 'selected' : '' }}>Least votes</option>
+        <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Newest</option>
     </select>
 </form>

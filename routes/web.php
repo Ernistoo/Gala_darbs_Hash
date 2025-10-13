@@ -111,24 +111,11 @@ Route::middleware('auth')->group(function () {
     //Uno collection
     Route::get('/collections/{collection}', [CollectionController::class, 'show'])->name('collections.show');
 
-    //Update delete
     Route::put('/collections/{collection}', [CollectionController::class, 'update'])->name('collections.update');
     Route::delete('/collections/{collection}', [CollectionController::class, 'destroy'])->name('collections.destroy');
 
-    //Add/remove
     Route::post('/posts/{post}/add-to-collection', [CollectionController::class, 'addPost'])->name('collections.addPost');
     Route::post('/collections/{collection}/remove-post/{post}', [CollectionController::class, 'removePost'])->name('collections.removePost');
-});
-
-//Chat
-
-Route::middleware('auth')->group(function () {
-    Route::get('/messages', [MessageController::class, 'index']);
-    Route::post('/messages', [MessageController::class, 'store']);
-});
-Route::middleware('auth')->group(function () {
-    Route::get('/chat', [ChatController::class, 'index'])->name('chat');
-    Route::post('/chat/send', [ChatController::class, 'send'])->name('chat.send');
 });
 
 //Leaderboard
@@ -171,3 +158,7 @@ Route::post('/posts/{post}/comments/{comment}/reply', [CommentController::class,
 Route::delete('/friends/{user}/remove', [FriendshipController::class, 'remove'])
     ->middleware('auth')
     ->name('friends.remove');
+
+    Route::post('/challenges/{challenge}/close', [ChallengeController::class, 'close'])
+    ->name('challenges.close')
+    ->middleware('auth');
