@@ -381,15 +381,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-document
-    .getElementById("profile_photo")
-    .addEventListener("change", function (e) {
-        const fileName = e.target.files[0]?.name;
-        const label = document.querySelector('label[for="profile_photo"]');
+document.addEventListener("DOMContentLoaded", () => {
+    const profilePhotoInput = document.getElementById("profile_photo");
+    
+    if (profilePhotoInput) {
+        profilePhotoInput.addEventListener("change", function (e) {
+            const fileName = e.target.files[0]?.name;
+            const label = document.querySelector('label[for="profile_photo"]');
 
-        if (fileName) {
-            label.querySelector(
-                "p:first-child"
-            ).innerHTML = `<span class="font-semibold">${fileName}</span>`;
-        }
-    });
+            if (fileName && label) {
+                const firstP = label.querySelector("p:first-child");
+                if (firstP) {
+                    firstP.innerHTML = `<span class="font-semibold">${fileName}</span>`;
+                }
+            }
+        });
+    }
+});
