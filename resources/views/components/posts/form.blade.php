@@ -24,23 +24,18 @@
         @error('content') <p class="text-red-500 text-sm mt-2">{{ $message }}</p> @enderror
     </div>
 
-    {{-- 🔹 Image Upload --}}
     <x-posts.image-upload :post="$post ?? null" />
 
-    {{-- 🔹 YouTube URL Field --}}
     <x-posts.youtube-field :post="$post ?? null" />
 
-    {{-- 🔹 Category --}}
     <div class="mb-6">
         @if (session('last_category_id'))
-            {{-- Ja atnācis no konkrētas kategorijas --}}
             <input type="hidden" name="category_id" value="{{ session('last_category_id') }}">
             <p class="text-sm text-gray-600 dark:text-gray-300">
                 Creating post in:
                 <strong>{{ \App\Models\Category::find(session('last_category_id'))->name }}</strong>
             </p>
         @else
-            {{-- Ja nav izvēlēta kategorija, rādām dropdown --}}
             <label class="block mb-2 font-semibold text-gray-800 dark:text-gray-200">Category</label>
             <select name="category_id" required
                     class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg 
@@ -56,7 +51,6 @@
         @endif
     </div>
 
-    {{-- 🔹 Back / Cancel + Save buttons --}}
     @php
         $backRoute = session('last_category_id')
             ? route('posts.byCategory', session('last_category_id'))
