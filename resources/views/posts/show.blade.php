@@ -1,5 +1,12 @@
 <x-app-layout>
-    <x-back-button :route="route('posts.index')" />
+@php
+    $backRoute = session('last_category_id')
+        ? route('posts.byCategory', session('last_category_id'))
+        : route('posts.index');
+@endphp
+
+<x-back-button :route="$backRoute" />
+
     <div class="max-w-4xl mx-auto py-6 space-y-6">
 
 

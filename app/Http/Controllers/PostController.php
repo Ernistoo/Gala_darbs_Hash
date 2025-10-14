@@ -30,8 +30,10 @@ class PostController extends Controller
 
     public function create()
     {
-        $categories = Category::all();
-        return view('posts.create', compact('categories'));
+        $categories = \App\Models\Category::all();
+    $defaultCategoryId = session('last_category_id'); 
+
+    return view('posts.create', compact('categories', 'defaultCategoryId'));
     }
 
 
@@ -49,13 +51,24 @@ class PostController extends Controller
             $data['image'] = $request->file('image')->store('posts', 'public');
         }
 
+        if ($data['youtube_url']) {
+            if (preg_match('/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $data['youtube_url'], $matches)) {
+                $data['youtube_thumbnail'] = "https://img.youtube.com/vi/{$matches[1]}/hqdefault.jpg";
+            }
+        }
+
         $data['user_id'] = auth()->id();
 
         Post::create($data);
 
         app(\App\Services\BadgeService::class)->checkAndAssign($request->user());
 
-        return redirect()->route('posts.index')->with('success', 'Post created successfully!');
+        return redirect()->route(
+            session('last_category_id')
+                ? 'posts.byCategory'
+                : 'posts.index',
+            session('last_category_id') ?? []
+        )->with('success', 'Post created successfully!');
     }
 
 
@@ -157,8 +170,10 @@ class PostController extends Controller
     public function byCategory($id)
     {
         $category = \App\Models\Category::findOrFail($id);
-        $posts = $category->posts()->latest()->get();
+        session(['last_category_id' => $id]);
 
-        return view('posts.category', compact('category', 'posts'));
+    $posts = $category->posts()->latest()->get();
+
+    return view('posts.category', compact('category', 'posts'));
     }
 }

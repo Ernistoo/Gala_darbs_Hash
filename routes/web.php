@@ -55,7 +55,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::resource('posts', PostController::class);
 
-    Route::get('/categories/{category}', [PostController::class, 'byCategory'])->name('posts.byCategory');
+    Route::get('/posts/category/{category}', [PostController::class, 'byCategory'])
+    ->name('posts.byCategory');
 
     Route::post('posts/{post}/like', [PostController::class, 'like'])->name('posts.like')->middleware('auth');
     Route::delete('posts/{post}/unlike', [PostController::class, 'unlike'])->name('posts.unlike')->middleware('auth');

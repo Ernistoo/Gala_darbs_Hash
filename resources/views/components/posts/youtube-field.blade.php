@@ -1,9 +1,21 @@
 @props(['post' => null])
 
-<div class="mb-6">
+<div class="mb-6" 
+     x-data="{
+        youtubeUrl: '{{ old('youtube_url', $post->youtube_url ?? '') }}',
+        get videoId() {
+            const match = this.youtubeUrl.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+            return match ? match[1] : null;
+        },
+        get thumbnail() {
+            return this.videoId ? `https://img.youtube.com/vi/${this.videoId}/hqdefault.jpg` : null;
+        }
+     }">
+
     <label for="youtube_url" class="block mb-2 font-semibold text-gray-800 dark:text-gray-200">
         YouTube URL
     </label>
+
     <div class="flex items-center">
         <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -14,7 +26,7 @@
             type="url"
             id="youtube_url"
             name="youtube_url"
-            value="{{ old('youtube_url', $post->youtube_url ?? '') }}"
+            x-model="youtubeUrl"
             placeholder="https://www.youtube.com/watch?v=XXXX"
             class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-r-lg input-focus focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition">
     </div>
@@ -22,4 +34,12 @@
     @error('youtube_url')
         <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
     @enderror
+
+    {{-- 🖼️ Thumbnail priekšskatījums --}}
+    <template x-if="thumbnail">
+        <div class="mt-4">
+            <p class="text-gray-600 dark:text-gray-300 mb-2">Thumbnail preview:</p>
+            <img :src="thumbnail" alt="YouTube thumbnail" class="rounded-xl shadow-lg w-full max-w-md">
+        </div>
+    </template>
 </div>
