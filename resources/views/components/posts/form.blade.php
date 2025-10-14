@@ -5,7 +5,6 @@
     @csrf
     @if($update ?? false) @method('PUT') @endif
 
-    {{-- 🔹 Title --}}
     <div class="mb-6">
         <label class="block mb-2 font-semibold text-gray-800 dark:text-gray-200">Title</label>
         <input type="text" name="title"
@@ -15,7 +14,6 @@
         @error('title') <p class="text-red-500 text-sm mt-2">{{ $message }}</p> @enderror
     </div>
 
-    {{-- 🔹 Content --}}
     <div class="mb-6">
         <label class="block mb-2 font-semibold text-gray-800 dark:text-gray-200">Content</label>
         <textarea name="content" rows="5"
