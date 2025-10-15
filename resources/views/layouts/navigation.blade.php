@@ -96,15 +96,10 @@
         <a href="{{ route('users.show', auth()->user()) }}"
             class="flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition">
 
-            <img src="{{ 
-            auth()->user()->profile_photo
-                ? (Str::startsWith(auth()->user()->profile_photo, 'http')
-                    ? auth()->user()->profile_photo
-                    : asset('storage/' . auth()->user()->profile_photo))
-                : asset('default-avatar.png')
-        }}"
-                alt="{{ auth()->user()->name }}"
-                class="w-12 h-12 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600" />
+            <img src="{{ userAvatar(auth()->user()->profile_photo) }}"
+     alt="{{ auth()->user()->name }}"
+     class="w-12 h-12 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600" />
+
 
             <div>
                 <p class="font-semibold text-gray-800 dark:text-gray-200">{{ auth()->user()->name }}</p>

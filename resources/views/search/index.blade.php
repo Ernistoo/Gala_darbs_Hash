@@ -57,13 +57,7 @@
                     <template x-for="user in results.users" :key="user.id">
                         <a :href="'/users/' + user.id"
                             class="flex items-center gap-3 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition">
-                            <img
-                                :src="user.profile_photo 
-        ? (user.profile_photo.startsWith('http') 
-            ? user.profile_photo 
-            : '/storage/' + user.profile_photo) 
-        : '/default-avatar.png'"
-                                class="w-10 h-10 rounded-full object-cover border border-gray-300 dark:border-gray-600">
+                            <img :src="user.profile_photo ? (user.profile_photo.startsWith('http') ? user.profile_photo : '/storage/' + user.profile_photo) : '/default-avatar.png'" class="w-10 h-10 rounded-full object-cover border border-gray-300 dark:border-gray-600">
                             <div>
                                 <p class="font-semibold text-gray-900 dark:text-gray-100" x-text="user.name"></p>
                                 <p class="text-sm text-gray-500 dark:text-gray-400" x-text="'@' + (user.username ?? '')"></p>

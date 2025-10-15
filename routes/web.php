@@ -37,6 +37,7 @@ Route::get('/admin', function () {
     }
     return view('admin');
 })->middleware(['auth', 'verified'])->name('admin');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/challenges/create', [ChallengeController::class, 'create'])->name('challenges.create');
     Route::post('/admin/challenges', [ChallengeController::class, 'store'])->name('challenges.store');
@@ -160,6 +161,6 @@ Route::delete('/friends/{user}/remove', [FriendshipController::class, 'remove'])
     ->middleware('auth')
     ->name('friends.remove');
 
-    Route::post('/challenges/{challenge}/close', [ChallengeController::class, 'close'])
+Route::post('/challenges/{challenge}/close', [ChallengeController::class, 'close'])
     ->name('challenges.close')
     ->middleware('auth');

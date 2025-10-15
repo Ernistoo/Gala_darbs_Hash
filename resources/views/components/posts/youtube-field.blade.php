@@ -35,7 +35,7 @@
         <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
     @enderror
 
-    {{-- 🖼️ Thumbnail priekšskatījums --}}
+    
     <template x-if="thumbnail">
         <div class="mt-4">
             <p class="text-gray-600 dark:text-gray-300 mb-2">Thumbnail preview:</p>

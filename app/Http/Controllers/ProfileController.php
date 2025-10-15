@@ -28,7 +28,7 @@ class ProfileController extends Controller
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'bio' => 'nullable|string|max:500',
             'profile_photo' => 'nullable|image|max:5120',
-            'profile_photo_cropped' => 'nullable|string', // base64
+            'profile_photo_cropped' => 'nullable|string', 
         ]);
 
         if ($user->profile_photo && ($request->hasFile('profile_photo') || $request->filled('profile_photo_cropped'))) {
