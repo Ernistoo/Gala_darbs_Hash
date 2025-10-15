@@ -1,5 +1,9 @@
 <x-guest-layout>
-
+<div class="flex justify-center mb-6">
+        <a href="{{ url('/') }}">
+            <x-application-logo class="w-20 h-20 fill-current text-gray-800 dark:text-gray-200" />
+        </a>
+    </div>
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     <form method="POST" action="{{ route('login') }}">
