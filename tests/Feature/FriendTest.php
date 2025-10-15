@@ -8,13 +8,16 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 it('allows user to send friend requests', function () {
+    // izveido divus lietotājus: sūtītāju un saņēmēju
     $sender = User::factory()->create();
     $receiver = User::factory()->create();
 
+    // pieslēdzas kā sūtītājs un nosūta draudzības pieprasījumu
     actingAs($sender)
         ->post(route('friends.send', $receiver))
-        ->assertRedirect();
+        ->assertRedirect(); // Pārbauda, vai pēc nosūtīšanas notiek pāradresācija
 
+    // pārbauda, vai datubāzē ir izveidots ieraksts ar pareizo statusu "pending"
     expect(Friendship::where('user_id', $sender->id)
         ->where('friend_id', $receiver->id)
         ->where('status', 'pending')

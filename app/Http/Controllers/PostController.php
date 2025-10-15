@@ -57,6 +57,11 @@ class PostController extends Controller
             }
         }
 
+        if (!$request->hasFile('image') && !$request->filled('youtube_url')) {
+            return back()
+                ->withErrors(['media' => 'You must upload an image or provide a YouTube URL.'])
+                ->withInput();
+        }
         $data['user_id'] = auth()->id();
 
         Post::create($data);
@@ -116,6 +121,12 @@ class PostController extends Controller
                 unlink(storage_path('app/public/' . $post->image));
             }
             $data['image'] = $request->file('image')->store('posts', 'public');
+        }
+
+        if (!$request->hasFile('image') && !$request->filled('youtube_url')) {
+            return back()
+                ->withErrors(['media' => 'You must upload an image or provide a YouTube URL.'])
+                ->withInput();
         }
 
         $post->update($data);
