@@ -64,6 +64,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::post('/comments/{comment}/pin', [CommentController::class, 'pin'])->name('comments.pin');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {

@@ -91,11 +91,11 @@
         </form>
         @endif
 
-        @if(auth()->id() === $comment->user_id)
-        <form action="{{ route('comments.destroy', $comment) }}" method="POST">
-            @csrf @method('DELETE')
-            <button class="text-red-500">🗑</button>
-        </form>
-        @endif
+        @if(auth()->id() === $comment->user_id || auth()->id() === $comment->post->user_id)
+<form action="{{ route('comments.destroy', $comment) }}" method="POST" onsubmit="return confirm('Delete this comment?')">
+    @csrf @method('DELETE')
+    <button class="text-red-500 hover:text-red-700">🗑</button>
+</form>
+@endif
     </div>
 </div>

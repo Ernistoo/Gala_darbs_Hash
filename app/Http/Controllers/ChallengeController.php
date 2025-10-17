@@ -63,7 +63,7 @@ class ChallengeController extends Controller
             'description' => $request->description,
             'image' => $path,
             'start_date' => now(),
-            'deadline' => now()->addMinute(),
+            'deadline' => now()->addWeek(),
         ]);
 
         return redirect()->route('challenges.index')->with('success', 'Challenge created!');
