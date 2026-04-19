@@ -5,7 +5,7 @@ import Cropper from "cropperjs";
 
 window.Alpine = Alpine;
 
-//drag n drop
+// Drag and drop image upload
 function initImageUpload(area) {
     const fileInput = area.querySelector('input[type="file"]');
     const dragContent = area.querySelector("#drag-content");
@@ -87,7 +87,7 @@ Alpine.data("dropdown", () => ({
 
 Alpine.start();
 
-//themes
+// Theme toggle
 document.addEventListener("DOMContentLoaded", () => {
     const btn = document.getElementById("theme-toggle");
     const darkIcon = document.getElementById("theme-toggle-dark-icon");
@@ -112,14 +112,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-//upvotes
+// Upvotes
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".upvote-btn").forEach((btn) => {
         btn.addEventListener("click", async function () {
             const submissionId = this.dataset.submissionId;
             const icon = this.querySelector(".upvote-icon");
             const countEl = this.nextElementSibling;
-            const token = document.querySelector('meta[name="csrf-token"]').content;
+            const token = document.querySelector(
+                'meta[name="csrf-token"]',
+            ).content;
 
             try {
                 const res = await fetch(`/submissions/${submissionId}/vote`, {
@@ -133,7 +135,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!res.ok) return;
                 const data = await res.json();
 
-                icon.classList.toggle("text-green-500", data.status === "upvoted");
+                icon.classList.toggle(
+                    "text-green-500",
+                    data.status === "upvoted",
+                );
                 countEl.textContent = data.votes_count;
             } catch (err) {
                 console.error(err);
@@ -142,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-//likes
+// Likes
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".like-btn").forEach((btn) => {
         btn.addEventListener("click", async function (e) {
@@ -152,19 +157,23 @@ document.addEventListener("DOMContentLoaded", () => {
             const isLiked = this.dataset.liked === "true";
             const icon = this.querySelector(".like-icon");
             const countEl = this.querySelector(".like-count");
-            const token = document.querySelector('meta[name="csrf-token"]').content;
+            const token = document.querySelector(
+                'meta[name="csrf-token"]',
+            ).content;
 
             this.disabled = true;
             try {
                 const res = await fetch(
-                    isLiked ? `/posts/${postId}/unlike` : `/posts/${postId}/like`,
+                    isLiked
+                        ? `/posts/${postId}/unlike`
+                        : `/posts/${postId}/like`,
                     {
                         method: isLiked ? "DELETE" : "POST",
                         headers: {
                             "X-CSRF-TOKEN": token,
                             Accept: "application/json",
                         },
-                    }
+                    },
                 );
                 if (!res.ok) return;
                 const data = await res.json();
@@ -181,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-//cropper.js
+// Cropper.js
 document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("profile_photo");
     const preview = document.getElementById("profile-photo-preview");
@@ -226,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-//mentions
+// Mentions
 document.addEventListener("DOMContentLoaded", () => {
     const textarea = document.querySelector('textarea[name="content"]');
     const dropdown = document.getElementById("mention-dropdown");
@@ -242,7 +251,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!query) return dropdown.classList.add("hidden");
 
         try {
-            const res = await fetch(`/mentions/search?q=${encodeURIComponent(query)}`);
+            const res = await fetch(
+                `/mentions/search?q=${encodeURIComponent(query)}`,
+            );
             const users = await res.json();
             dropdown.innerHTML = "";
             users.forEach((u) => {
@@ -252,7 +263,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 el.innerHTML = `<img src="${u.profile_photo ? "/storage/" + u.profile_photo : "/default-avatar.png"}" class="w-6 h-6 rounded-full"><span>@${u.username}</span>`;
                 el.addEventListener("click", () => {
                     textarea.value =
-                        text.substring(0, cursor).replace(/@\w*$/, `@${u.username} `) +
+                        text
+                            .substring(0, cursor)
+                            .replace(/@\w*$/, `@${u.username} `) +
                         text.substring(cursor);
                     dropdown.classList.add("hidden");
                 });
@@ -263,4 +276,285 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error(err);
         }
     });
+});
+
+// ========================
+// CHAT FUNCTIONALITY (Enhanced UI)
+// ========================
+
+const currentUserId = document.querySelector('meta[name="user-id"]')?.content;
+let currentFriendId = null;
+let pendingImageFile = null;
+
+// ---------- Modal Open/Close ----------
+window.openChatModal = function (friendId, friendName, friendAvatar) {
+    currentFriendId = friendId;
+    document.getElementById("chat-friend-name").textContent = friendName;
+    document.getElementById("chat-friend-avatar").src = friendAvatar;
+    document.getElementById("chat-modal").classList.remove("hidden");
+    document.getElementById("chat-message-input").focus();
+
+    // Reset image preview
+    pendingImageFile = null;
+    document.getElementById("image-preview").classList.add("hidden");
+    document.getElementById("chat-image-input").value = "";
+
+    loadMessages(friendId);
+
+    if (window.Echo && currentUserId) {
+        window.Echo.private(`user.${currentUserId}`).listen(
+            "MessageSent",
+            (e) => {
+                const msg = e.message;
+                if (
+                    msg.receiver_id == currentUserId &&
+                    currentFriendId != msg.sender_id
+                ) {
+                    showMessageToast(msg);
+                }
+                if (
+                    msg.sender_id == currentFriendId ||
+                    msg.receiver_id == currentFriendId
+                ) {
+                    appendMessage(msg, msg.sender_id == currentUserId);
+                }
+            },
+        );
+    }
+};
+
+window.closeChatModal = function () {
+    document.getElementById("chat-modal").classList.add("hidden");
+    currentFriendId = null;
+    pendingImageFile = null;
+    document.getElementById("image-preview").classList.add("hidden");
+};
+
+// ---------- Load Conversation ----------
+async function loadMessages(friendId) {
+    const container = document.getElementById("chat-messages");
+    container.innerHTML =
+        '<div class="text-center text-gray-500 dark:text-gray-400 py-8">Loading...</div>';
+    try {
+        const response = await fetch(`/chat/${friendId}`);
+        const data = await response.json();
+        container.innerHTML = "";
+        if (data.messages.length === 0) {
+            container.innerHTML =
+                '<div class="text-center text-gray-500 dark:text-gray-400 py-8">No messages yet. Say hello!</div>';
+        } else {
+            data.messages.forEach((msg) => appendMessage(msg, msg.is_mine));
+        }
+        scrollToBottom();
+    } catch (error) {
+        console.error("Failed to load messages:", error);
+        container.innerHTML =
+            '<div class="text-center text-red-500 py-8">Failed to load messages</div>';
+    }
+}
+
+// ---------- Render Message (Enhanced UI) ----------
+function appendMessage(message, isMine) {
+    const container = document.getElementById("chat-messages");
+    // Remove placeholder
+    if (
+        container.children.length === 1 &&
+        container.children[0].classList.contains("text-center")
+    ) {
+        container.innerHTML = "";
+    }
+
+    const messageDiv = document.createElement("div");
+    messageDiv.className = `flex ${isMine ? "justify-end" : "justify-start"} animate-fade-in-up`;
+
+    const bubble = document.createElement("div");
+    bubble.className = `max-w-[75%] px-4 py-3 rounded-2xl shadow-sm ${
+        isMine
+            ? "bg-gradient-to-br from-purple-600 to-purple-700 text-white rounded-br-md"
+            : "bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-bl-md border border-gray-200 dark:border-gray-600"
+    }`;
+
+    let content = "";
+
+    if (message.message) {
+        content += `<p class="text-sm leading-relaxed break-words">${escapeHtml(message.message)}</p>`;
+    }
+
+    // Image attachment
+    if (message.attachment_type === "image" && message.attachment_data) {
+        content += `
+            <a href="${message.attachment_data.url}" target="_blank" class="block mt-2">
+                <img src="${message.attachment_data.url}" class="rounded-lg max-w-full max-h-64 object-cover shadow-sm">
+            </a>
+        `;
+    }
+
+    // Shared post
+    if (message.attachment_type === "post" && message.attachment_data) {
+        const att = message.attachment_data;
+        content += `
+            <a href="${att.url}" target="_blank" class="block mt-2 group">
+                <div class="rounded-xl overflow-hidden border-2 ${isMine ? "border-purple-400/50" : "border-gray-200 dark:border-gray-600"} shadow-md transition-transform group-hover:scale-[1.02]">
+                    <img src="${att.image || "/images/placeholder.png"}" class="w-full h-36 object-cover">
+                    <div class="p-3 ${isMine ? "bg-purple-800/50" : "bg-gray-50 dark:bg-gray-800"}">
+                        <p class="font-semibold text-sm truncate ${isMine ? "text-white" : "text-gray-900 dark:text-gray-100"}">${att.title}</p>
+                        <p class="text-xs ${isMine ? "text-purple-200" : "text-gray-500 dark:text-gray-400"} mt-1">Tap to view post</p>
+                    </div>
+                </div>
+            </a>
+        `;
+    }
+
+    // Timestamp
+    content += `<span class="text-xs ${isMine ? "text-purple-200" : "text-gray-400 dark:text-gray-500"} block mt-1.5 text-right">${message.created_at}</span>`;
+
+    bubble.innerHTML = content;
+    messageDiv.appendChild(bubble);
+    container.appendChild(messageDiv);
+    scrollToBottom();
+}
+
+function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function scrollToBottom() {
+    const container = document.getElementById("chat-messages");
+    container.scrollTop = container.scrollHeight;
+}
+
+// ---------- Send Message with Optional Image ----------
+async function sendMessage() {
+    const input = document.getElementById("chat-message-input");
+    const message = input.value.trim();
+
+    if ((!message && !pendingImageFile) || !currentFriendId) return;
+
+    input.disabled = true;
+    document.getElementById("send-message-btn").disabled = true;
+
+    const formData = new FormData();
+    formData.append("receiver_id", currentFriendId);
+    formData.append("message", message || "");
+    if (pendingImageFile) {
+        formData.append("attachment", pendingImageFile);
+    }
+
+    try {
+        const response = await fetch("/chat/send", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector(
+                    'meta[name="csrf-token"]',
+                ).content,
+                Accept: "application/json",
+            },
+            body: formData,
+        });
+
+        const data = await response.json();
+        if (data.status === "sent") {
+            appendMessage(data.message, true);
+            input.value = "";
+            // Clear image preview
+            pendingImageFile = null;
+            document.getElementById("image-preview").classList.add("hidden");
+            document.getElementById("chat-image-input").value = "";
+        }
+    } catch (error) {
+        console.error("Failed to send message:", error);
+        alert("Failed to send message. Please try again.");
+    } finally {
+        input.disabled = false;
+        document.getElementById("send-message-btn").disabled = false;
+        input.focus();
+    }
+}
+
+// ---------- Toast Notification ----------
+function showMessageToast(message) {
+    const toast = document.createElement("div");
+    toast.className =
+        "fixed bottom-4 right-4 bg-white dark:bg-gray-800 border border-purple-500 rounded-lg shadow-lg p-4 flex items-center gap-3 z-50 transition-opacity";
+    toast.innerHTML = `
+        <img src="${message.sender.profile_photo ? "/storage/" + message.sender.profile_photo : "/default-avatar.png"}" 
+             class="w-10 h-10 rounded-full border-2 border-purple-500">
+        <div>
+            <p class="font-semibold text-gray-900 dark:text-gray-100">${message.sender.name}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">${escapeHtml(message.message)}</p>
+        </div>
+        <button class="ml-4 text-gray-400 hover:text-gray-600" onclick="this.parentElement.remove()">✕</button>
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+}
+
+// ---------- Event Listeners ----------
+document.addEventListener("DOMContentLoaded", function () {
+    // Send message
+    const sendBtn = document.getElementById("send-message-btn");
+    if (sendBtn) sendBtn.addEventListener("click", sendMessage);
+
+    const msgInput = document.getElementById("chat-message-input");
+    if (msgInput) {
+        msgInput.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    }
+
+    // Close modal
+    const modal = document.getElementById("chat-modal");
+    if (modal) {
+        modal.addEventListener("click", function (e) {
+            if (e.target === modal) closeChatModal();
+        });
+    }
+
+    // Delegate chat button clicks (from friends page)
+    document.addEventListener("click", function (e) {
+        const chatBtn = e.target.closest(".chat-btn");
+        if (chatBtn) {
+            const friendId = chatBtn.dataset.chatFriendId;
+            const friendName = chatBtn.dataset.chatFriendName;
+            const friendAvatar = chatBtn.dataset.chatFriendAvatar;
+            if (friendId)
+                window.openChatModal(friendId, friendName, friendAvatar);
+        }
+    });
+
+    // Image upload handling
+    const imageInput = document.getElementById("chat-image-input");
+    const attachImageBtn = document.getElementById("attach-image-btn");
+    if (attachImageBtn && imageInput) {
+        attachImageBtn.addEventListener("click", () => imageInput.click());
+        imageInput.addEventListener("change", function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                pendingImageFile = file;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    document.getElementById("image-preview-img").src =
+                        ev.target.result;
+                    document
+                        .getElementById("image-preview")
+                        .classList.remove("hidden");
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    const removePreviewBtn = document.getElementById("remove-image-preview");
+    if (removePreviewBtn) {
+        removePreviewBtn.addEventListener("click", function () {
+            pendingImageFile = null;
+            document.getElementById("image-preview").classList.add("hidden");
+            document.getElementById("chat-image-input").value = "";
+        });
+    }
 });

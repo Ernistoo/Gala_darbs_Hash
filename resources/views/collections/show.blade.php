@@ -1,7 +1,7 @@
 <x-app-layout>
-<x-header>        
-   
-</x-header>
+    <x-header>
+
+    </x-header>
     <x-back-button :route="route('collections.index')" />
     <div class="max-w-4xl mx-auto py-6 space-y-6">
 
