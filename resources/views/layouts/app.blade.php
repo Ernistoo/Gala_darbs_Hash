@@ -103,25 +103,21 @@
         </div>
     </div>
     @include('partials.send-chat-modal')
-    <!-- Image Lightbox Modal -->
-<div id="lightbox-modal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-modal="true">
-    <div class="flex items-center justify-center min-h-screen p-4">
-        <!-- Backdrop -->
-        <div class="fixed inset-0 bg-black/90 dark:bg-black/95 backdrop-blur-sm transition-opacity" onclick="closeLightbox()"></div>
-        
-        <!-- Close Button -->
-        <button onclick="closeLightbox()" class="absolute top-4 right-4 z-10 p-2 text-white/70 hover:text-white bg-black/20 hover:bg-black/40 rounded-full transition">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
-        
-        <!-- Image Container -->
-        <div class="relative max-w-6xl max-h-[90vh] z-10">
-            <img id="lightbox-image" src="" alt="" class="w-full h-full object-contain rounded-lg shadow-2xl">
+    <div id="lightbox-modal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="fixed inset-0 bg-black/90 dark:bg-black/95 backdrop-blur-sm transition-opacity" onclick="closeLightbox()"></div>
+
+            <button onclick="closeLightbox()" class="absolute top-4 right-4 z-10 p-2 text-white/70 hover:text-white bg-black/20 hover:bg-black/40 rounded-full transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+
+            <div class="relative max-w-6xl max-h-[90vh] z-10">
+                <img id="lightbox-image" src="" alt="" class="w-full h-full object-contain rounded-lg shadow-2xl">
+            </div>
         </div>
     </div>
-</div>
 </body>
 
 </html>

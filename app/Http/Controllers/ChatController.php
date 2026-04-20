@@ -12,12 +12,10 @@ use App\Notifications\MessageReceived;
 
 class ChatController extends Controller
 {
-    // Get chat history with a specific friend
     public function index(User $user)
     {
         $authUserId = Auth::id();
 
-        // Fetch conversation between auth user and selected friend
         $messages = Message::where(function ($query) use ($user, $authUserId) {
             $query->where('sender_id', $authUserId)
                 ->where('receiver_id', $user->id);
@@ -26,7 +24,6 @@ class ChatController extends Controller
                 ->where('receiver_id', $authUserId);
         })->orderBy('created_at')->get();
 
-        // Mark unread messages as read
         Message::where('sender_id', $user->id)
             ->where('receiver_id', $authUserId)
             ->where('is_read', false)
@@ -54,7 +51,6 @@ class ChatController extends Controller
         ]);
     }
 
-    // Send a new message
     public function store(Request $request)
     {
         $request->validate([
@@ -68,7 +64,6 @@ class ChatController extends Controller
         $attachmentData = null;
         $attachmentType = null;
 
-        // Handle image upload
         if ($request->hasFile('attachment')) {
             $path = $request->file('attachment')->store('chat_attachments', 'public');
             $attachmentType = 'image';
@@ -78,7 +73,6 @@ class ChatController extends Controller
             ];
         }
 
-        // Handle shared post (collections removed)
         if ($request->filled('attachment_type') && $request->attachment_type === 'post') {
             $post = Post::findOrFail($request->attachment_id);
             $attachmentType = 'post';

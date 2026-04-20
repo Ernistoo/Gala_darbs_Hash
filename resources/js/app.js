@@ -5,7 +5,6 @@ import Cropper from "cropperjs";
 
 window.Alpine = Alpine;
 
-// Drag and drop image upload
 function initImageUpload(area) {
     const fileInput = area.querySelector('input[type="file"]');
     const dragContent = area.querySelector("#drag-content");
@@ -56,9 +55,12 @@ function initImageUpload(area) {
     fileInput.addEventListener("change", () => handleFiles(fileInput.files));
     removeButton?.addEventListener("click", removeImage);
 
-    // 🛠️ FIX: Only open file dialog if click is NOT on an interactive element
     area.addEventListener("click", (e) => {
-        if (e.target.closest('input, button, select, textarea, a, label, #remove-image')) {
+        if (
+            e.target.closest(
+                "input, button, select, textarea, a, label, #remove-image",
+            )
+        ) {
             return;
         }
         fileInput.click();
@@ -93,7 +95,6 @@ Alpine.data("dropdown", () => ({
 
 Alpine.start();
 
-// Theme toggle
 document.addEventListener("DOMContentLoaded", () => {
     const btn = document.getElementById("theme-toggle");
     const darkIcon = document.getElementById("theme-toggle-dark-icon");
@@ -118,7 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Upvotes
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".upvote-btn").forEach((btn) => {
         btn.addEventListener("click", async function () {
@@ -153,7 +153,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Likes
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".like-btn").forEach((btn) => {
         btn.addEventListener("click", async function (e) {
@@ -196,7 +195,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Cropper.js
 document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("profile_photo");
     const preview = document.getElementById("profile-photo-preview");
@@ -241,7 +239,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Mentions
 document.addEventListener("DOMContentLoaded", () => {
     const textarea = document.querySelector('textarea[name="content"]');
     const dropdown = document.getElementById("mention-dropdown");
@@ -284,15 +281,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// ========================
-// CHAT FUNCTIONALITY (Enhanced UI)
-// ========================
-
 const currentUserId = document.querySelector('meta[name="user-id"]')?.content;
 let currentFriendId = null;
 let pendingImageFile = null;
 
-// ---------- Modal Open/Close ----------
 window.openChatModal = function (friendId, friendName, friendAvatar) {
     currentFriendId = friendId;
     document.getElementById("chat-friend-name").textContent = friendName;
@@ -300,7 +292,6 @@ window.openChatModal = function (friendId, friendName, friendAvatar) {
     document.getElementById("chat-modal").classList.remove("hidden");
     document.getElementById("chat-message-input").focus();
 
-    // Reset image preview
     pendingImageFile = null;
     document.getElementById("image-preview").classList.add("hidden");
     document.getElementById("chat-image-input").value = "";
@@ -336,7 +327,6 @@ window.closeChatModal = function () {
     document.getElementById("image-preview").classList.add("hidden");
 };
 
-// ---------- Load Conversation ----------
 async function loadMessages(friendId) {
     const container = document.getElementById("chat-messages");
     container.innerHTML =
@@ -359,7 +349,6 @@ async function loadMessages(friendId) {
     }
 }
 
-// ---------- Render Message (Enhanced UI) ----------
 function appendMessage(message, isMine) {
     const container = document.getElementById("chat-messages");
     // Remove placeholder
@@ -386,7 +375,6 @@ function appendMessage(message, isMine) {
         content += `<p class="text-sm leading-relaxed break-words">${escapeHtml(message.message)}</p>`;
     }
 
-    // Image attachment
     if (message.attachment_type === "image" && message.attachment_data) {
         content += `
             <a href="${message.attachment_data.url}" target="_blank" class="block mt-2">
@@ -395,7 +383,6 @@ function appendMessage(message, isMine) {
         `;
     }
 
-    // Shared post
     if (message.attachment_type === "post" && message.attachment_data) {
         const att = message.attachment_data;
         content += `
@@ -411,7 +398,6 @@ function appendMessage(message, isMine) {
         `;
     }
 
-    // Timestamp
     content += `<span class="text-xs ${isMine ? "text-purple-200" : "text-gray-400 dark:text-gray-500"} block mt-1.5 text-right">${message.created_at}</span>`;
 
     bubble.innerHTML = content;
@@ -431,7 +417,6 @@ function scrollToBottom() {
     container.scrollTop = container.scrollHeight;
 }
 
-// ---------- Send Message with Optional Image ----------
 async function sendMessage() {
     const input = document.getElementById("chat-message-input");
     const message = input.value.trim();
@@ -464,7 +449,6 @@ async function sendMessage() {
         if (data.status === "sent") {
             appendMessage(data.message, true);
             input.value = "";
-            // Clear image preview
             pendingImageFile = null;
             document.getElementById("image-preview").classList.add("hidden");
             document.getElementById("chat-image-input").value = "";
@@ -479,7 +463,6 @@ async function sendMessage() {
     }
 }
 
-// ---------- Toast Notification ----------
 function showMessageToast(message) {
     const toast = document.createElement("div");
     toast.className =
@@ -497,7 +480,6 @@ function showMessageToast(message) {
     setTimeout(() => toast.remove(), 5000);
 }
 
-// ---------- Event Listeners ----------
 document.addEventListener("DOMContentLoaded", function () {
     // Send message
     const sendBtn = document.getElementById("send-message-btn");
@@ -513,7 +495,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Close modal
     const modal = document.getElementById("chat-modal");
     if (modal) {
         modal.addEventListener("click", function (e) {
@@ -521,7 +502,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Delegate chat button clicks (from friends page)
     document.addEventListener("click", function (e) {
         const chatBtn = e.target.closest(".chat-btn");
         if (chatBtn) {
@@ -533,7 +513,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Image upload handling
     const imageInput = document.getElementById("chat-image-input");
     const attachImageBtn = document.getElementById("attach-image-btn");
     if (attachImageBtn && imageInput) {
@@ -563,92 +542,28 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("chat-image-input").value = "";
         });
     }
-    window.openLightbox = function(imageSrc) {
-        const modal = document.getElementById('lightbox-modal');
-        const img = document.getElementById('lightbox-image');
+    window.openLightbox = function (imageSrc) {
+        const modal = document.getElementById("lightbox-modal");
+        const img = document.getElementById("lightbox-image");
         img.src = imageSrc;
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
+        modal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
     };
-    
-    window.closeLightbox = function() {
-        const modal = document.getElementById('lightbox-modal');
-        modal.classList.add('hidden');
-        document.body.style.overflow = ''; // Restore scrolling
+
+    window.closeLightbox = function () {
+        const modal = document.getElementById("lightbox-modal");
+        modal.classList.add("hidden");
+        document.body.style.overflow = "";
     };
-    
-    // Close on Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
             closeLightbox();
         }
     });
-    const videoFileInput = document.querySelector('input[type="file"][name="video"]');
-if (videoFileInput) {
-    const videoArea = videoFileInput.closest('.video-upload-area');
-    if (videoArea) {
-        const dragContent = videoArea.querySelector('.video-drag-content');
-        const previewContainer = videoArea.querySelector('.video-preview-container');
-        const videoPreview = videoArea.querySelector('.video-preview');
-        const removeButton = videoArea.querySelector('.remove-video');
-
-        if (dragContent && previewContainer) {
-            const handleVideoFile = (file) => {
-                if (!file || !file.type.startsWith('video/')) return;
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    if (videoPreview) videoPreview.src = e.target.result;
-                    dragContent.classList.add('hidden');
-                    previewContainer.classList.remove('hidden');
-                };
-                reader.readAsDataURL(file);
-            };
-
-            videoArea.addEventListener('click', (e) => {
-                // Prevent opening file dialog when clicking on interactive elements or remove button
-                if (e.target.closest('input, button, select, textarea, a, label, .remove-video')) {
-                    return;
-                }
-                videoFileInput.click();
-            });
-
-            videoFileInput.addEventListener('change', () => {
-                handleVideoFile(videoFileInput.files[0]);
-            });
-
-            ['dragenter', 'dragover'].forEach((eventName) => {
-                videoArea.addEventListener(eventName, (e) => {
-                    e.preventDefault();
-                    videoArea.classList.add('border-purple-500');
-                });
-            });
-
-            ['dragleave', 'drop'].forEach((eventName) => {
-                videoArea.addEventListener(eventName, (e) => {
-                    e.preventDefault();
-                    videoArea.classList.remove('border-purple-500');
-                });
-            });
-
-            videoArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                handleVideoFile(e.dataTransfer.files[0]);
-            });
-
-            removeButton?.addEventListener('click', (e) => {
-                e.stopPropagation();
-                videoFileInput.value = '';
-                if (videoPreview) videoPreview.src = '';
-                previewContainer.classList.add('hidden');
-                dragContent.classList.remove('hidden');
-            });
-        }
-    }
-}
-
 
     document.addEventListener("DOMContentLoaded", () => {
-        const el = document.getElementById('countdown');
+        const el = document.getElementById("countdown");
         if (!el) return;
 
         const deadline = parseInt(el.dataset.deadline) * 1000;
@@ -656,7 +571,7 @@ if (videoFileInput) {
         function tick() {
             const diff = deadline - Date.now();
             if (diff <= 0) {
-                el.textContent = '⏰ Challenge ended';
+                el.textContent = "⏰ Challenge ended";
                 return;
             }
             const days = Math.floor(diff / 86400000);
@@ -674,32 +589,36 @@ if (videoFileInput) {
     let sendItemType = null;
     let sendItemId = null;
 
-    window.openSendChatModal = function(type, id) {
+    window.openSendChatModal = function (type, id) {
         sendItemType = type;
         sendItemId = id;
-        document.getElementById('send-chat-modal').classList.remove('hidden');
+        document.getElementById("send-chat-modal").classList.remove("hidden");
         loadFriendsList();
     };
 
-    window.closeSendChatModal = function() {
-        document.getElementById('send-chat-modal').classList.add('hidden');
+    window.closeSendChatModal = function () {
+        document.getElementById("send-chat-modal").classList.add("hidden");
     };
 
     async function loadFriendsList() {
-        const container = document.getElementById('friend-list-container');
-        container.innerHTML = '<p class="text-center text-gray-500">Loading friends...</p>';
+        const container = document.getElementById("friend-list-container");
+        container.innerHTML =
+            '<p class="text-center text-gray-500">Loading friends...</p>';
 
         try {
-            const res = await fetch('/friends/list');
-            if (!res.ok) throw new Error('Failed to fetch');
+            const res = await fetch("/friends/list");
+            if (!res.ok) throw new Error("Failed to fetch");
             const friends = await res.json();
 
             if (friends.length === 0) {
-                container.innerHTML = '<p class="text-center text-gray-500">You have no friends yet.</p>';
+                container.innerHTML =
+                    '<p class="text-center text-gray-500">You have no friends yet.</p>';
                 return;
             }
 
-            container.innerHTML = friends.map(f => `
+            container.innerHTML = friends
+                .map(
+                    (f) => `
             <div class="flex items-center justify-between p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
                 <div class="flex items-center gap-3">
                     <img src="${f.avatar}" class="w-10 h-10 rounded-full object-cover">
@@ -712,39 +631,44 @@ if (videoFileInput) {
                     Send
                 </button>
             </div>
-        `).join('');
+        `,
+                )
+                .join("");
         } catch (err) {
-            console.error('Failed to load friends:', err);
-            container.innerHTML = '<p class="text-center text-red-500">Failed to load friends.</p>';
+            console.error("Failed to load friends:", err);
+            container.innerHTML =
+                '<p class="text-center text-red-500">Failed to load friends.</p>';
         }
     }
 
     async function sendItemToFriend(friendId) {
         try {
-            const res = await fetch('/chat/send', {
-                method: 'POST',
+            const res = await fetch("/chat/send", {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector(
+                        'meta[name="csrf-token"]',
+                    ).content,
+                    Accept: "application/json",
                 },
                 body: JSON.stringify({
                     receiver_id: friendId,
-                    message: '',
+                    message: "",
                     attachment_type: sendItemType,
-                    attachment_id: sendItemId
-                })
+                    attachment_id: sendItemId,
+                }),
             });
             const data = await res.json();
-            if (data.status === 'sent') {
-                alert('Sent successfully!');
+            if (data.status === "sent") {
+                alert("Sent successfully!");
                 closeSendChatModal();
             } else {
-                alert('Failed to send.');
+                alert("Failed to send.");
             }
         } catch (err) {
-            console.error('Send error:', err);
-            alert('Failed to send.');
+            console.error("Send error:", err);
+            alert("Failed to send.");
         }
     }
 });

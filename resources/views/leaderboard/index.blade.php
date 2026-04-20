@@ -1,22 +1,19 @@
 <x-app-layout>
     <div class="max-w-4xl mx-auto p-6">
-        <!-- Header -->
         <div class="text-center mb-8">
             <h2 class="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                 🏆 Leaderboard
             </h2>
-            <p class="text-gray-600 dark:text-gray-400 mt-2">Top creators ranked by XP</p>
+
         </div>
 
-        <!-- Top 3 Podium -->
         @if(count($users) >= 3)
-        <div class="grid grid-cols-3 gap-4 mb-8">
-            <!-- 2nd Place -->
-            <div class="pt-8">
+        <div class="grid grid-cols-3 gap-4 mb-8 mt-20">
+            <div class="pt-6">
                 <div class="bg-gradient-to-b from-gray-300 to-gray-200 dark:from-gray-600 dark:to-gray-700 rounded-2xl p-4 text-center shadow-lg transform hover:-translate-y-1 transition">
-                    <div class="relative -mt-12 mb-3">
+                    <div class="relative -mt-10 mb-3">
                         <img src="{{ userAvatar($users[1]->profile_photo) }}"
-                             class="w-20 h-20 rounded-full border-4 border-gray-300 dark:border-gray-500 object-cover mx-auto">
+                            class="w-20 h-20 rounded-full border-4 border-gray-300 dark:border-gray-500 object-cover mx-auto">
                         <span class="absolute -top-2 left-1/2 -translate-x-1/2 text-3xl">🥈</span>
                     </div>
                     <p class="font-bold text-lg truncate">{{ $users[1]->name }}</p>
@@ -25,12 +22,11 @@
                 </div>
             </div>
 
-            <!-- 1st Place -->
             <div>
                 <div class="bg-gradient-to-b from-yellow-300 to-yellow-200 dark:from-yellow-600 dark:to-yellow-700 rounded-2xl p-4 text-center shadow-xl transform hover:-translate-y-1 transition scale-105">
-                    <div class="relative -mt-14 mb-3">
+                    <div class="relative -mt-12 mb-3">
                         <img src="{{ userAvatar($users[0]->profile_photo) }}"
-                             class="w-24 h-24 rounded-full border-4 border-yellow-400 object-cover mx-auto">
+                            class="w-24 h-24 rounded-full border-4 border-yellow-400 object-cover mx-auto">
                         <span class="absolute -top-4 left-1/2 -translate-x-1/2 text-4xl">👑</span>
                     </div>
                     <p class="font-bold text-xl truncate">{{ $users[0]->name }}</p>
@@ -39,12 +35,11 @@
                 </div>
             </div>
 
-            <!-- 3rd Place -->
-            <div class="pt-8">
+            <div class="pt-6">
                 <div class="bg-gradient-to-b from-orange-300 to-orange-200 dark:from-orange-700 dark:to-orange-800 rounded-2xl p-4 text-center shadow-lg transform hover:-translate-y-1 transition">
-                    <div class="relative -mt-12 mb-3">
+                    <div class="relative -mt-10 mb-3">
                         <img src="{{ userAvatar($users[2]->profile_photo) }}"
-                             class="w-20 h-20 rounded-full border-4 border-orange-400 object-cover mx-auto">
+                            class="w-20 h-20 rounded-full border-4 border-orange-400 object-cover mx-auto">
                         <span class="absolute -top-2 left-1/2 -translate-x-1/2 text-3xl">🥉</span>
                     </div>
                     <p class="font-bold text-lg truncate">{{ $users[2]->name }}</p>
@@ -55,7 +50,6 @@
         </div>
         @endif
 
-        <!-- Rankings 4-10 -->
         <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                 <h3 class="font-semibold text-gray-800 dark:text-gray-200">📋 Full Rankings</h3>
@@ -63,68 +57,65 @@
 
             <div class="divide-y divide-gray-200 dark:divide-gray-700">
                 @foreach($users as $index => $user)
-                    @php $rank = $index + 1; @endphp
-                    <div class="flex items-center justify-between px-6 py-4 hover:bg-purple-50 dark:hover:bg-gray-700/50 transition {{ $user->id === auth()->id() ? 'bg-purple-100 dark:bg-purple-900/30 border-l-4 border-l-purple-500' : '' }}">
-                        
-                        <!-- Rank & User Info -->
-                        <div class="flex items-center gap-4">
-                            <div class="w-8 text-center">
-                                @if($rank === 1)
-                                    <span class="text-2xl">🥇</span>
-                                @elseif($rank === 2)
-                                    <span class="text-2xl">🥈</span>
-                                @elseif($rank === 3)
-                                    <span class="text-2xl">🥉</span>
-                                @else
-                                    <span class="font-bold text-gray-500 dark:text-gray-400">#{{ $rank }}</span>
+                @php $rank = $index + 1; @endphp
+                <div class="flex items-center justify-between px-6 py-4 hover:bg-purple-50 dark:hover:bg-gray-700/50 transition {{ $user->id === auth()->id() ? 'bg-purple-100 dark:bg-purple-900/30 border-l-4 border-l-purple-500' : '' }}">
+
+                    <!-- Rank & User Info -->
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 text-center">
+                            @if($rank === 1)
+                            <span class="text-2xl">🥇</span>
+                            @elseif($rank === 2)
+                            <span class="text-2xl">🥈</span>
+                            @elseif($rank === 3)
+                            <span class="text-2xl">🥉</span>
+                            @else
+                            <span class="font-bold text-gray-500 dark:text-gray-400">#{{ $rank }}</span>
+                            @endif
+                        </div>
+
+                        <a href="{{ route('users.show', $user) }}" class="flex items-center gap-3 group">
+                            <div class="relative">
+                                <img src="{{ userAvatar($user->profile_photo) }}"
+                                    alt="{{ $user->name }}"
+                                    class="w-11 h-11 rounded-full border-2 {{ $rank <= 3 ? 'border-purple-400' : 'border-gray-300 dark:border-gray-600' }} object-cover group-hover:border-purple-500 transition">
+                                @if($user->id === auth()->id())
+                                <span class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></span>
                                 @endif
                             </div>
-
-                            <a href="{{ route('users.show', $user) }}" class="flex items-center gap-3 group">
-                                <div class="relative">
-                                    <img src="{{ userAvatar($user->profile_photo) }}"
-                                         alt="{{ $user->name }}"
-                                         class="w-11 h-11 rounded-full border-2 {{ $rank <= 3 ? 'border-purple-400' : 'border-gray-300 dark:border-gray-600' }} object-cover group-hover:border-purple-500 transition">
+                            <div>
+                                <p class="font-semibold text-gray-800 dark:text-gray-200 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition">
+                                    {{ $user->name }}
                                     @if($user->id === auth()->id())
-                                        <span class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></span>
+                                    <span class="ml-2 text-xs bg-purple-600 text-white px-2 py-0.5 rounded-full">You</span>
                                     @endif
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-gray-800 dark:text-gray-200 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition">
-                                        {{ $user->name }}
-                                        @if($user->id === auth()->id())
-                                            <span class="ml-2 text-xs bg-purple-600 text-white px-2 py-0.5 rounded-full">You</span>
-                                        @endif
-                                    </p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ '@'.$user->username }}</p>
-                                </div>
-                            </a>
-                        </div>
+                                </p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ '@'.$user->username }}</p>
+                            </div>
+                        </a>
+                    </div>
 
-                        <!-- Stats -->
-                        <div class="flex items-center gap-6">
-                            <div class="text-right">
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Level</p>
-                                <p class="font-semibold text-purple-600 dark:text-purple-400">{{ $user->level ?? 1 }}</p>
-                            </div>
-                            <div class="text-right min-w-[80px]">
-                                <p class="text-xs text-gray-500 dark:text-gray-400">XP</p>
-                                <p class="font-bold text-gray-800 dark:text-gray-100">{{ number_format($user->xp) }}</p>
-                            </div>
+                    <div class="flex items-center gap-6">
+                        <div class="text-right">
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Level</p>
+                            <p class="font-semibold text-purple-600 dark:text-purple-400">{{ $user->level ?? 1 }}</p>
+                        </div>
+                        <div class="text-right min-w-[80px]">
+                            <p class="text-xs text-gray-500 dark:text-gray-400">XP</p>
+                            <p class="font-bold text-gray-800 dark:text-gray-100">{{ number_format($user->xp) }}</p>
                         </div>
                     </div>
+                </div>
                 @endforeach
             </div>
         </div>
 
-        <!-- Pagination -->
         @if($users instanceof \Illuminate\Pagination\LengthAwarePaginator && $users->hasPages())
         <div class="mt-8">
             {{ $users->links() }}
         </div>
         @endif
 
-        <!-- Stats Card -->
         <div class="mt-8 grid grid-cols-3 gap-4">
             <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-4 text-white text-center shadow-lg">
                 <p class="text-3xl font-bold">{{ $users->first()?->xp ?? 0 }}</p>

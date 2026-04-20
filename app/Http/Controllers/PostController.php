@@ -45,32 +45,32 @@ class PostController extends Controller
             'video'                => 'nullable|mimes:mp4,mov,avi,wmv,flv,mkv,webm|max:51200',
             'category_id'          => 'required|exists:categories,id',
             'youtube_url'          => 'nullable|url',
-            'video_thumbnail_data' => 'nullable|string', // Base64 data from frontend
+            'video_thumbnail_data' => 'nullable|string',
         ]);
 
-        // Handle image upload
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('posts', 'public');
         }
 
-        // Handle video upload + thumbnail (client‑side generated)
         if ($request->hasFile('video')) {
             $data['video'] = $request->file('video')->store('posts/videos', 'public');
-            
-            // Save manual thumbnail if provided
+
             if ($request->hasFile('video_thumbnail')) {
                 $data['video_thumbnail'] = $request->file('video_thumbnail')->store('posts/thumbnails', 'public');
+            } elseif ($request->filled('video_thumbnail_data')) {
+                $thumbnailPath = $this->saveBase64Thumbnail($request->video_thumbnail_data, $data['video']);
+                if ($thumbnailPath) {
+                    $data['video_thumbnail'] = $thumbnailPath;
+                }
             }
         }
 
-        // Handle YouTube URL
         if (!empty($data['youtube_url'])) {
             if (preg_match('/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $data['youtube_url'], $matches)) {
                 $data['youtube_thumbnail'] = "https://img.youtube.com/vi/{$matches[1]}/hqdefault.jpg";
             }
         }
 
-        // Validate at least one media type is provided
         if (!$request->hasFile('image') && !$request->hasFile('video') && !$request->filled('youtube_url')) {
             return back()
                 ->withErrors(['media' => 'You must upload an image, video, or provide a YouTube URL.'])
@@ -88,7 +88,7 @@ class PostController extends Controller
             session('last_category_id') ?? []
         )->with('success', 'Post created successfully!');
         dd($request->all());
-        }
+    }
 
     public function show(Post $post)
     {
@@ -128,7 +128,6 @@ class PostController extends Controller
             'video_thumbnail_data' => 'nullable|string',
         ]);
 
-        // Handle image upload
         if ($request->hasFile('image')) {
             if ($post->image && Storage::disk('public')->exists($post->image)) {
                 Storage::disk('public')->delete($post->image);
@@ -136,26 +135,21 @@ class PostController extends Controller
             $data['image'] = $request->file('image')->store('posts', 'public');
         }
 
-        // Handle video upload
         if ($request->hasFile('video')) {
-            // Delete old video
             if ($post->video) Storage::disk('public')->delete($post->video);
             $data['video'] = $request->file('video')->store('posts/videos', 'public');
-            
-            // If a new thumbnail is uploaded, delete old and save new
+
             if ($request->hasFile('video_thumbnail')) {
                 if ($post->video_thumbnail) Storage::disk('public')->delete($post->video_thumbnail);
                 $data['video_thumbnail'] = $request->file('video_thumbnail')->store('posts/thumbnails', 'public');
             }
         } else {
-            // If only thumbnail is updated without new video, still allow updating thumbnail
             if ($request->hasFile('video_thumbnail')) {
                 if ($post->video_thumbnail) Storage::disk('public')->delete($post->video_thumbnail);
                 $data['video_thumbnail'] = $request->file('video_thumbnail')->store('posts/thumbnails', 'public');
             }
         }
 
-        // Handle YouTube URL
         if (!empty($data['youtube_url'])) {
             if (preg_match('/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $data['youtube_url'], $matches)) {
                 $data['youtube_thumbnail'] = "https://img.youtube.com/vi/{$matches[1]}/hqdefault.jpg";
