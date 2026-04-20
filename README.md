@@ -6,6 +6,8 @@ composer i
 
 composer require laravel/socialite
 
+composer require pbmedia/laravel-ffmpeg
+
 npm install cropperjs
 
 php artisan key:generate
