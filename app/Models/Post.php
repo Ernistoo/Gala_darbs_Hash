@@ -18,7 +18,10 @@ class Post extends Model
         'title',
         'content',
         'image',
+        'video',
+        'video_thumbnail', 
         'youtube_url',
+        'youtube_thumbnail',
         'category_id'
     ];
 

@@ -28,6 +28,9 @@
 
     <x-posts.image-upload :post="$post ?? null" />
 
+    <x-posts.video-upload :post="$post ?? null" />
+    <x-posts.video-thumbnail-upload :post="$post ?? null" />
+
     <x-posts.youtube-field :post="$post ?? null" />
 
     @error('media')

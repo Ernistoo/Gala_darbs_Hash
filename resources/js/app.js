@@ -53,11 +53,17 @@ function initImageUpload(area) {
     });
 
     area.addEventListener("drop", (e) => handleFiles(e.dataTransfer.files));
-    area.addEventListener("click", () => fileInput.click());
     fileInput.addEventListener("change", () => handleFiles(fileInput.files));
     removeButton?.addEventListener("click", removeImage);
-}
 
+    // 🛠️ FIX: Only open file dialog if click is NOT on an interactive element
+    area.addEventListener("click", (e) => {
+        if (e.target.closest('input, button, select, textarea, a, label, #remove-image')) {
+            return;
+        }
+        fileInput.click();
+    });
+}
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".drag-area").forEach((area) => {
         initImageUpload(area);
@@ -556,5 +562,189 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("image-preview").classList.add("hidden");
             document.getElementById("chat-image-input").value = "";
         });
+    }
+    window.openLightbox = function(imageSrc) {
+        const modal = document.getElementById('lightbox-modal');
+        const img = document.getElementById('lightbox-image');
+        img.src = imageSrc;
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+    };
+    
+    window.closeLightbox = function() {
+        const modal = document.getElementById('lightbox-modal');
+        modal.classList.add('hidden');
+        document.body.style.overflow = ''; // Restore scrolling
+    };
+    
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeLightbox();
+        }
+    });
+    const videoFileInput = document.querySelector('input[type="file"][name="video"]');
+if (videoFileInput) {
+    const videoArea = videoFileInput.closest('.video-upload-area');
+    if (videoArea) {
+        const dragContent = videoArea.querySelector('.video-drag-content');
+        const previewContainer = videoArea.querySelector('.video-preview-container');
+        const videoPreview = videoArea.querySelector('.video-preview');
+        const removeButton = videoArea.querySelector('.remove-video');
+
+        if (dragContent && previewContainer) {
+            const handleVideoFile = (file) => {
+                if (!file || !file.type.startsWith('video/')) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    if (videoPreview) videoPreview.src = e.target.result;
+                    dragContent.classList.add('hidden');
+                    previewContainer.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            };
+
+            videoArea.addEventListener('click', (e) => {
+                // Prevent opening file dialog when clicking on interactive elements or remove button
+                if (e.target.closest('input, button, select, textarea, a, label, .remove-video')) {
+                    return;
+                }
+                videoFileInput.click();
+            });
+
+            videoFileInput.addEventListener('change', () => {
+                handleVideoFile(videoFileInput.files[0]);
+            });
+
+            ['dragenter', 'dragover'].forEach((eventName) => {
+                videoArea.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    videoArea.classList.add('border-purple-500');
+                });
+            });
+
+            ['dragleave', 'drop'].forEach((eventName) => {
+                videoArea.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    videoArea.classList.remove('border-purple-500');
+                });
+            });
+
+            videoArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                handleVideoFile(e.dataTransfer.files[0]);
+            });
+
+            removeButton?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                videoFileInput.value = '';
+                if (videoPreview) videoPreview.src = '';
+                previewContainer.classList.add('hidden');
+                dragContent.classList.remove('hidden');
+            });
+        }
+    }
+}
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const el = document.getElementById('countdown');
+        if (!el) return;
+
+        const deadline = parseInt(el.dataset.deadline) * 1000;
+
+        function tick() {
+            const diff = deadline - Date.now();
+            if (diff <= 0) {
+                el.textContent = '⏰ Challenge ended';
+                return;
+            }
+            const days = Math.floor(diff / 86400000);
+            const hrs = Math.floor((diff % 86400000) / 3600000);
+            const mins = Math.floor((diff % 3600000) / 60000);
+            const secs = Math.floor((diff % 60000) / 1000);
+
+            el.textContent = `⏳ Ends in: ${days}d ${hrs}h ${mins}m ${secs}s`;
+        }
+
+        tick();
+        setInterval(tick, 1000);
+    });
+
+    let sendItemType = null;
+    let sendItemId = null;
+
+    window.openSendChatModal = function(type, id) {
+        sendItemType = type;
+        sendItemId = id;
+        document.getElementById('send-chat-modal').classList.remove('hidden');
+        loadFriendsList();
+    };
+
+    window.closeSendChatModal = function() {
+        document.getElementById('send-chat-modal').classList.add('hidden');
+    };
+
+    async function loadFriendsList() {
+        const container = document.getElementById('friend-list-container');
+        container.innerHTML = '<p class="text-center text-gray-500">Loading friends...</p>';
+
+        try {
+            const res = await fetch('/friends/list');
+            if (!res.ok) throw new Error('Failed to fetch');
+            const friends = await res.json();
+
+            if (friends.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-500">You have no friends yet.</p>';
+                return;
+            }
+
+            container.innerHTML = friends.map(f => `
+            <div class="flex items-center justify-between p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+                <div class="flex items-center gap-3">
+                    <img src="${f.avatar}" class="w-10 h-10 rounded-full object-cover">
+                    <div>
+                        <p class="font-medium text-gray-900 dark:text-gray-100">${f.name}</p>
+                        <p class="text-sm text-gray-500">@${f.username}</p>
+                    </div>
+                </div>
+                <button onclick="sendItemToFriend(${f.id})" class="px-3 py-1 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700">
+                    Send
+                </button>
+            </div>
+        `).join('');
+        } catch (err) {
+            console.error('Failed to load friends:', err);
+            container.innerHTML = '<p class="text-center text-red-500">Failed to load friends.</p>';
+        }
+    }
+
+    async function sendItemToFriend(friendId) {
+        try {
+            const res = await fetch('/chat/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    receiver_id: friendId,
+                    message: '',
+                    attachment_type: sendItemType,
+                    attachment_id: sendItemId
+                })
+            });
+            const data = await res.json();
+            if (data.status === 'sent') {
+                alert('Sent successfully!');
+                closeSendChatModal();
+            } else {
+                alert('Failed to send.');
+            }
+        } catch (err) {
+            console.error('Send error:', err);
+            alert('Failed to send.');
+        }
     }
 });
