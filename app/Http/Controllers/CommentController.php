@@ -57,6 +57,8 @@ class CommentController extends Controller
 
     public function destroy(Comment $comment)
     {
+        $user = auth()->user();
+
         if (
             $comment->user_id !== $user->id &&
             $comment->post->user_id !== $user->id &&
