@@ -15,22 +15,16 @@
         </div>
     </a>
 
-
-
     <x-posts.media-gallery :post="$post" />
-
 
     <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">{{ $post->title }}</h2>
     <p class="text-gray-700 dark:text-gray-300 whitespace-pre-line">{{ $post->content }}</p>
-
 
     @if($post->category)
     <div class="inline-flex items-center px-3 py-1 bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-200 rounded-full text-sm mb-4">
         {{ $post->category->name }}
     </div>
     @endif
-
-
 
     <x-posts.post-actions :post="$post" />
 </div>

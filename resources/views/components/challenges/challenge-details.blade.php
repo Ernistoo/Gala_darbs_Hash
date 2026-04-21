@@ -22,31 +22,6 @@
          data-deadline="{{ $challenge->deadline->timestamp }}">
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const el = document.getElementById('countdown');
-            if (!el) return;
-
-            const deadline = parseInt(el.dataset.deadline) * 1000;
-
-            function tick() {
-                const diff = deadline - Date.now();
-                if (diff <= 0) {
-                    el.textContent = '⏰ Challenge ended';
-                    return;
-                }
-                const days = Math.floor(diff / 86400000);
-                const hrs = Math.floor((diff % 86400000) / 3600000);
-                const mins = Math.floor((diff % 3600000) / 60000);
-                const secs = Math.floor((diff % 60000) / 1000);
-
-                el.textContent = `⏳ Ends in: ${days}d ${hrs}h ${mins}m ${secs}s`;
-            }
-
-            tick();
-            setInterval(tick, 1000);
-        });
-    </script>
 @endif
 
 

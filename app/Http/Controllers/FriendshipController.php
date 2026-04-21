@@ -63,4 +63,17 @@ class FriendshipController extends Controller
 
         return back()->with('error', 'Friendship not found.');
     }
+    public function list()
+    {
+        $friends = auth()->user()->allFriends()->map(function ($friend) {
+            return [
+                'id' => $friend->id,
+                'name' => $friend->name,
+                'username' => $friend->username,
+                'avatar' => userAvatar($friend->profile_photo),
+            ];
+        });
+
+        return response()->json($friends);
+    }
 }

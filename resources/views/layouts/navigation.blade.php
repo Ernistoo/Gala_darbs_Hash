@@ -23,10 +23,7 @@
 
 
     <div class="flex-1 flex flex-col gap-3 px-4 mt-4 lg:mt-4">
-        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
-            class="block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
-            {{ __('Dashboard') }}
-        </x-nav-link>
+
 
         <x-nav-link :href="route('posts.index')" :active="request()->routeIs('posts.index')"
             class="block bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
@@ -97,8 +94,8 @@
             class="flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition">
 
             <img src="{{ userAvatar(auth()->user()->profile_photo) }}"
-     alt="{{ auth()->user()->name }}"
-     class="w-12 h-12 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600" />
+                alt="{{ auth()->user()->name }}"
+                class="w-12 h-12 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600" />
 
 
             <div>

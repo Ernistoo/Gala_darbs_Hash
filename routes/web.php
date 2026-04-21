@@ -92,6 +92,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/friends/{friendship}/accept', [FriendshipController::class, 'accept'])->name('friends.accept');
     Route::get('/friends', [FriendshipController::class, 'index'])->name('friends.index');
     Route::delete('/friends/{user}/remove', [FriendshipController::class, 'remove'])->name('friends.remove');
+    Route::get('/friends/list', [FriendshipController::class, 'list'])->name('friends.list');
 });
 
 Route::get('/users/{user}', [UserProfileController::class, 'show'])->name('users.show');
@@ -120,5 +121,14 @@ Route::get('auth/google', [GoogleController::class, 'redirect'])->name('google.r
 Route::get('auth/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
 
 Route::post('/posts/{post}/comments/{comment}/reply', [CommentController::class, 'reply'])->name('comments.reply');
+
+// Chat Routes
+Route::get('/chat/{user}', [ChatController::class, 'index'])->name('chat.index');
+Route::post('/chat/send', [ChatController::class, 'store'])->name('chat.send');
+
+Route::get('/api/search/posts', [SearchController::class, 'posts'])->name('api.search.posts');
+Route::get('/api/search/collections', [SearchController::class, 'collections'])->name('api.search.collections');
+
+
 
 require __DIR__ . '/auth.php';

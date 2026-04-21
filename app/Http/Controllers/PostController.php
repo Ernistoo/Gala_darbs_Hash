@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\Category;
 use App\Services\BadgeService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -27,41 +28,55 @@ class PostController extends Controller
         return view('posts.index', compact('posts', 'categories'));
     }
 
-
     public function create()
     {
         $categories = \App\Models\Category::all();
-    $defaultCategoryId = session('last_category_id'); 
+        $defaultCategoryId = session('last_category_id');
 
-    return view('posts.create', compact('categories', 'defaultCategoryId'));
+        return view('posts.create', compact('categories', 'defaultCategoryId'));
     }
-
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title'       => 'required|string|max:255',
-            'content'     => 'nullable|string',
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
-            'category_id' => 'required|exists:categories,id',
-            'youtube_url' => 'nullable|url',
+            'title'                => 'required|string|max:255',
+            'content'              => 'nullable|string',
+            'image'                => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+            'video'                => 'nullable|mimes:mp4,mov,avi,wmv,flv,mkv,webm|max:51200',
+            'category_id'          => 'required|exists:categories,id',
+            'youtube_url'          => 'nullable|url',
+            'video_thumbnail_data' => 'nullable|string',
         ]);
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('posts', 'public');
         }
 
-        if ($data['youtube_url']) {
+        if ($request->hasFile('video')) {
+            $data['video'] = $request->file('video')->store('posts/videos', 'public');
+
+            if ($request->hasFile('video_thumbnail')) {
+                $data['video_thumbnail'] = $request->file('video_thumbnail')->store('posts/thumbnails', 'public');
+            } elseif ($request->filled('video_thumbnail_data')) {
+                $thumbnailPath = $this->saveBase64Thumbnail($request->video_thumbnail_data, $data['video']);
+                if ($thumbnailPath) {
+                    $data['video_thumbnail'] = $thumbnailPath;
+                }
+            }
+        }
+
+        if (!empty($data['youtube_url'])) {
             if (preg_match('/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $data['youtube_url'], $matches)) {
                 $data['youtube_thumbnail'] = "https://img.youtube.com/vi/{$matches[1]}/hqdefault.jpg";
             }
         }
 
-        if (!$request->hasFile('image') && !$request->filled('youtube_url')) {
+        if (!$request->hasFile('image') && !$request->hasFile('video') && !$request->filled('youtube_url')) {
             return back()
-                ->withErrors(['media' => 'You must upload an image or provide a YouTube URL.'])
+                ->withErrors(['media' => 'You must upload an image, video, or provide a YouTube URL.'])
                 ->withInput();
         }
+
         $data['user_id'] = auth()->id();
 
         Post::create($data);
@@ -69,13 +84,11 @@ class PostController extends Controller
         app(\App\Services\BadgeService::class)->checkAndAssign($request->user());
 
         return redirect()->route(
-            session('last_category_id')
-                ? 'posts.byCategory'
-                : 'posts.index',
+            session('last_category_id') ? 'posts.byCategory' : 'posts.index',
             session('last_category_id') ?? []
         )->with('success', 'Post created successfully!');
+        dd($request->all());
     }
-
 
     public function show(Post $post)
     {
@@ -88,7 +101,6 @@ class PostController extends Controller
         return view('posts.show', compact('post', 'comments'));
     }
 
-
     public function edit(Post $post)
     {
         if ($post->user_id !== auth()->id()) {
@@ -100,7 +112,6 @@ class PostController extends Controller
         return view('posts.edit', compact('post', 'categories'));
     }
 
-
     public function update(Request $request, Post $post)
     {
         if ($post->user_id !== auth()->id()) {
@@ -108,25 +119,41 @@ class PostController extends Controller
         }
 
         $data = $request->validate([
-            'title'       => 'required|string|max:255',
-            'content'     => 'nullable|string',
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
-            'category_id' => 'required|exists:categories,id',
-            'youtube_url' => 'nullable|url',
+            'title'                => 'required|string|max:255',
+            'content'              => 'nullable|string',
+            'image'                => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+            'video'                => 'nullable|mimes:mp4,mov,avi,wmv,flv,mkv,webm|max:51200',
+            'category_id'          => 'required|exists:categories,id',
+            'youtube_url'          => 'nullable|url',
+            'video_thumbnail_data' => 'nullable|string',
         ]);
 
-
         if ($request->hasFile('image')) {
-            if ($post->image && file_exists(storage_path('app/public/' . $post->image))) {
-                unlink(storage_path('app/public/' . $post->image));
+            if ($post->image && Storage::disk('public')->exists($post->image)) {
+                Storage::disk('public')->delete($post->image);
             }
             $data['image'] = $request->file('image')->store('posts', 'public');
         }
 
-        if (!$request->hasFile('image') && !$request->filled('youtube_url')) {
-            return back()
-                ->withErrors(['media' => 'You must upload an image or provide a YouTube URL.'])
-                ->withInput();
+        if ($request->hasFile('video')) {
+            if ($post->video) Storage::disk('public')->delete($post->video);
+            $data['video'] = $request->file('video')->store('posts/videos', 'public');
+
+            if ($request->hasFile('video_thumbnail')) {
+                if ($post->video_thumbnail) Storage::disk('public')->delete($post->video_thumbnail);
+                $data['video_thumbnail'] = $request->file('video_thumbnail')->store('posts/thumbnails', 'public');
+            }
+        } else {
+            if ($request->hasFile('video_thumbnail')) {
+                if ($post->video_thumbnail) Storage::disk('public')->delete($post->video_thumbnail);
+                $data['video_thumbnail'] = $request->file('video_thumbnail')->store('posts/thumbnails', 'public');
+            }
+        }
+
+        if (!empty($data['youtube_url'])) {
+            if (preg_match('/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $data['youtube_url'], $matches)) {
+                $data['youtube_thumbnail'] = "https://img.youtube.com/vi/{$matches[1]}/hqdefault.jpg";
+            }
         }
 
         $post->update($data);
@@ -134,20 +161,26 @@ class PostController extends Controller
         return redirect()->route('posts.show', $post)->with('success', 'Post updated successfully!');
     }
 
-
     public function destroy(Post $post)
     {
         $this->authorize('delete', $post);
 
-        if ($post->image && file_exists(storage_path('app/public/' . $post->image))) {
-            unlink(storage_path('app/public/' . $post->image));
+        if ($post->image && Storage::disk('public')->exists($post->image)) {
+            Storage::disk('public')->delete($post->image);
+        }
+
+        if ($post->video && Storage::disk('public')->exists($post->video)) {
+            Storage::disk('public')->delete($post->video);
+        }
+
+        if ($post->video_thumbnail && Storage::disk('public')->exists($post->video_thumbnail)) {
+            Storage::disk('public')->delete($post->video_thumbnail);
         }
 
         $post->delete();
 
         return redirect()->route('posts.index')->with('success', 'Post deleted successfully!');
     }
-
 
     public function like(Post $post)
     {
@@ -157,8 +190,8 @@ class PostController extends Controller
 
         if (request()->wantsJson()) {
             return response()->json([
-                'liked' => true,
-                'likes_count' => $post->likes()->count()
+                'liked'       => true,
+                'likes_count' => $post->likes()->count(),
             ]);
         }
 
@@ -171,20 +204,61 @@ class PostController extends Controller
 
         if (request()->wantsJson()) {
             return response()->json([
-                'liked' => false,
-                'likes_count' => $post->likes()->count()
+                'liked'       => false,
+                'likes_count' => $post->likes()->count(),
             ]);
         }
 
         return back();
     }
+
     public function byCategory($id)
     {
         $category = \App\Models\Category::findOrFail($id);
         session(['last_category_id' => $id]);
 
-    $posts = $category->posts()->latest()->get();
+        $posts = $category->posts()->latest()->get();
 
-    return view('posts.category', compact('category', 'posts'));
+        return view('posts.category', compact('category', 'posts'));
+    }
+
+    /**
+     * Save a Base64 encoded image as a video thumbnail.
+     *
+     * @param string|null $base64Data
+     * @param string      $videoPath
+     * @return string|null
+     */
+    private function saveBase64Thumbnail($base64Data, $videoPath)
+    {
+        if (!$base64Data) {
+            return null;
+        }
+
+        // Extract the image data
+        if (preg_match('/^data:image\/(\w+);base64,/', $base64Data, $type)) {
+            $base64Data = substr($base64Data, strpos($base64Data, ',') + 1);
+            $type = strtolower($type[1]); // jpeg, png, etc.
+            if (!in_array($type, ['jpg', 'jpeg', 'png'])) {
+                $type = 'jpg';
+            }
+            $base64Data = base64_decode($base64Data);
+            if ($base64Data === false) {
+                return null;
+            }
+
+            $thumbDir = storage_path('app/public/posts/thumbnails');
+            if (!file_exists($thumbDir)) {
+                mkdir($thumbDir, 0755, true);
+            }
+
+            $thumbnailName = pathinfo($videoPath, PATHINFO_FILENAME) . '_thumb.' . $type;
+            $thumbnailPath = 'posts/thumbnails/' . $thumbnailName;
+            file_put_contents(storage_path('app/public/' . $thumbnailPath), $base64Data);
+
+            return $thumbnailPath;
+        }
+
+        return null;
     }
 }

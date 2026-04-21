@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="user-id" content="{{ Auth::id() }}">
     <title>{{ config('app.name', 'Hash') }}</title>
 
     <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
@@ -29,31 +30,30 @@
 </head>
 
 @if(session('badge_earned'))
-    <div 
-        x-data="{ show: true }" 
-        x-show="show" 
-        x-transition 
-        x-init="setTimeout(() => show = false, 5000)" 
-        class="fixed bottom-6 right-6 bg-white dark:bg-gray-800 border border-purple-500 rounded-lg shadow-lg p-4 flex items-center space-x-3 z-50"
-    >
-        <img src="{{ asset('images/' . session('badge_image')) }}" 
-             alt="{{ session('badge_name') }}" 
-             class="w-10 h-10 rounded-full border-2 border-purple-500">
+<div
+    x-data="{ show: true }"
+    x-show="show"
+    x-transition
+    x-init="setTimeout(() => show = false, 5000)"
+    class="fixed bottom-6 right-6 bg-white dark:bg-gray-800 border border-purple-500 rounded-lg shadow-lg p-4 flex items-center space-x-3 z-50">
+    <img src="{{ asset('images/' . session('badge_image')) }}"
+        alt="{{ session('badge_name') }}"
+        class="w-10 h-10 rounded-full border-2 border-purple-500">
 
-        <div>
-            <p class="text-sm font-bold text-gray-900 dark:text-gray-100">
-                🎉 {{ session('badge_name') }}
-            </p>
-            <p class="text-xs text-gray-600 dark:text-gray-400">
-                {{ session('badge_description') }}
-            </p>
-        </div>
-
-        <button @click="show = false" 
-                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-            ✕
-        </button>
+    <div>
+        <p class="text-sm font-bold text-gray-900 dark:text-gray-100">
+            🎉 {{ session('badge_name') }}
+        </p>
+        <p class="text-xs text-gray-600 dark:text-gray-400">
+            {{ session('badge_description') }}
+        </p>
     </div>
+
+    <button @click="show = false"
+        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+        ✕
+    </button>
+</div>
 @endif
 
 <body class="font-sans antialiased bg-gradient-to-br from-gray-200 to-purple-100 dark:from-black dark:to-purple-900 transition-colors duration-500 ease-in-out" x-data="{ sidebarOpen: false }">
@@ -66,24 +66,24 @@
             </div>
             <button @click="sidebarOpen = !sidebarOpen" class="text-gray-600 dark:text-gray-300 focus:outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path x-show="!sidebarOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                    <path x-show="sidebarOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    <path x-show="!sidebarOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    <path x-show="sidebarOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
 
-        <div x-show="sidebarOpen" 
-             @click="sidebarOpen = false"
-             x-transition:enter="transition-opacity ease-linear duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition-opacity ease-linear duration-300"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
+        <div x-show="sidebarOpen"
+            @click="sidebarOpen = false"
+            x-transition:enter="transition-opacity ease-linear duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity ease-linear duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
 
         <aside class="fixed top-0 left-0 w-64 h-screen flex flex-col bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out z-50"
-               :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
             @include('layouts.navigation')
         </aside>
 
@@ -100,6 +100,22 @@
             <main class="p-4 lg:p-6 transition-colors duration-500 ease-in-out text-gray-900 dark:text-gray-100">
                 {{ $slot }}
             </main>
+        </div>
+    </div>
+    @include('partials.send-chat-modal')
+    <div id="lightbox-modal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="fixed inset-0 bg-black/90 dark:bg-black/95 backdrop-blur-sm transition-opacity" onclick="closeLightbox()"></div>
+
+            <button onclick="closeLightbox()" class="absolute top-4 right-4 z-10 p-2 text-white/70 hover:text-white bg-black/20 hover:bg-black/40 rounded-full transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+
+            <div class="relative max-w-6xl max-h-[90vh] z-10">
+                <img id="lightbox-image" src="" alt="" class="w-full h-full object-contain rounded-lg shadow-2xl">
+            </div>
         </div>
     </div>
 </body>

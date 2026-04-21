@@ -1,16 +1,20 @@
 <x-app-layout>
-@php
+    @php
     $backRoute = session('last_category_id')
-        ? route('posts.byCategory', session('last_category_id'))
-        : route('posts.index');
-@endphp
+    ? route('posts.byCategory', session('last_category_id'))
+    : route('posts.index');
+    @endphp
 
-<x-back-button :route="$backRoute" />
+    <x-back-button :route="$backRoute" />
 
     <div class="max-w-4xl mx-auto py-6 space-y-6">
 
 
         <x-posts.post-card :post="$post" />
+        <button onclick="openSendChatModal('post', {{ $post->id }})"
+            class="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+            💬 Send in Chat
+        </button>
 
 
         <div class="bg-white/80 dark:bg-gray-800/80 rounded-xl shadow-lg p-6 space-y-4">

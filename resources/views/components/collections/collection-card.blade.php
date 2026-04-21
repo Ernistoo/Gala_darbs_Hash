@@ -32,7 +32,7 @@
     </div>
 
 
-    <div x-show="editModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div x-show="editModal" x-cloak class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
         <div @click.away="editModal = false"
             class="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 p-6 rounded shadow w-96">
             <h2 class="text-xl font-bold mb-4">Edit Collection</h2>
@@ -56,7 +56,7 @@
     </div>
 
 
-    <div x-show="deleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div x-show="deleteModal" x-cloak class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
         <div @click.away="deleteModal = false"
             class="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 p-6 rounded shadow w-96">
             <h2 class="text-xl font-bold mb-4 text-red-600">Delete Collection</h2>
