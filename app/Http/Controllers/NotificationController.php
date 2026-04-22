@@ -9,6 +9,7 @@ class NotificationController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+        auth()->user()->unreadNotifications->markAsRead();
 
         return view('notifications.index', [
             'notifications' => $user->notifications,

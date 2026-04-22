@@ -13,28 +13,28 @@
 
     <div x-show="open" x-transition.duration.400ms x-cloak class="mt-4">
         @if($user->badges->count())
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            @foreach($user->badges as $badge)
-            <div class="group relative bg-gradient-to-br from-gray-100 via-gray-200 to-gray-100 
-                        dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 
-                        rounded-xl shadow-md hover:shadow-xl overflow-hidden transition-transform transform hover:-translate-y-1 p-4">
-                <div class="flex flex-col items-center text-center relative z-10">
-                    <img src="{{ asset('images/' . $badge->image) }}"
-                        alt="{{ $badge->name }}"
-                        class="w-16 h-16 rounded-full border-2 border-purple-400 dark:border-purple-600 mb-2 
-                                    group-hover:scale-105 transition-transform duration-300">
-                    <h4 class="font-semibold text-gray-900 dark:text-gray-100 text-sm">
-                        {{ $badge->name }}
-                    </h4>
-                    <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
-                        {{ $badge->description }}
-                    </p>
-                </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                @foreach($user->badges as $badge)
+                    <div class="group relative bg-gradient-to-br from-gray-100 via-gray-200 to-gray-100 
+                                dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 
+                                rounded-xl shadow-md hover:shadow-xl overflow-hidden transition-transform transform hover:-translate-y-1 p-4">
+                        <div class="flex flex-col items-center text-center relative z-10">
+                            <img src="{{ asset('images/' . $badge->image) }}"
+                                alt="{{ $badge->name }}"
+                                class="w-16 h-16 rounded-full border-2 border-purple-400 dark:border-purple-600 mb-2 
+                                            group-hover:scale-105 transition-transform duration-300">
+                            <h4 class="font-semibold text-gray-900 dark:text-gray-100 text-sm">
+                                {{ $badge->name }}
+                            </h4>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
+                                {{ $badge->description }}
+                            </p>
+                        </div>
+                    </div>
+                @endforeach
             </div>
-            @endforeach
-        </div>
         @else
-        <p class="text-gray-500 dark:text-gray-400 mt-2">No badges earned yet.</p>
+            <p class="text-gray-500 dark:text-gray-400 mt-2">No badges earned yet.</p>
         @endif
     </div>
 </div>

@@ -351,7 +351,6 @@ async function loadMessages(friendId) {
 
 function appendMessage(message, isMine) {
     const container = document.getElementById("chat-messages");
-    // Remove placeholder
     if (
         container.children.length === 1 &&
         container.children[0].classList.contains("text-center")
@@ -378,19 +377,34 @@ function appendMessage(message, isMine) {
     if (message.attachment_type === "image" && message.attachment_data) {
         content += `
             <a href="${message.attachment_data.url}" target="_blank" class="block mt-2">
-                <img src="${message.attachment_data.url}" class="rounded-lg max-w-full max-h-64 object-cover shadow-sm">
+                <img src="${message.attachment_data.url}" class="rounded-lg max-w-[200px] max-h-32 object-cover shadow-sm">
             </a>
         `;
     }
 
     if (message.attachment_type === "post" && message.attachment_data) {
-        const att = message.attachment_data;
+        const att = message.attachment_data;   // <-- MUST BE HERE
+        
+        const thumbnailUrl = att.video_thumbnail || att.image || "/images/placeholder.png";
+        const isVideo = !!att.video_thumbnail;
+    
         content += `
             <a href="${att.url}" target="_blank" class="block mt-2 group">
                 <div class="rounded-xl overflow-hidden border-2 ${isMine ? "border-purple-400/50" : "border-gray-200 dark:border-gray-600"} shadow-md transition-transform group-hover:scale-[1.02]">
-                    <img src="${att.image || "/images/placeholder.png"}" class="w-full h-36 object-cover">
+                    <div class="relative">
+                        <img src="${thumbnailUrl}" class="w-full h-24 object-cover">
+                        ${isVideo ? `
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/30">
+                                <div class="w-10 h-10 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
                     <div class="p-3 ${isMine ? "bg-purple-800/50" : "bg-gray-50 dark:bg-gray-800"}">
-                        <p class="font-semibold text-sm truncate ${isMine ? "text-white" : "text-gray-900 dark:text-gray-100"}">${att.title}</p>
+                        <p class="font-semibold text-sm truncate ${isMine ? "text-white" : "text-gray-900 dark:text-gray-100"}">${escapeHtml(att.title || 'Post')}</p>
                         <p class="text-xs ${isMine ? "text-purple-200" : "text-gray-500 dark:text-gray-400"} mt-1">Tap to view post</p>
                     </div>
                 </div>
@@ -641,7 +655,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    async function sendItemToFriend(friendId) {
+    window.sendItemToFriend = async function(friendId) {
         try {
             const res = await fetch("/chat/send", {
                 method: "POST",

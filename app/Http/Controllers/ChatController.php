@@ -80,8 +80,9 @@ class ChatController extends Controller
                 'id' => $post->id,
                 'title' => $post->title,
                 'image' => $post->image ? asset('storage/' . $post->image) : null,
+                'video_thumbnail' => $post->video_thumbnail ? asset('storage/' . $post->video_thumbnail) : null, 
                 'url' => route('posts.show', $post),
-                'type' => 'post',
+                'type' => $post->video ? 'video' : 'image',
             ];
         }
 

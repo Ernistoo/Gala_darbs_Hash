@@ -15,7 +15,7 @@
             </a>
         @endif
         @can('delete', $post)
-            <form action="{{ route('posts.destroy', $post) }}" method="POST">
+        <form action="{{ route('posts.destroy', $post) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?')">
                 @csrf @method('DELETE')
                 <button type="submit" class="w-full text-left px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 flex items-center gap-2 text-red-600 dark:text-red-400">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

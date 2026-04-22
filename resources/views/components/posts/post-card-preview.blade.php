@@ -1,7 +1,6 @@
 @props(['post'])
 
 <div class="group relative break-inside-avoid block rounded-xl shadow hover:shadow-lg overflow-hidden transition transform hover:-translate-y-1 mb-4">
-    {{-- Clickable media area for lightbox --}}
     <div @click.stop="$dispatch('lightbox', {
         type: '{{ $post->video ? 'video' : ($post->youtube_url ? 'youtube' : 'image') }}',
         url: '{{ $post->video ? Storage::url($post->video) : ($post->youtube_url ? $post->youtube_url : Storage::url($post->image)) }}'
@@ -37,7 +36,6 @@
         @endif
     </div>
 
-    {{-- Title overlay (navigates to post) --}}
     <a href="{{ route('posts.show', $post) }}" class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <h3 class="text-sm font-semibold text-white text-center px-2 line-clamp-2">
             {{ $post->title }}

@@ -9,14 +9,16 @@
         })->where('status', 'pending')->exists();
     @endphp
 
-    <div class="mt-3">
+    <div>
         @if($pending)
-            <span class="px-4 py-2 bg-yellow-500 text-white rounded">Request sent…</span>
+            <span class="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-yellow-500 text-white rounded whitespace-nowrap">
+                Request sent…
+            </span>
         @elseif(!$alreadyFriend)
             <form action="{{ route('friends.send', $user) }}" method="POST">
                 @csrf
                 <button type="submit"
-                    class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded transition">
+                    class="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-purple-600 hover:bg-purple-700 text-white rounded transition whitespace-nowrap">
                     Add Friend
                 </button>
             </form>
