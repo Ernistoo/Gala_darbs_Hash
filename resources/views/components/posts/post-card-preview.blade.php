@@ -36,9 +36,12 @@
         @endif
     </div>
 
-    <a href="{{ route('posts.show', $post) }}" class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <h3 class="text-sm font-semibold text-white text-center px-2 line-clamp-2">
-            {{ $post->title }}
-        </h3>
-    </a>
+    <a href="{{ route('posts.show', $post) }}"
+   class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300
+          pointer-events-none group-hover:pointer-events-auto"
+   style="-webkit-backface-visibility: hidden; backface-visibility: hidden; transform: translateZ(0);">
+    <h3 class="text-sm font-semibold text-white text-center px-2 line-clamp-2">
+        {{ $post->title }}
+    </h3>
+</a>
 </div>

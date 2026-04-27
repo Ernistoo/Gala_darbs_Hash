@@ -25,10 +25,9 @@ class ChatController extends Controller
         })->orderBy('created_at')->get();
 
         Message::where('sender_id', $user->id)
-            ->where('receiver_id', $authUserId)
-            ->where('is_read', false)
-            ->update(['is_read' => true]);
-
+    ->where('receiver_id', Auth::id())
+    ->where('is_read', false)
+    ->update(['is_read' => true]);
         return response()->json([
             'friend' => [
                 'id' => $user->id,
@@ -52,63 +51,66 @@ class ChatController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'receiver_id' => 'required|exists:users,id',
-            'message' => 'nullable|string|max:1000',
-            'attachment' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
-            'attachment_type' => 'nullable|in:post', // 👈 Only allow 'post'
-            'attachment_id' => 'required_with:attachment_type|integer',
-        ]);
+{
+    $request->validate([
+        'receiver_id' => 'required|exists:users,id',
+        'message' => 'nullable|string|max:1000',
+        'attachment' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+        'attachment_type' => 'nullable|in:post',
+        'attachment_id' => 'required_with:attachment_type|integer',
+    ]);
 
-        $attachmentData = null;
-        $attachmentType = null;
+    $attachmentData = null;
+    $attachmentType = null;
 
-        if ($request->hasFile('attachment')) {
-            $path = $request->file('attachment')->store('chat_attachments', 'public');
-            $attachmentType = 'image';
-            $attachmentData = [
-                'url' => asset('storage/' . $path),
-                'type' => 'image',
-            ];
-        }
-
-        if ($request->filled('attachment_type') && $request->attachment_type === 'post') {
-            $post = Post::findOrFail($request->attachment_id);
-            $attachmentType = 'post';
-            $attachmentData = [
-                'id' => $post->id,
-                'title' => $post->title,
-                'image' => $post->image ? asset('storage/' . $post->image) : null,
-                'video_thumbnail' => $post->video_thumbnail ? asset('storage/' . $post->video_thumbnail) : null, 
-                'url' => route('posts.show', $post),
-                'type' => $post->video ? 'video' : 'image',
-            ];
-        }
-
-        $message = Message::create([
-            'sender_id' => Auth::id(),
-            'receiver_id' => $request->receiver_id,
-            'message' => $request->message ?? '',
-            'attachment_type' => $attachmentType,
-            'attachment_data' => $attachmentData,
-        ]);
-
-        $receiver = User::find($request->receiver_id);
-        $receiver->notify(new MessageReceived($message));
-
-        return response()->json([
-            'status' => 'sent',
-            'message' => [
-                'id' => $message->id,
-                'sender_id' => $message->sender_id,
-                'message' => $message->message,
-                'attachment_type' => $message->attachment_type,
-                'attachment_data' => $message->attachment_data,
-                'created_at' => $message->created_at->diffForHumans(),
-                'is_mine' => true,
-                'sender_name' => Auth::user()->name,
-            ]
-        ]);
+    if ($request->hasFile('attachment')) {
+        $path = $request->file('attachment')->store('chat_attachments', 'public');
+        $attachmentType = 'image';
+        $attachmentData = [
+            'url' => asset('storage/' . $path),
+            'type' => 'image',
+        ];
     }
+
+    if ($request->filled('attachment_type') && $request->attachment_type === 'post') {
+        $post = Post::findOrFail($request->attachment_id);
+        $attachmentType = 'post';
+        $attachmentData = [
+            'id' => $post->id,
+            'title' => $post->title,
+            'image' => $post->image ? asset('storage/' . $post->image) : null,
+            'video_thumbnail' => $post->video_thumbnail ? asset('storage/' . $post->video_thumbnail) : null,
+            'url' => route('posts.show', $post),
+            'type' => $post->video ? 'video' : 'image',
+        ];
+    }
+
+    $message = Message::create([
+        'sender_id' => Auth::id(),
+        'receiver_id' => $request->receiver_id,
+        'message' => $request->message ?? '',
+        'attachment_type' => $attachmentType,
+        'attachment_data' => $attachmentData,
+    ]);
+
+    \Log::info('📝 Message saved', ['id' => $message->id, 'sender' => Auth::id(), 'receiver' => $request->receiver_id]);
+
+    broadcast(new \App\Events\MessageSent($message));
+
+    $receiver = User::find($request->receiver_id);
+
+    return response()->json([
+        'status' => 'sent',
+        'message' => [
+            'id' => $message->id,
+            'sender_id' => $message->sender_id,
+            'message' => $message->message,
+            'attachment_type' => $message->attachment_type,
+            'attachment_data' => $message->attachment_data,
+            'created_at' => $message->created_at->diffForHumans(),
+            'is_mine' => true,
+            'sender_name' => Auth::user()->name,
+        ]
+    ]);
+}
 }

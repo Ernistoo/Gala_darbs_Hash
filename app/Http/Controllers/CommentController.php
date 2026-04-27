@@ -11,9 +11,7 @@ use App\Notifications\MentionNotification;
 
 class CommentController extends Controller
 {
-    /**
-     * Saglabā jaunu komentāru pie ieraksta
-     */
+   
     public function store(Request $request, Post $post)
     {
         $request->validate([

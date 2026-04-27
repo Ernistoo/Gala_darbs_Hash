@@ -13,15 +13,12 @@
                 @foreach($collection->posts as $post)
                     <div class="relative bg-white dark:bg-gray-800 rounded shadow overflow-hidden">
                         <a href="{{ route('posts.show', $post) }}">
-                            {{-- Handle Video with Thumbnail --}}
                             @if($post->video && $post->video_thumbnail)
                                 <img src="{{ Storage::url($post->video_thumbnail) }}" 
                                      class="w-full h-40 object-cover rounded">
-                            {{-- Handle Image --}}
                             @elseif($post->image)
                                 <img src="{{ Storage::url($post->image) }}" 
                                      class="w-full h-40 object-cover rounded">
-                            {{-- Handle YouTube --}}
                             @elseif($post->youtube_url)
                                 @php
                                     preg_match('/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $post->youtube_url, $matches);
@@ -35,7 +32,6 @@
                                         <span class="text-gray-500">No preview</span>
                                     </div>
                                 @endif
-                            {{-- Fallback --}}
                             @else
                                 <div class="w-full h-40 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
                                     <span class="text-gray-500">No image</span>

@@ -235,10 +235,9 @@ class PostController extends Controller
             return null;
         }
 
-        // Extract the image data
         if (preg_match('/^data:image\/(\w+);base64,/', $base64Data, $type)) {
             $base64Data = substr($base64Data, strpos($base64Data, ',') + 1);
-            $type = strtolower($type[1]); // jpeg, png, etc.
+            $type = strtolower($type[1]); 
             if (!in_array($type, ['jpg', 'jpeg', 'png'])) {
                 $type = 'jpg';
             }

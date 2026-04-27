@@ -21,10 +21,7 @@ class Message extends Model
         'is_read' => 'boolean'
     ];
 
-    protected $dispatchesEvents = [
-        'created' => MessageSent::class,
-    ];
-
+    
     public function sender()
     {
         return $this->belongsTo(User::class, 'sender_id');

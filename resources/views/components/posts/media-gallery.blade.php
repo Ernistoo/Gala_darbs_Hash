@@ -28,7 +28,6 @@ $mediaItems[] = [
 @endphp
 
 @if(count($mediaItems) > 1)
-{{-- Carousel for multiple media --}}
 <div x-data="{ 
         index: 0, 
         total: {{ count($mediaItems) }},
@@ -47,7 +46,6 @@ $mediaItems[] = [
         @endforeach
     </div>
 
-    {{-- Navigation arrows --}}
     <button @click="prev()" x-show="index > 0"
         class="absolute top-1/2 left-2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full backdrop-blur-sm transition z-10">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,7 +59,6 @@ $mediaItems[] = [
         </svg>
     </button>
 
-    {{-- Dots --}}
     <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
         @foreach($mediaItems as $key => $media)
         <button @click="index = {{ $key }}; pauseOtherMedia()"
@@ -70,7 +67,6 @@ $mediaItems[] = [
         @endforeach
     </div>
 
-    {{-- Media type badge --}}
     <div class="absolute top-3 left-3 z-10 flex gap-1">
         @foreach($mediaItems as $key => $media)
         <template x-if="index === {{ $key }}">
@@ -86,7 +82,6 @@ $mediaItems[] = [
 </div>
 
 @elseif(count($mediaItems) === 1)
-{{-- Single media --}}
 <div class="mb-4 relative group">
     @if($mediaItems[0]['type'] === 'image')
     <div onclick="openLightbox('{{ Storage::url($post->image) }}')" class="cursor-pointer">

@@ -4,35 +4,37 @@
 
         <div id="friends-list">
             @forelse ($friends as $friend)
-            <div class="flex items-center justify-between gap-3 bg-white dark:bg-gray-800 p-4 rounded-lg mb-2">
-                <div class="flex items-center gap-3">
-                    <a href="{{ route('users.show', $friend) }}">
+            <div class="flex items-center justify-between gap-3 bg-white dark:bg-gray-800 p-4 rounded-lg mb-2"
+                 data-friend-id="{{ $friend->id }}">
+                <div class="flex items-center gap-3 min-w-0 flex-1">
+                    <a href="{{ route('users.show', $friend) }}" class="relative shrink-0">
                         <img src="{{ userAvatar($friend->profile_photo) }}"
                             class="w-12 h-12 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600"
                             alt="{{ $friend->name }}">
+                        @if(auth()->user()->hasUnreadMessagesFrom($friend->id))
+                            <span class="unread-dot absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white dark:border-gray-800"></span>
+                        @endif
                     </a>
-                    <div>
-                        <p class="font-semibold text-gray-900 dark:text-gray-100">{{ $friend->name }}</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ '@' . $friend->username }}</p>
+                    <div class="min-w-0">
+                        <p class="font-semibold text-gray-900 dark:text-gray-100 truncate">{{ $friend->name }}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 truncate">{{ '@' . $friend->username }}</p>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-2">
-                    <!-- Chat Button -->
+                <div class="flex items-center gap-2 shrink-0">
                     <button
                         data-chat-friend-id="{{ $friend->id }}"
                         data-chat-friend-name="{{ addslashes($friend->name) }}"
                         data-chat-friend-avatar="{{ userAvatar($friend->profile_photo) }}"
-                        class="chat-btn text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 text-sm font-medium px-3 py-1 rounded-full border border-purple-300 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-900/30 transition">
+                        class="chat-btn text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 text-sm font-medium px-3 py-1 rounded-full border border-purple-300 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-900/30 transition whitespace-nowrap">
                         💬 Chat
                     </button>
 
-                    <!-- Remove Friend Form -->
                     <form action="{{ route('friends.remove', $friend) }}" method="POST" onsubmit="return confirm('Remove this friend?')">
                         @csrf
                         @method('DELETE')
                         <button type="submit"
-                            class="text-red-500 hover:text-red-700 text-sm font-medium">
+                            class="text-red-500 hover:text-red-700 text-sm font-medium whitespace-nowrap">
                             Remove
                         </button>
                     </form>
@@ -44,6 +46,5 @@
         </div>
     </div>
 
-    <!-- Chat Modal -->
     @include('partials.chat-modal')
 </x-app-layout>

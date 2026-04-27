@@ -128,5 +128,18 @@ class User extends Authenticatable
 {
     return $this->hasMany(\App\Models\Submission::class);
 }
-    
+public function unreadChatSendersCount(): int
+{
+    return $this->hasMany(Message::class, 'receiver_id')
+        ->where('is_read', false)
+        ->distinct('sender_id')
+        ->count('sender_id');
+}
+public function hasUnreadMessagesFrom($friendId): bool
+{
+    return $this->hasMany(Message::class, 'receiver_id')
+        ->where('sender_id', $friendId)
+        ->where('is_read', false)
+        ->exists();
+}
 }

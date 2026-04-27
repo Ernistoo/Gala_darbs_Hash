@@ -1,12 +1,9 @@
 <div id="chat-modal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <!-- Backdrop with blur -->
         <div class="fixed inset-0 bg-gray-900/50 dark:bg-black/70 backdrop-blur-sm transition-opacity" onclick="closeChatModal()"></div>
 
-        <!-- Modal panel - larger and more refined -->
         <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-3xl h-[80vh] max-h-[700px] flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 transform transition-all">
 
-            <!-- Header -->
             <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm">
                 <div class="flex items-center gap-3">
                     <div class="relative">
@@ -25,7 +22,6 @@
                 </button>
             </div>
 
-            <!-- Messages Container - flex-1 to fill space -->
             <div id="chat-messages" class="flex-1 overflow-y-auto p-5 space-y-4 scroll-smooth bg-gradient-to-b from-gray-50/50 to-white dark:from-gray-900/50 dark:to-gray-800">
                 <div class="text-center text-gray-400 dark:text-gray-500 py-8">
                     <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -35,7 +31,6 @@
                 </div>
             </div>
 
-            <!-- Image Preview (appears above input) -->
             <div id="image-preview" class="hidden px-5 py-3 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
                 <div class="flex items-start gap-3">
                     <div class="relative">
@@ -53,9 +48,7 @@
                 </div>
             </div>
 
-            <!-- Input Area -->
             <div class="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-                <!-- Image upload button (hidden input + icon) -->
                 <div class="flex items-center gap-2 mb-3">
                     <input type="file" id="chat-image-input" accept="image/*" class="hidden">
                     <button type="button" id="attach-image-btn" class="p-2 text-gray-500 hover:text-purple-600 dark:text-gray-400 dark:hover:text-purple-400 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
@@ -65,7 +58,6 @@
                     </button>
                 </div>
 
-                <!-- Message input row -->
                 <div class="flex gap-3">
                     <input type="text" id="chat-message-input" placeholder="Type a message..."
                         class="flex-1 rounded-full border-0 bg-gray-100 dark:bg-gray-700 px-5 py-3 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:outline-none transition-shadow">

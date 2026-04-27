@@ -5,7 +5,6 @@
         @foreach($posts as $post)
             <a href="{{ route('posts.show', $post) }}"
                 class="group relative break-inside-avoid block rounded-xl shadow hover:shadow-lg overflow-hidden transition transform hover:-translate-y-1 mb-4">
-                {{-- Display video thumbnail or image --}}
                 @if($post->video && $post->video_thumbnail)
                     <img src="{{ Storage::url($post->video_thumbnail) }}"
                         alt="{{ $post->title }}"

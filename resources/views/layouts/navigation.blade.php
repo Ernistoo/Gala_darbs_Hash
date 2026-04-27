@@ -74,12 +74,19 @@
         </x-nav-link>
 
         <x-nav-link :href="route('friends.index')" :active="request()->routeIs('friends.index')"
-            class="flex items-center gap-3 bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-            </svg>
-            {{ __('Friends') }}
-        </x-nav-link>
+    class="relative flex items-center gap-3 bg-transparent dark:transparent rounded-lg p-3 shadow hover:shadow-md transition">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+    </svg>
+    {{ __('Friends') }}
+    
+    @php $unreadChatCount = auth()->user()->unreadChatSendersCount(); @endphp
+    @if($unreadChatCount > 0)
+        <span class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+            {{ $unreadChatCount }}
+        </span>
+    @endif
+</x-nav-link>
 
         @role('admin')
         <x-nav-link :href="route('admin')" :active="request()->routeIs('admin')"

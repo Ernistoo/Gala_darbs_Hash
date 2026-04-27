@@ -56,57 +56,55 @@
             </div>
 
             <div class="divide-y divide-gray-200 dark:divide-gray-700">
-                @foreach($users as $index => $user)
-                @php $rank = $index + 1; @endphp
-                <div class="flex items-center justify-between px-6 py-4 hover:bg-purple-50 dark:hover:bg-gray-700/50 transition {{ $user->id === auth()->id() ? 'bg-purple-100 dark:bg-purple-900/30 border-l-4 border-l-purple-500' : '' }}">
+            @foreach($users as $index => $user)
+    @php $rank = $index + 1; @endphp
+    <div class="flex items-center justify-between px-4 sm:px-6 py-4 hover:bg-purple-50 dark:hover:bg-gray-700/50 transition {{ $user->id === auth()->id() ? 'bg-purple-100 dark:bg-purple-900/30 border-l-4 border-l-purple-500' : '' }}">
+        <div class="flex items-center gap-3 min-w-0 flex-1">
+            <div class="w-6 text-center shrink-0">
+                @if($rank === 1)
+                    <span class="text-lg">🥇</span>
+                @elseif($rank === 2)
+                    <span class="text-lg">🥈</span>
+                @elseif($rank === 3)
+                    <span class="text-lg">🥉</span>
+                @else
+                    <span class="font-bold text-gray-500 dark:text-gray-400">#{{ $rank }}</span>
+                @endif
+            </div>
 
-                    <!-- Rank & User Info -->
-                    <div class="flex items-center gap-4">
-                        <div class="w-8 text-center">
-                            @if($rank === 1)
-                            <span class="text-2xl">🥇</span>
-                            @elseif($rank === 2)
-                            <span class="text-2xl">🥈</span>
-                            @elseif($rank === 3)
-                            <span class="text-2xl">🥉</span>
-                            @else
-                            <span class="font-bold text-gray-500 dark:text-gray-400">#{{ $rank }}</span>
-                            @endif
-                        </div>
-
-                        <a href="{{ route('users.show', $user) }}" class="flex items-center gap-3 group">
-                            <div class="relative">
-                                <img src="{{ userAvatar($user->profile_photo) }}"
-                                    alt="{{ $user->name }}"
-                                    class="w-11 h-11 rounded-full border-2 {{ $rank <= 3 ? 'border-purple-400' : 'border-gray-300 dark:border-gray-600' }} object-cover group-hover:border-purple-500 transition">
-                                @if($user->id === auth()->id())
-                                <span class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></span>
-                                @endif
-                            </div>
-                            <div>
-                                <p class="font-semibold text-gray-800 dark:text-gray-200 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition">
-                                    {{ $user->name }}
-                                    @if($user->id === auth()->id())
-                                    <span class="ml-2 text-xs bg-purple-600 text-white px-2 py-0.5 rounded-full">You</span>
-                                    @endif
-                                </p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ '@'.$user->username }}</p>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="flex items-center gap-6">
-                        <div class="text-right">
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Level</p>
-                            <p class="font-semibold text-purple-600 dark:text-purple-400">{{ $user->level ?? 1 }}</p>
-                        </div>
-                        <div class="text-right min-w-[80px]">
-                            <p class="text-xs text-gray-500 dark:text-gray-400">XP</p>
-                            <p class="font-bold text-gray-800 dark:text-gray-100">{{ number_format($user->xp) }}</p>
-                        </div>
-                    </div>
+            <a href="{{ route('users.show', $user) }}" class="flex items-center gap-3 min-w-0 group">
+                <div class="relative shrink-0">
+                    <img src="{{ userAvatar($user->profile_photo) }}"
+                         alt="{{ $user->name }}"
+                         class="w-10 h-10 sm:w-11 sm:h-11 rounded-full border-2 {{ $rank <= 3 ? 'border-purple-400' : 'border-gray-300 dark:border-gray-600' }} object-cover group-hover:border-purple-500 transition">
+                    @if($user->id === auth()->id())
+                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></span>
+                    @endif
                 </div>
-                @endforeach
+                <div class="min-w-0">
+                    <p class="font-semibold text-sm sm:text-base text-gray-800 dark:text-gray-200 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition truncate">
+                        {{ $user->name }}
+                        @if($user->id === auth()->id())
+                            <span class="ml-1 text-xs bg-purple-600 text-white px-1.5 py-0.5 rounded-full">You</span>
+                        @endif
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ '@'.$user->username }}</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="flex items-center gap-4 sm:gap-6 shrink-0">
+            <div class="text-right">
+                <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">Level</p>
+                <p class="font-semibold text-sm sm:text-base text-purple-600 dark:text-purple-400">{{ $user->level ?? 1 }}</p>
+            </div>
+            <div class="text-right min-w-[60px] sm:min-w-[80px]">
+                <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">XP</p>
+                <p class="font-bold text-sm sm:text-base text-gray-800 dark:text-gray-100">{{ number_format($user->xp) }}</p>
+            </div>
+        </div>
+    </div>
+@endforeach
             </div>
         </div>
 
