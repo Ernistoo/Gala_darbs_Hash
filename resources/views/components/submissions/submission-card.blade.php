@@ -1,6 +1,6 @@
 <div class="break-inside-avoid bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl overflow-hidden transition-all duration-300 transform hover:-translate-y-1.5 relative mb-4 group border border-gray-100 dark:border-gray-700">
     
-    <div class="relative overflow-hidden cursor-pointer" onclick="openLightbox('{{ asset('storage/' . $submission->image) }}')">
+<div class="relative overflow-hidden cursor-pointer" onclick="event.stopPropagation(); openLightbox('image', '{{ asset('storage/' . $submission->image) }}')">
         <img src="{{ asset('storage/' . $submission->image) }}" 
              alt="submission" 
              class="w-full object-cover rounded-t-xl group-hover:scale-105 transition-transform duration-500">

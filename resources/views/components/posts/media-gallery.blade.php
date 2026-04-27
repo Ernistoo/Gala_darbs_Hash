@@ -84,7 +84,10 @@ $mediaItems[] = [
 @elseif(count($mediaItems) === 1)
 <div class="mb-4 relative group">
     @if($mediaItems[0]['type'] === 'image')
-    <div onclick="openLightbox('{{ Storage::url($post->image) }}')" class="cursor-pointer">
+    <div onclick="event.stopPropagation(); window.openLightbox(
+    '{{ $post->video ? 'video' : ($post->youtube_url ? 'youtube' : 'image') }}',
+    '{{ $post->video ? Storage::url($post->video) : ($post->youtube_url ? $post->youtube_url : Storage::url($post->image)) }}'
+)" class="cursor-pointer relative">
         {!! $mediaItems[0]['content'] !!}
         <div class="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
             <div class="p-2 bg-black/50 backdrop-blur-sm rounded-full">

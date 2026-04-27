@@ -71,14 +71,14 @@ class BadgeService
     private function level1Unlocked(User $user): void
     {
         if ($user->xp >= 100 && !$this->hasBadge($user, 'Level 1 Unlocked')) {
-            $this->awardBadge($user, 'Level 1 Unlocked', 'winner.png', 'Reached Level 1 (100 XP)!', 0);
+            $this->awardBadge($user, 'Level 1 Unlocked', 'winner.png', 'Reached Level 1!', 0);
         }
     }
 
     private function level5Elite(User $user): void
     {
         if ($user->xp >= 1000 && !$this->hasBadge($user, 'Level 5 Elite')) {
-            $this->awardBadge($user, 'Level 5 Elite', 'level5.png', 'Elite status unlocked (1000 XP)!', 0);
+            $this->awardBadge($user, 'Level 5 Elite', 'level5.png', 'Elite status unlocked!', 0);
         }
     }
 

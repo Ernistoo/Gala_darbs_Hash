@@ -9,11 +9,12 @@
     <title>{{ config('app.name', 'Hash') }}</title>
 
     <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
-    <!-- Fonts -->
-    <script src="//unpkg.com/alpinejs" defer></script>
+
+    {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+    {{-- Theme detection before render --}}
     <script>
         if (
             localStorage.getItem('color-theme') === 'dark' ||
@@ -25,10 +26,11 @@
         }
     </script>
 
-    <!-- Scripts -->
+    {{-- Vite assets (Alpine is bundled in app.js, no CDN needed) --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
+{{-- Badge earned toast --}}
 @if(session('badge_earned'))
 <div
     x-data="{ show: true }"
@@ -39,7 +41,6 @@
     <img src="{{ asset('images/' . session('badge_image')) }}"
         alt="{{ session('badge_name') }}"
         class="w-10 h-10 rounded-full border-2 border-purple-500">
-
     <div>
         <p class="text-sm font-bold text-gray-900 dark:text-gray-100">
             🎉 {{ session('badge_name') }}
@@ -48,7 +49,6 @@
             {{ session('badge_description') }}
         </p>
     </div>
-
     <button @click="show = false"
         class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
         ✕
@@ -59,6 +59,7 @@
 <body class="font-sans antialiased bg-gradient-to-br from-gray-200 to-purple-100 dark:from-black dark:to-purple-900 transition-colors duration-500 ease-in-out" x-data="{ sidebarOpen: false }">
     <div class="min-h-screen flex">
 
+        {{-- Mobile header --}}
         <div class="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-2">
                 <x-application-logo class="h-10 w-10 text-gray-800 dark:text-gray-200" />
@@ -72,6 +73,7 @@
             </button>
         </div>
 
+        {{-- Mobile sidebar overlay --}}
         <div x-show="sidebarOpen"
             @click="sidebarOpen = false"
             x-transition:enter="transition-opacity ease-linear duration-300"
@@ -82,42 +84,49 @@
             x-transition:leave-end="opacity-0"
             class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
 
+        {{-- Sidebar --}}
         <aside class="fixed top-0 left-0 w-64 h-screen flex flex-col bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out z-50"
             :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
             @include('layouts.navigation')
         </aside>
 
+        {{-- Main content --}}
         <div class="flex-1 flex flex-col lg:ml-64 pt-16 lg:pt-0 transition-colors duration-500 ease-in-out bg-gradient-to-br from-gray-200 to-purple-100 dark:from-black dark:to-purple-900">
 
             @isset($header)
             <header class="transition-colors duration-500 ease-in-out">
-                <div class="px-4 lg:px-6 py-4 transition-colors duration-500 ease-in-out text-gray-900 dark:text-gray-100">
+                <div class="px-4 lg:px-6 py-4 text-gray-900 dark:text-gray-100">
                     {{ $header }}
                 </div>
             </header>
             @endisset
 
-            <main class="p-4 lg:p-6 transition-colors duration-500 ease-in-out text-gray-900 dark:text-gray-100">
+            <main class="p-4 lg:p-6 text-gray-900 dark:text-gray-100">
                 {{ $slot }}
             </main>
         </div>
     </div>
+
+    {{-- Send Chat Modal --}}
     @include('partials.send-chat-modal')
+
+    {{-- Lightbox Modal (image, video, YouTube) --}}
     <div id="lightbox-modal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-modal="true">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="fixed inset-0 bg-black/90 dark:bg-black/95 backdrop-blur-sm transition-opacity" onclick="closeLightbox()"></div>
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="fixed inset-0 bg-black/90 dark:bg-black/95 backdrop-blur-sm transition-opacity" onclick="closeLightbox()"></div>
 
-            <button onclick="closeLightbox()" class="absolute top-4 right-4 z-10 p-2 text-white/70 hover:text-white bg-black/20 hover:bg-black/40 rounded-full transition">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
+        <button onclick="closeLightbox()" class="absolute top-4 right-4 z-10 p-2 text-white/70 hover:text-white bg-black/20 hover:bg-black/40 rounded-full transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
 
-            <div class="relative max-w-6xl max-h-[90vh] z-10">
-                <img id="lightbox-image" src="" alt="" class="w-full h-full object-contain rounded-lg shadow-2xl">
-            </div>
+        <div class="relative z-10 flex items-center justify-center">
+            <img id="lightbox-image" src="" alt="" class="hidden max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl">
+            <video id="lightbox-video" controls class="hidden max-w-full max-h-[90vh] rounded-lg shadow-2xl"></video>
+            <iframe id="lightbox-youtube" class="hidden w-full h-[80vh] max-w-6xl rounded-lg shadow-2xl" frameborder="0" allowfullscreen></iframe>
         </div>
     </div>
+</div>
 </body>
-
 </html>
