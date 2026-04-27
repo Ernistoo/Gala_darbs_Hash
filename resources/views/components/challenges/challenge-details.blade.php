@@ -5,7 +5,7 @@
                 {{ $challenge->category }}
             </span>
             <span class="ml-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200">
-                +50 XP
+                +300 XP
             </span>
         </div>
         <div class="text-sm text-gray-500 dark:text-gray-400">

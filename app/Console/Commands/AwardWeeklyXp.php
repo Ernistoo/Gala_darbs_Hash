@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class AwardWeeklyXp extends Command
 {
     protected $signature = 'challenges:award-weekly-xp';
-    protected $description = 'Award 50 XP to the top voted submission for expired challenges';
+    protected $description = 'Award 300 XP to the top voted submission for expired challenges';
 
     public function handle()
     {
@@ -28,8 +28,8 @@ class AwardWeeklyXp extends Command
                     ->first();
 
                 if ($top && $top->user) {
-                    $top->user->increment('xp', 50);
-                    $this->info("Awarded 50 XP to {$top->user->name} for challenge {$challenge->title}");
+                    $top->user->increment('xp', 300);
+                    $this->info("Awarded 300 XP to {$top->user->name} for challenge {$challenge->title}");
                     
                     $challenge->winner_submission_id = $top->id;
                     $challenge->awarded_at = now();
